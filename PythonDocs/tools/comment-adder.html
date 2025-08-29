@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comment Adder - AGM Python Tools</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #2c3e50;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #e74c3c;
+            --accent-light: #ec7063;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --border-color: #e9ecef;
+            --text-primary: #2c3e50;
+            --text-secondary: #6c757d;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .theme-blue { 
+            --accent-color: #3498db; 
+            --accent-light: #5dade2;
+        }
+        .theme-red { 
+            --accent-color: #e74c3c; 
+            --accent-light: #ec7063;
+        }
+        .theme-green { 
+            --accent-color: #2ecc71; 
+            --accent-light: #58d68d;
+        }
+        .theme-yellow { 
+            --accent-color: #f39c12; 
+            --accent-light: #f5b041;
+        }
+        .theme-purple { 
+            --accent-color: #9b59b6; 
+            --accent-light: #bb8fce;
+        }
+        .theme-pink { 
+            --accent-color: #e91e63; 
+            --accent-light: #f06292;
+        }
+
+        /* Fixed Top Bar */
+        .top-bar {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+            z-index: 100;
+            flex-shrink: 0;
+        }
+
+        .title-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tool-title {
+            color: var(--accent-color);
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .tool-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin: 0;
+            max-width: 300px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .button {
+            background: var(--accent-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .button:hover {
+            background: var(--accent-light);
+        }
+
+        .button:active {
+            transform: translateY(1px);
+        }
+
+        .button-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .button-secondary:hover {
+            background: #e9ecef;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            height: calc(100vh - 80px);
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .code-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+            border-right: 1px solid var(--border-color);
+            min-height: 0;
+        }
+
+        .code-section:last-child {
+            border-right: none;
+        }
+
+        .section-header {
+            background: var(--bg-secondary);
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            flex: 0 0 auto;
+        }
+
+        .section-title {
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .code-area {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        }
+
+        textarea, .output-container {
+            width: 100%;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: none;
+            padding: 20px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: none;
+            outline: none;
+            overflow-y: auto;
+            height: 100%;
+            max-height: 80%;
+        }
+
+        textarea::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .output-container {
+            overflow-y: auto;
+            white-space: pre-wrap;
+            background: #fafbfc;
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #95a5a6;
+        }
+
+        .status-dot.active {
+            background: var(--accent-color);
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            .tool-description {
+                display: none;
+            }
+            
+            .controls {
+                gap: 8px;
+            }
+            
+            .button {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .code-section {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .code-section:last-child {
+                border-bottom: none;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                gap: 12px;
+                align-items: stretch;
+            }
+            
+            .controls {
+                justify-content: center;
+            }
+            
+            .main-content {
+                height: calc(100vh - 120px);
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #bdc3c7;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #95a5a6;
+        }
+
+        /* Loading state */
+        .processing {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .processing .status-dot {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Top Bar -->
+    <div class="top-bar">
+        <div class="title-section">
+            <h1 class="tool-title">Comment Adder</h1>
+            <p class="tool-description">
+                Intelligent Python code commenting
+            </p>
+        </div>
+        
+        <div class="controls">
+            <div class="status-indicator">
+                <div class="status-dot" id="status-dot"></div>
+                <span id="status-text">Ready</span>
+            </div>
+            <button class="button" onclick="addComments()">
+                Add Comments
+            </button>
+            <button class="button button-secondary" onclick="copyToClipboard('comment-adder-output')">
+                Copy
+            </button>
+            <button class="button button-secondary" onclick="clearAll()">
+                Clear
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Input Section -->
+        <div class="code-section">
+            <div class="section-header">
+                <div class="section-title">
+                    Input Code
+                </div>
+                <div class="section-stats">
+                    <div class="stat-item">
+                        Lines: <span id="input-lines">0</span>
+                    </div>
+                    <div class="stat-item">
+                        Characters: <span id="input-chars">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="code-area">
+                <textarea id="comment-adder-input" placeholder="# Paste your Python code here...
+# Example:
+import os
+import json
+
+class DataProcessor:
+    def __init__(self, filename):
+        self.filename = filename
+    
+    def process_data(self):
+        if os.path.exists(self.filename):
+            print('Processing file...')
+            data = []
+            return data"></textarea>
+            </div>
+        </div>
+        
+        <!-- Output Section -->
+        <div class="code-section">
+            <div class="section-header">
+                <div class="section-title">
+                    Commented Code
+                </div>
+                <div class="section-stats">
+                    <div class="stat-item">
+                        Comments: <span id="comments-count">0</span>
+                    </div>
+                    <div class="stat-item">
+                        Lines: <span id="output-lines">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="code-area">
+                <pre id="comment-adder-output" class="output-container">Enhanced commented code will appear here...
+
+Click "Add Comments" to process your Python code and see intelligent comments added automatically.</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Listen for messages from parent window
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'updateAccentColor') {
+                applyAccentColor(event.data.color);
+            }
+        });
+
+        // Apply accent color from parent window
+        function applyAccentColor(color) {
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink');
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        // Update status
+        function updateStatus(text, active = false) {
+            document.getElementById('status-text').textContent = text;
+            document.getElementById('status-dot').classList.toggle('active', active);
+        }
+
+        // Update input stats
+        document.getElementById('comment-adder-input').addEventListener('input', function() {
+            const input = this.value;
+            const lines = input.split('\n').length;
+            const chars = input.length;
+            document.getElementById('input-lines').textContent = lines;
+            document.getElementById('input-chars').textContent = chars;
+            
+            if (input.trim()) {
+                updateStatus('Ready to process', false);
+            } else {
+                updateStatus('Waiting for input', false);
+            }
+        });
+
+        function addComments() {
+            const input = document.getElementById('comment-adder-input').value;
+            const output = document.getElementById('comment-adder-output');
+            
+            if (!input.trim()) {
+                output.textContent = "Please enter some Python code to add comments to.";
+                updateStatus('No input provided', false);
+                return;
+            }
+            
+            updateStatus('Processing...', true);
+            document.body.classList.add('processing');
+            
+            // Add small delay to show processing state
+            setTimeout(() => {
+                let lines = input.split('\n');
+                let commentsAdded = 0;
+                let inDocstring = false;
+                
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i];
+                    const trimmed = line.trim();
+                    
+                    // Skip empty lines and existing comments
+                    if (!trimmed || trimmed.startsWith('#')) continue;
+                    
+                    // Handle docstrings
+                    if (trimmed.includes('"""') || trimmed.includes("'''")) {
+                        const delim = trimmed.includes('"""') ? '"""' : "'''";
+                        const delimCount = (trimmed.match(new RegExp(delim.replace(/"/g, '\\"'), 'g')) || []).length;
+                        
+                        if (delimCount === 1) {
+                            inDocstring = !inDocstring;
+                        }
+                        continue;
+                    }
+                    
+                    if (inDocstring) continue;
+                    
+                    let comment = '';
+                    let addComment = false;
+                    
+                    // Import statements
+                    if (trimmed.startsWith('import ') || trimmed.startsWith('from ')) {
+                        const module = trimmed.match(/(?:from\s+)?(\w+)/)[1];
+                        comment = ` # Import ${module} module for enhanced functionality`;
+                        addComment = true;
+                    }
+                    
+                    // Class definitions
+                    else if (trimmed.startsWith('class ')) {
+                        const className = trimmed.match(/class\s+(\w+)/)[1];
+                        comment = ` # Define ${className} class with custom methods and properties`;
+                        addComment = true;
+                    }
+                    
+                    // Function/method definitions
+                    else if (trimmed.startsWith('def ')) {
+                        const funcName = trimmed.match(/def\s+(\w+)/)[1];
+                        const isInit = funcName === '__init__';
+                        const isPrivate = funcName.startsWith('_');
+                        const isDunder = funcName.startsWith('__') && funcName.endsWith('__');
+                        
+                        if (isInit) {
+                            comment = ` # Initialize class instance with required parameters`;
+                        } else if (isDunder) {
+                            comment = ` # Special method for ${funcName.replace(/_/g, '')} functionality`;
+                        } else if (isPrivate) {
+                            comment = ` # Private method for internal ${funcName.substring(1)} operations`;
+                        } else {
+                            comment = ` # Define ${funcName} method to handle specific logic`;
+                        }
+                        addComment = true;
+                    }
+                    
+                    // Control structures
+                    else if (trimmed.startsWith('if ')) {
+                        const condition = trimmed.substring(3, trimmed.indexOf(':')).trim();
+                        comment = ` # Check condition: ${condition}`;
+                        addComment = true;
+                    } else if (trimmed.startsWith('elif ')) {
+                        const condition = trimmed.substring(5, trimmed.indexOf(':')).trim();
+                        comment = ` # Alternative condition: ${condition}`;
+                        addComment = true;
+                    } else if (trimmed === 'else:') {
+                        comment = ` # Handle all other cases`;
+                        addComment = true;
+                    }
+                    
+                    // Loops
+                    else if (trimmed.startsWith('for ')) {
+                        const loopVar = trimmed.match(/for\s+(\w+)/)[1];
+                        comment = ` # Iterate through items using ${loopVar} variable`;
+                        addComment = true;
+                    } else if (trimmed.startsWith('while ')) {
+                        comment = ` # Continue loop while condition remains true`;
+                        addComment = true;
+                    }
+                    
+                    // Exception handling
+                    else if (trimmed.startsWith('try:')) {
+                        comment = ` # Attempt to execute code with error handling`;
+                        addComment = true;
+                    } else if (trimmed.startsWith('except ')) {
+                        const exception = trimmed.match(/except\s+(\w+)?/);
+                        const exceptionType = exception && exception[1] ? exception[1] : 'any';
+                        comment = ` # Handle ${exceptionType} exceptions gracefully`;
+                        addComment = true;
+                    } else if (trimmed === 'finally:') {
+                        comment = ` # Execute cleanup code regardless of success or failure`;
+                        addComment = true;
+                    }
+                    
+                    // Context managers
+                    else if (trimmed.startsWith('with ')) {
+                        comment = ` # Use context manager for resource management`;
+                        addComment = true;
+                    }
+                    
+                    // Print statements
+                    else if (trimmed.includes('print(')) {
+                        comment = ` # Display output to console for debugging/info`;
+                        addComment = true;
+                    }
+                    
+                    // Return statements
+                    else if (trimmed.startsWith('return ')) {
+                        comment = ` # Return calculated result to caller`;
+                        addComment = true;
+                    } else if (trimmed === 'return') {
+                        comment = ` # Exit function without returning value`;
+                        addComment = true;
+                    }
+                    
+                    // Variable assignments
+                    else if (trimmed.match(/^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=/) && 
+                             !trimmed.includes('==') && !trimmed.includes('!=') &&
+                             !trimmed.includes('<=') && !trimmed.includes('>=')) {
+                        const varMatch = trimmed.match(/([a-zA-Z_][a-zA-Z0-9_]*)\s*=/);
+                        if (varMatch) {
+                            const varName = varMatch[1];
+                            const isPrivate = varName.startsWith('_');
+                            const isConstant = varName.toUpperCase() === varName;
+                            
+                            if (isConstant) {
+                                comment = ` # Define constant ${varName} for configuration`;
+                            } else if (isPrivate) {
+                                comment = ` # Set private ${varName.substring(1)} variable`;
+                            } else {
+                                comment = ` # Store value in ${varName} variable for later use`;
+                            }
+                            addComment = true;
+                        }
+                    }
+                    
+                    // List/dict comprehensions
+                    else if ((trimmed.includes('[') && trimmed.includes('for ') && trimmed.includes('in ')) ||
+                             (trimmed.includes('{') && trimmed.includes('for ') && trimmed.includes('in '))) {
+                        comment = ` # Create collection using comprehension for efficiency`;
+                        addComment = true;
+                    }
+                    
+                    // Decorators
+                    else if (trimmed.startsWith('@')) {
+                        const decorator = trimmed.substring(1);
+                        comment = ` # Apply ${decorator} decorator to modify behavior`;
+                        addComment = true;
+                    }
+                    
+                    if (addComment && !line.includes(' #')) {
+                        lines[i] = line + comment;
+                        commentsAdded++;
+                    }
+                }
+                
+                const result = lines.join('\n');
+                output.textContent = result;
+                
+                // Update stats
+                document.getElementById('comments-count').textContent = commentsAdded;
+                document.getElementById('output-lines').textContent = result.split('\n').length;
+                
+                if (commentsAdded === 0) {
+                    output.textContent += '\n\n// No suitable locations found for comments, or comments may already exist.';
+                    updateStatus('No comments added', false);
+                } else {
+                    updateStatus(`Added ${commentsAdded} comments`, true);
+                }
+                
+                document.body.classList.remove('processing');
+            }, 300);
+        }
+
+        function copyToClipboard(elementId) {
+            const output = document.getElementById(elementId);
+            const text = output.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                updateStatus('Copied to clipboard!', true);
+                setTimeout(() => updateStatus('Ready', false), 2000);
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    updateStatus('Copied to clipboard!', true);
+                    setTimeout(() => updateStatus('Ready', false), 2000);
+                } catch (err) {
+                    updateStatus('Copy failed', false);
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+
+        function clearAll() {
+            document.getElementById('comment-adder-input').value = '';
+            document.getElementById('comment-adder-output').textContent = 'Enhanced commented code will appear here...\n\nClick "Add Comments" to process your Python code and see intelligent comments added automatically.';
+            document.getElementById('input-lines').textContent = '0';
+            document.getElementById('input-chars').textContent = '0';
+            document.getElementById('comments-count').textContent = '0';
+            document.getElementById('output-lines').textContent = '0';
+            updateStatus('Cleared', false);
+            setTimeout(() => updateStatus('Ready', false), 1000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            applyAccentColor('red');
+            updateStatus('Ready', false);
+        });
+    </script>
+</body>
+</html>

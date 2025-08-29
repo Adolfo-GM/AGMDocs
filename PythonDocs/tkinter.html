@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tkinter Module</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #ff4444;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #ff4444);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #ff4444);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #cccccc;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button {
+            background-color: rgba(var(--accent-color), 0.2);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:hover {
+            background-color: rgba(var(--accent-color), 0.3);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #ff4444) !important;
+            border-color: var(--accent-color, #ff4444) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius: 0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 55px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        .highlight {
+            color: var(--accent-color, #ff4444);
+            font-weight: 600;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+
+        /* Windows Window Style */
+        .windows-window {
+            background-color: #f0f0f0; /* Light gray background for the window */
+            border: 1px solid #adadad;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 20px 0;
+            color: #000; /* Default text color for the window content */
+        }
+
+        .windows-title-bar {
+            background: linear-gradient(to bottom, #e3e3e3 0%, #d0d0d0 100%);
+            padding: 8px 10px;
+            border-bottom: 1px solid #adadad;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            cursor: default;
+        }
+
+        .windows-title-bar-buttons {
+            display: flex;
+            gap: 1px;
+        }
+
+        .windows-title-bar-button {
+            width: 30px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+
+        .windows-title-bar-button:hover {
+            background-color: #c0c0c0;
+        }
+
+        .windows-title-bar-button.close:hover {
+            background-color: #e81123;
+            color: white;
+        }
+
+        .windows-content {
+            padding: 10px;
+            background-color: #fff; /* White background for the content area */
+            min-height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: #000;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tkinter Module</h1>
+    
+    <p>Tkinter is Python's de-facto standard GUI (Graphical User Interface) package. It is a standard Python interface to the Tcl/Tk GUI toolkit. Tkinter is the fastest and easiest way to create GUI applications.</p>
+
+    <h2>Basic Tkinter Window</h2>
+    <p>Here's a simple example of creating a basic Tkinter window:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'tkinter-basic-window')">Run</button>
+                </div>
+                <code id="code-tkinter-1"><span class="keyword">import</span> <span class="keyword">tkinter</span> <span class="keyword">as</span> <span class="highlight">tk</span>
+
+<span class="comment"># Create the main window</span>
+<span class="highlight">root</span> = <span class="highlight">tk</span>.<span class="function">Tk</span>()
+<span class="highlight">root</span>.<span class="function">title</span>(<span class="string">"My First Tkinter Window"</span>)
+<span class="highlight">root</span>.<span class="function">geometry</span>(<span class="string">"300x200"</span>)
+
+<span class="comment"># Create a label widget</span>
+<span class="highlight">label</span> = <span class="highlight">tk</span>.<span class="function">Label</span>(<span class="highlight">root</span>, <span class="keyword">text</span>=<span class="string">"Hello from Tkinter!"</span>)
+<span class="highlight">label</span>.<span class="function">pack</span>(<span class="keyword">pady</span>=<span class="number">20</span>)
+
+<span class="comment"># Run the Tkinter event loop</span>
+<span class="highlight">root</span>.<span class="function">mainloop</span>()</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-tkinter-basic-window">
+            <div class="terminal-header">Tkinter Window Output</div>
+            <div class="windows-window">
+                <div class="windows-title-bar">
+                    <span>My First Tkinter Window</span>
+                    <div class="windows-title-bar-buttons">
+                        <div class="windows-title-bar-button minimize">–</div>
+                        <div class="windows-title-bar-button maximize">◻</div>
+                        <div class="windows-title-bar-button close">✕</div>
+                    </div>
+                </div>
+                <div class="windows-content" id="output-tkinter-basic-window">
+                    Click "Run" to see the Tkinter window content...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>Widgets</h2>
+    <p>Tkinter provides various widgets to build your GUI:</p>
+    <ul>
+        <li><strong>Label:</strong> Used to display text or images.</li>
+        <li><strong>Button:</strong> Used to create clickable buttons.</li>
+        <li><strong>Entry:</strong> Used for single-line text input.</li>
+        <li><strong>Text:</strong> Used for multi-line text input.</li>
+        <li><strong>Frame:</strong> A rectangular region used to organize other widgets.</li>
+        <li><strong>Canvas:</strong> Used for drawing shapes and images.</li>
+        <li><strong>Checkbutton:</strong> Creates checkboxes for toggling options.</li>
+        <li><strong>Radiobutton:</strong> Creates radio buttons for selecting one option from many.</li>
+        <li><strong>Listbox:</strong> Displays a list of options.</li>
+        <li><strong>Scrollbar:</strong> Adds scrolling functionality to widgets.</li>
+    </ul>
+
+    <h2>Interactive Button Example</h2>
+    <p>Here's an example of a Tkinter application with a button that responds to clicks:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'tkinter-button')">Run</button>
+                </div>
+                <code id="code-tkinter-2"><span class="keyword">import</span> <span class="keyword">tkinter</span> <span class="keyword">as</span> <span class="highlight">tk</span>
+
+<span class="comment"># Function to handle button click</span>
+<span class="keyword">def</span> <span class="function">button_clicked</span>():
+    <span class="highlight">label</span>.<span class="function">config</span>(<span class="keyword">text</span>=<span class="string">"Button was clicked!"</span>)
+    <span class="comment"># Change button color when clicked</span>
+    <span class="highlight">button</span>.<span class="function">config</span>(<span class="keyword">bg</span>=<span class="string">"lightgreen"</span>, <span class="keyword">activebackground</span>=<span class="string">"green"</span>)
+
+<span class="comment"># Create the main window</span>
+<span class="highlight">root</span> = <span class="highlight">tk</span>.<span class="function">Tk</span>()
+<span class="highlight">root</span>.<span class="function">title</span>(<span class="string">"Button Example"</span>)
+<span class="highlight">root</span>.<span class="function">geometry</span>(<span class="string">"300x200"</span>)
+
+<span class="comment"># Create a label widget</span>
+<span class="highlight">label</span> = <span class="highlight">tk</span>.<span class="function">Label</span>(<span class="highlight">root</span>, <span class="keyword">text</span>=<span class="string">"Click the button below"</span>, <span class="keyword">font</span>=(<span class="string">"Arial"</span>, <span class="number">12</span>))
+<span class="highlight">label</span>.<span class="function">pack</span>(<span class="keyword">pady</span>=<span class="number">20</span>)
+
+<span class="comment"># Create a button widget</span>
+<span class="highlight">button</span> = <span class="highlight">tk</span>.<span class="function">Button</span>(<span class="highlight">root</span>, <span class="keyword">text</span>=<span class="string">"Click Me!"</span>, <span class="keyword">command</span>=<span class="function">button_clicked</span>, 
+                   <span class="keyword">bg</span>=<span class="string">"#0078D7"</span>, <span class="keyword">fg</span>=<span class="string">"white"</span>, 
+                   <span class="keyword">activebackground</span>=<span class="string">"#00559B"</span>, <span class="keyword">activeforeground</span>=<span class="string">"white"</span>,
+                   <span class="keyword">padx</span>=<span class="number">20</span>, <span class="keyword">pady</span>=<span class="number">10</span>)
+<span class="highlight">button</span>.<span class="function">pack</span>()
+
+<span class="comment"># Run the Tkinter event loop</span>
+<span class="highlight">root</span>.<span class="function">mainloop</span>()</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-tkinter-button">
+            <div class="terminal-header">Tkinter Window Output</div>
+            <div class="windows-window">
+                <div class="windows-title-bar">
+                    <span>Button Example</span>
+                    <div class="windows-title-bar-buttons">
+                        <div class="windows-title-bar-button minimize">–</div>
+                        <div class="windows-title-bar-button maximize">◻</div>
+                        <div class="windows-title-bar-button close">✕</div>
+                    </div>
+                </div>
+                <div class="windows-content" id="output-tkinter-button">
+                    Click "Run" to see the Tkinter window content...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>Form Example with Multiple Widgets</h2>
+    <p>This example shows how to create a form with multiple widgets including entry fields, labels, and buttons:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'tkinter-form')">Run</button>
+                </div>
+                <code id="code-tkinter-3"><span class="keyword">import</span> <span class="keyword">tkinter</span> <span class="keyword">as</span> <span class="highlight">tk</span>
+<span class="keyword">from</span> <span class="keyword">tkinter</span> <span class="keyword">import</span> <span class="highlight">messagebox</span>
+
+<span class="keyword">def</span> <span class="function">submit_form</span>():
+    <span class="highlight">name</span> = <span class="highlight">name_entry</span>.<span class="function">get</span>()
+    <span class="highlight">email</span> = <span class="highlight">email_entry</span>.<span class="function">get</span>()
+    
+    <span class="keyword">if</span> <span class="highlight">name</span> <span class="keyword">and</span> <span class="highlight">email</span>:
+        <span class="highlight">result_label</span>.<span class="function">config</span>(<span class="keyword">text</span>=<span class="string">f"Thank you, {name}!\nForm submitted successfully!"</span>, <span class="keyword">fg</span>=<span class="string">"green"</span>)
+    <span class="keyword">else</span>:
+        <span class="highlight">messagebox</span>.<span class="function">showerror</span>(<span class="string">"Error"</span>, <span class="string">"Please fill in all fields!"</span>)
+
+<span class="comment"># Create the main window</span>
+<span class="highlight">root</span> = <span class="highlight">tk</span>.<span class="function">Tk</span>()
+<span class="highlight">root</span>.<span class="function">title</span>(<span class="string">"Contact Form"</span>)
+<span class="highlight">root</span>.<span class="function">geometry</span>(<span class="string">"400x300"</span>)
+
+<span class="comment"># Create a frame for the form</span>
+<span class="highlight">form_frame</span> = <span class="highlight">tk</span>.<span class="function">Frame</span>(<span class="highlight">root</span>, <span class="keyword">padx</span>=<span class="number">20</span>, <span class="keyword">pady</span>=<span class="number">20</span>)
+<span class="highlight">form_frame</span>.<span class="function">pack</span>(<span class="keyword">fill</span>=<span class="string">"both"</span>, <span class="keyword">expand</span>=<span class="keyword">True</span>)
+
+<span class="comment"># Form title</span>
+<span class="highlight">title_label</span> = <span class="highlight">tk</span>.<span class="function">Label</span>(<span class="highlight">form_frame</span>, <span class="keyword">text</span>=<span class="string">"Contact Information"</span>, <span class="keyword">font</span>=(<span class="string">"Arial"</span>, <span class="number">14</span>, <span class="string">"bold"</span>))
+<span class="highlight">title_label</span>.<span class="function">grid</span>(<span class="keyword">row</span>=<span class="number">0</span>, <span class="keyword">column</span>=<span class="number">0</span>, <span class="keyword">columnspan</span>=<span class="number">2</span>, <span class="keyword">pady</span>=<span class="number">10</span>, <span class="keyword">sticky</span>=<span class="string">"w"</span>)
+
+<span class="comment"># Name field</span>
+<span class="highlight">name_label</span> = <span class="highlight">tk</span>.<span class="function">Label</span>(<span class="highlight">form_frame</span>, <span class="keyword">text</span>=<span class="string">"Name:"</span>)
+<span class="highlight">name_label</span>.<span class="function">grid</span>(<span class="keyword">row</span>=<span class="number">1</span>, <span class="keyword">column</span>=<span class="number">0</span>, <span class="keyword">sticky</span>=<span class="string">"w"</span>, <span class="keyword">pady</span>=<span class="number">5</span>)
+<span class="highlight">name_entry</span> = <span class="highlight">tk</span>.<span class="function">Entry</span>(<span class="highlight">form_frame</span>, <span class="keyword">width</span>=<span class="number">30</span>)
+<span class="highlight">name_entry</span>.<span class="function">grid</span>(<span class="keyword">row</span>=<span class="number">1</span>, <span class="keyword">column</span>=<span class="number">1</span>, <span class="keyword">sticky</span>=<span class="string">"w"</span>, <span class="keyword">pady</span>=<span class="number">5</span>)
+
+<span class="comment"># Email field</span>
+<span class="highlight">email_label</span> = <span class="highlight">tk</span>.<span class="function">Label</span>(<span class="highlight">form_frame</span>, <span class="keyword">text</span>=<span class="string">"Email:"</span>)
+<span class="highlight">email_label</span>.<span class="function">grid</span>(<span class="keyword">row</span>=<span class="number">2</span>, <span class="keyword">column</span>=<span class="number">0</span>, <span class="keyword">sticky</span>=<span class="string">"w"</span>, <span class="keyword">pady</span>=<span class="number">5</span>)
+<span class="highlight">email_entry</span> = <span class="highlight">tk</span>.<span class="function">Entry</span>(<span class="highlight">form_frame</span>, <span class="keyword">width</span>=<span class="number">30</span>)
+<span class="highlight">email_entry</span>.<span class="function">grid</span>(<span class="keyword">row</span>=<span class="number">2</span>, <span class="keyword">column</span>=<span class="number">1</span>, <span class="keyword">sticky</span>=<span class="string">"w"</span>, <span class="keyword">pady</span>=<span class="number">5</span>)
+
+<span class="comment"># Submit button</span>
+<span class="highlight">submit_button</span> = <span class="highlight">tk</span>.<span class="function">Button</span>(<span class="highlight">form_frame</span>, <span class="keyword">text</span>=<span class="string">"Submit"</span>, <span class="keyword">command</span>=<span class="function">submit_form</span>, <span class="keyword">bg</span>=<span class="string">"#0078D7"</span>, <span class="keyword">fg</span>=<span class="string">"white"</span>)
+<span class="highlight">submit_button</span>.<span class="function">grid</span>(<span class="keyword">row</span>=<span class="number">3</span>, <span class="keyword">column</span>=<span class="number">1</span>, <span class="keyword">sticky</span>=<span class="string">"w"</span>, <span class="keyword">pady</span>=<span class="number">15</span>)
+
+<span class="comment"># Result label</span>
+<span class="highlight">result_label</span> = <span class="highlight">tk</span>.<span class="function">Label</span>(<span class="highlight">form_frame</span>, <span class="keyword">text</span>=<span class="string">""</span>)
+<span class="highlight">result_label</span>.<span class="function">grid</span>(<span class="keyword">row</span>=<span class="number">4</span>, <span class="keyword">column</span>=<span class="number">0</span>, <span class="keyword">columnspan</span>=<span class="number">2</span>, <span class="keyword">pady</span>=<span class="number">5</span>)
+
+<span class="highlight">root</span>.<span class="function">mainloop</span>()</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-tkinter-form">
+            <div class="terminal-header">Tkinter Window Output</div>
+            <div class="windows-window">
+                <div class="windows-title-bar">
+                    <span>Contact Form</span>
+                    <div class="windows-title-bar-buttons">
+                        <div class="windows-title-bar-button minimize">–</div>
+                        <div class="windows-title-bar-button maximize">◻</div>
+                        <div class="windows-title-bar-button close">✕</div>
+                    </div>
+                </div>
+                <div class="windows-content" id="output-tkinter-form">
+                    Click "Run" to see the Tkinter form...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'red';
+            updateAccentColor(savedColor);
+            normalizeCodeBlocks(); // Remove extra blank lines from code blocks
+        });
+
+        function updateAccentColor(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            
+            // Clean up the text by trimming and normalizing whitespace
+            text = text.trim();
+            // Remove any leading whitespace from each line while preserving relative indentation
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            // Simulate typing effect
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let outputContent = '';
+            let delay = 800;
+            
+            switch(codeType) {
+                case 'tkinter-basic-window':
+                    outputContent = `
+                        <div style="font-family: 'Segoe UI', sans-serif; text-align: center; width: 100%;">
+                            <p style="font-size: 16px; margin: 40px 0;">Hello from Tkinter!</p>
+                        </div>
+                    `;
+                    delay = 1000;
+                    break;
+                
+                case 'tkinter-button':
+                    // Initial state
+                    outputContent = `
+                        <div style="font-family: 'Segoe UI', sans-serif; text-align: center; width: 100%; padding: 20px;">
+                            <p style="font-size: 16px; margin-bottom: 20px;">Click the button below</p>
+                            <button id="demo-button" style="background-color: #0078D7; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px;">Click Me!</button>
+                        </div>
+                    `;
+                    
+                    // Set up a timeout to simulate the button click after a delay
+                    delay = 1000;
+                    setTimeout(() => {
+                        outputDiv.innerHTML = outputContent;
+                        
+                        // Add click behavior to the demo button
+                        const demoButton = document.getElementById('demo-button');
+                        if (demoButton) {
+                            demoButton.addEventListener('click', function() {
+                                this.style.backgroundColor = 'lightgreen';
+                                
+                                // Update the label text
+                                const parentDiv = this.parentElement;
+                                const paragraph = parentDiv.querySelector('p');
+                                if (paragraph) {
+                                    paragraph.textContent = 'Button was clicked!';
+                                }
+                            });
+                        }
+                        
+                        button.textContent = 'Run';
+                        button.disabled = false;
+                        button.classList.remove('run-success');
+                    }, delay);
+                    
+                    return; // Early return to handle the button click simulation
+                    
+                case 'tkinter-form':
+                    outputContent = `
+                        <div style="font-family: 'Segoe UI', sans-serif; width: 100%; padding: 20px;">
+                            <div style="text-align: left; max-width: 350px; margin: 0 auto;">
+                                <h3 style="font-size: 18px; margin-bottom: 15px; font-weight: bold;">Contact Information</h3>
+                                
+                                <div style="display: flex; margin-bottom: 10px; align-items: center;">
+                                    <label style="width: 60px; display: inline-block;">Name:</label>
+                                    <input id="name-field" type="text" style="flex-grow: 1; padding: 5px; border: 1px solid #ccc; border-radius: 3px;">
+                                </div>
+                                
+                                <div style="display: flex; margin-bottom: 15px; align-items: center;">
+                                    <label style="width: 60px; display: inline-block;">Email:</label>
+                                    <input id="email-field" type="text" style="flex-grow: 1; padding: 5px; border: 1px solid #ccc; border-radius: 3px;">
+                                </div>
+                                
+                                <div style="margin-left: 60px;">
+                                    <button id="submit-button" style="background-color: #0078D7; color: white; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; font-size: 14px;">Submit</button>
+                                </div>
+                                
+                                <div style="margin-top: 15px; text-align: center;">
+                                    <p id="result-message" style="font-size: 14px;"></p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Set up form interactivity
+                    delay = 1000;
+                    setTimeout(() => {
+                        outputDiv.innerHTML = outputContent;
+                        
+                        // Add form submission behavior
+                        const submitButton = document.getElementById('submit-button');
+                        const nameField = document.getElementById('name-field');
+                        const emailField = document.getElementById('email-field');
+                        const resultMessage = document.getElementById('result-message');
+                        
+                        if (submitButton && nameField && emailField && resultMessage) {
+                            submitButton.addEventListener('click', function() {
+                                if (nameField.value.trim() && emailField.value.trim()) {
+                                    resultMessage.textContent = `Thank you, ${nameField.value.trim()}!\nForm submitted successfully!`;
+                                    resultMessage.style.color = 'green';
+                                } else {
+                                    alert('Please fill in all fields!');
+                                }
+                            });
+                        }
+                        
+                        button.textContent = 'Run';
+                        button.disabled = false;
+                        button.classList.remove('run-success');
+                    }, delay);
+                    
+                    return; // Early return to handle the form interaction
+                    
+                default:
+                    outputContent = 'Simulated code execution.';
+                    delay = 500;
+            }
+            
+            // Simulate content display
+            setTimeout(() => {
+                outputDiv.innerHTML = outputContent;
+                button.textContent = 'Run';
+                button.disabled = false;
+                button.classList.remove('run-success');
+            }, delay);
+        }
+        
+        function normalizeCodeBlocks() {
+            document.querySelectorAll('.code-block code').forEach(el => {
+                let html = el.innerHTML;
+                html = html.replace(/^\n+|\n+$/g, ''); // trim leading/trailing blank lines
+                html = html.replace(/\n{2,}/g, '\n'); // collapse multiple blank lines
+                el.innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

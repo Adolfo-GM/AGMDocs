@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGM Python Tools</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #252526;
+            padding: 15px 20px;
+            border-bottom: 1px solid #3e3e42;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            color: var(--accent-color, #ff4444);
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .back-button {
+            display: inline-block;
+            background-color: var(--accent-color, #ff4444);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .back-button:hover {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 80%, white);
+            transform: translateY(-1px);
+        }
+
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #ff4444;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            margin-top: 60px;
+        }
+
+        .sidebar {
+            width: 280px;
+            background-color: #252526;
+            border-right: 1px solid #3e3e42;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin: 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 12px 20px;
+            color: #cccccc;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar a:hover {
+            background-color: #2d2d30;
+            color: #ffffff;
+            border-left-color: var(--accent-color, #ff4444);
+        }
+
+        .sidebar a.active {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 20%, transparent);
+            color: #ffffff;
+            border-left-color: var(--accent-color, #ff4444);
+        }
+
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+
+        .sidebar-section h3 {
+            color: var(--accent-color, #ff4444);
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 8px 20px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #3e3e42;
+        }
+
+        .content {
+            flex: 1;
+            background-color: #1e1e1e;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            overflow: hidden;
+            max-height: 100%;
+        }
+
+        .tool-container {
+            height: 100%;
+            display: none;
+        }
+
+        .tool-container.active {
+            display: block;
+        }
+
+        .tool-title {
+            color: var(--accent-color, #ff4444);
+            font-size: 24px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        .tool-description {
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            background-color: #252526;
+            color: #d4d4d4;
+            border: 1px solid #3e3e42;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            margin-bottom: 15px;
+            resize: vertical;
+        }
+
+        .output-container {
+            width: 100%;
+            height: 200px;
+            background-color: #252526;
+            color: #d4d4d4;
+            border: 1px solid #3e3e42;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            margin-bottom: 15px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: var(--accent-color, #ff4444);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .button:hover {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 80%, white);
+            transform: translateY(-1px);
+        }
+
+        .back-link {
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AGM Python Tools</h1>
+        <a href="../index.html" class="back-button">Back to Docs</a>
+    </div>
+
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-section">
+                <h3>Code Utilities</h3>
+                <ul>
+                    <li><a href="#" onclick="showTool('comment-remover')" class="active" id="comment-remover-link">Comment Remover</a></li>
+                    <li><a href="#" onclick="showTool('comment-adder')" id="comment-adder-link">Comment Adder</a></li>
+                </ul>
+                <h3>Code Generation</h3>
+                <ul>
+                    <li><a href="#" onclick="showTool('code-generator')" id="code-generator-link">Code Generator</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="content">
+            <div id="comment-remover" class="tool-container active">
+                <iframe src="comment-remover.html" frameborder="0"></iframe>
+            </div>
+
+            <div id="comment-adder" class="tool-container">
+                <iframe src="comment-adder.html" frameborder="0"></iframe>
+            </div>
+
+            <div id="code-generator" class="tool-container">
+                <iframe src="code-generation.html" frameborder="0"></iframe>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Load saved accent color from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'red';
+            applyAccentColor(savedColor);
+            
+            // Listen for messages from parent window (if embedded in iframe)
+            window.addEventListener('message', function(event) {
+                if (event.data && event.data.type === 'updateAccentColor') {
+                    applyAccentColor(event.data.color);
+                }
+            });
+        });
+
+        function applyAccentColor(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+            
+            // Update all iframes with the new accent color
+            document.querySelectorAll('iframe').forEach(iframe => {
+                if (iframe.contentWindow) {
+                    setTimeout(() => {
+                        iframe.contentWindow.postMessage({type: 'updateAccentColor', color: color}, '*');
+                    }, 100);
+                }
+            });
+        }
+
+        function showTool(toolId) {
+            // Hide all tool containers
+            document.querySelectorAll('.tool-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            // Show the selected tool container
+            document.getElementById(toolId).classList.add('active');
+            
+            // Update active link in sidebar
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            document.getElementById(toolId + '-link').classList.add('active');
+            
+            // Update the iframe with the current accent color
+            const savedColor = localStorage.getItem('accentColor') || 'red';
+            const activeContainer = document.getElementById(toolId);
+            const iframe = activeContainer.querySelector('iframe');
+            
+            if (iframe && iframe.contentWindow) {
+                setTimeout(() => {
+                    iframe.contentWindow.postMessage({type: 'updateAccentColor', color: savedColor}, '*');
+                }, 100);
+            }
+        }
+    </script>
+</body>
+</html>

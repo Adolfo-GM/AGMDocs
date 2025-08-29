@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started with Python</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #ff4444;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #ff4444);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #ff4444);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        h3 {
+            color: var(--accent-color, #ff4444);
+            font-size: 20px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ol, ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #cccccc;
+        }
+
+        .step {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #ff4444);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .step-number {
+            color: var(--accent-color, #ff4444);
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 15px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button {
+            background-color: var(--accent-color, rgba(255, 68, 68, 0.2));
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:hover {
+            background-color: var(--accent-color, rgba(255, 68, 68, 0.4));
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color, #4caf50) !important;
+            border-color: var(--accent-color, #4caf50) !important;
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #ff4444) !important;
+            border-color: var(--accent-color, #ff4444) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius:0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+
+        .warning {
+            background-color: #2d2d1a;
+            border-left: 4px solid #ffcc02;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning-title {
+            color: #ffcc02;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .download-link {
+            color: var(--accent-color, #ff4444);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+
+        .download-link:hover {
+            border-bottom-color: var(--accent-color, #ff4444);
+        }
+
+        .os-tabs {
+            display: flex;
+            margin: 20px 0;
+            border-bottom: 1px solid #3e3e42;
+        }
+
+        .os-tab {
+            padding: 10px 20px;
+            background-color: #2d2d30;
+            color: #cccccc;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            font-size: 14px;
+            margin-right: 2px;
+            transition: all 0.2s ease;
+        }
+
+        .os-tab.active {
+            background-color: var(--accent-color, #ff4444);
+            color: #ffffff;
+        }
+
+        .os-content {
+            display: none;
+            padding: 20px 0;
+        }
+
+        .os-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Get Started</h1>
+    
+    <p>Welcome to the Python setup guide! Follow these step-by-step instructions to install Python and VS Code on your computer.</p>
+
+    <div class="step">
+        <div class="step-number">Step 1: Install Python</div>
+        <p>First, we need to install Python on your computer. Python is the programming language we'll be using.</p>
+        
+        <div class="os-tabs">
+            <button class="os-tab active" onclick="showOS('windows')">Windows</button>
+            <button class="os-tab" onclick="showOS('mac')">macOS</button>
+            <button class="os-tab" onclick="showOS('linux')">Linux</button>
+        </div>
+
+        <div id="windows" class="os-content active">
+            <h3>For Windows:</h3>
+            <ol>
+                <li>Go to the official Python website: <a href="https://python.org" class="download-link" target="_blank">python.org</a></li>
+                <li>Click on the "Download Python" button (it will show the latest version)</li>
+                <li>Run the downloaded installer (.exe file)</li>
+                <li><strong>Important:</strong> Check the box "Add Python to PATH" during installation</li>
+                <li>Click "Install Now"</li>
+                <li>Wait for the installation to complete</li>
+            </ol>
+        </div>
+
+        <div id="mac" class="os-content">
+            <h3>For macOS:</h3>
+            <ol>
+                <li>Go to the official Python website: <a href="https://python.org" class="download-link" target="_blank">python.org</a></li>
+                <li>Click on the "Download Python" button</li>
+                <li>Open the downloaded .pkg file</li>
+                <li>Follow the installation wizard</li>
+                <li>Enter your password when prompted</li>
+            </ol>
+            <p><strong>Alternative:</strong> If you have Homebrew installed, you can run:</p>
+            <div class="code-container">
+                <div class="code-section">
+                    <div class="code-block">
+                        <div class="code-actions">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <button class="run-button" onclick="runCode(this, 'brew')">Run</button>
+                        </div>
+                        <code><span class="keyword">brew</span> <span class="function">install</span> python</code>
+                    </div>
+                </div>
+                <div class="terminal-section" id="terminal-brew">
+                    <div class="terminal-header">Terminal Output</div>
+                    <div class="terminal-output" id="output-brew">Click "Run" to see output...</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="linux" class="os-content">
+            <h3>For Linux (Ubuntu/Debian):</h3>
+            <ol>
+                <li>Open Terminal</li>
+                <li>Update package list:</li>
+            </ol>
+            <div class="code-container">
+                <div class="code-section">
+                    <div class="code-block">
+                        <div class="code-actions">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <button class="run-button" onclick="runCode(this, 'apt-update')">Run</button>
+                        </div>
+                        <code><span class="keyword">sudo</span> <span class="function">apt</span> update</code>
+                    </div>
+                </div>
+                <div class="terminal-section" id="terminal-apt-update">
+                    <div class="terminal-header">Terminal Output</div>
+                    <div class="terminal-output" id="output-apt-update">Click "Run" to see output...</div>
+                </div>
+            </div>
+            <ol start="3">
+                <li>Install Python:</li>
+            </ol>
+            <div class="code-container">
+                <div class="code-section">
+                    <div class="code-block">
+                        <div class="code-actions">
+                            <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                            <button class="run-button" onclick="runCode(this, 'apt-install')">Run</button>
+                        </div>
+                        <code><span class="keyword">sudo</span> <span class="function">apt</span> install python3 python3-pip</code>
+                    </div>
+                </div>
+                <div class="terminal-section" id="terminal-apt-install">
+                    <div class="terminal-header">Terminal Output</div>
+                    <div class="terminal-output" id="output-apt-install">Click "Run" to see output...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Step 2: Verify Python Installation</div>
+        <p>Let's make sure Python was installed correctly:</p>
+        
+        <ol>
+            <li>Open Terminal (macOS/Linux) or Command Prompt (Windows)</li>
+            <li>Type the following command and press Enter:</li>
+        </ol>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'python-version')">Run</button>
+                    </div>
+                    <code><span class="keyword">python</span> --version</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-python-version">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-python-version">Click "Run" to see output...</div>
+            </div>
+        </div>
+        
+        <p>You should see something like "Python 3.11.x" or similar. If you get an error, try:</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'python3-version')">Run</button>
+                    </div>
+                    <code><span class="keyword">python3</span> --version</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-python3-version">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-python3-version">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Step 3: Install Visual Studio Code</div>
+        <p>VS Code is a powerful code editor that makes writing Python code much easier.</p>
+        
+        <ol>
+            <li>Go to the VS Code website: <a href="https://code.visualstudio.com" class="download-link" target="_blank">code.visualstudio.com</a></li>
+            <li>Click "Download for [Your Operating System]"</li>
+            <li>Run the installer and follow the setup wizard</li>
+            <li>Launch VS Code when installation is complete</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Step 4: Install Python Extension for VS Code</div>
+        <p>To make Python development easier in VS Code, we need to install the Python extension.</p>
+        
+        <ol>
+            <li>Open VS Code</li>
+            <li>Click on the Extensions icon in the left sidebar (or press Ctrl+Shift+X)</li>
+            <li>Search for "Python"</li>
+            <li>Install the extension by Microsoft (it should be the first result)</li>
+            <li>Restart VS Code after installation</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Step 5: Test Your Setup</div>
+        <p>Let's create your first Python program to make sure everything works!</p>
+        
+        <ol>
+            <li>Open VS Code</li>
+            <li>Create a new file (File → New File)</li>
+            <li>Save it as "hello.py" (File → Save As)</li>
+            <li>Type the following code:</li>
+        </ol>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'hello-world')">Run</button>
+                    </div>
+                    <code><span class="function">print</span>(<span class="string">"Hello, World!"</span>) 
+
+<span class="function">print</span>(<span class="string">"Python is working!"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-hello-world">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-hello-world">Click "Run" to see output...</div>
+            </div>
+        </div>
+
+        
+        <ol start="5">
+            <li>Save the file (Ctrl+S or Cmd+S)</li>
+            <li>Right-click in the editor and select "Run Python File in Terminal"</li>
+            <li>You should see the output in the terminal at the bottom of VS Code</li>
+        </ol>
+    </div>
+
+    <div class="warning">
+        <div class="warning-title">Troubleshooting</div>
+        <p>If you encounter any issues:</p>
+        <ul>
+            <li>Make sure Python is added to your system PATH</li>
+            <li>Try restarting your computer after installation</li>
+            <li>On Windows, you might need to use "py" instead of "python" command</li>
+            <li>Make sure you have the latest version of VS Code</li>
+        </ul>
+    </div>
+
+    <h2>Next Steps</h2>
+    <p>Congratulations! You now have Python and VS Code installed. You're ready to start.</p>
+    
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'red';
+            updateAccentColor(savedColor);
+            normalizeCodeBlocks();
+        });
+
+        function updateAccentColor(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            
+            // Clean up the text by trimming and normalizing whitespace
+            text = text.trim();
+            // Remove any leading whitespace from each line while preserving relative indentation
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const terminalSection = document.getElementById(`terminal-${codeType}`);
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            // Simulate typing effect
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 1000;
+            
+            switch(codeType) {
+                case 'brew':
+                    output = `==> Downloading https://files.pythonhosted.org/packages/...
+==> Installing dependencies for python: openssl@3, readline, sqlite, xz
+==> Installing python
+==> Summary
+🍺  /opt/homebrew/Cellar/python@3.11/3.11.5: 3,086 files, 58.3MB`;
+                    delay = 2000;
+                    break;
+                    
+                case 'apt-update':
+                    output = `Hit:1 http://archive.ubuntu.com/ubuntu jammy InRelease
+Get:2 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [119 kB]
+Get:3 http://archive.ubuntu.com/ubuntu jammy-backports InRelease [109 kB]
+Reading package lists... Done
+Building dependency tree... Done`;
+                    delay = 1500;
+                    break;
+                    
+                case 'apt-install':
+                    output = `Reading package lists... Done
+Building dependency tree... Done
+The following additional packages will be installed:
+  python3-distutils python3-setuptools
+The following NEW packages will be installed:
+  python3 python3-pip python3-distutils python3-setuptools
+Setting up python3 (3.10.6-1~22.04) ...
+Setting up python3-pip (22.0.2+dfsg-1ubuntu0.3) ...`;
+                    delay = 2500;
+                    break;
+                    
+                case 'python-version':
+                    output = `Python 3.11.5`;
+                    delay = 500;
+                    break;
+                    
+                case 'python3-version':
+                    output = `Python 3.11.5`;
+                    delay = 500;
+                    break;
+                    
+                case 'hello-world':
+                    output = `Hello, World!
+Python is working!`;
+                    delay = 800;
+                    break;
+                    
+                default:
+                    output = 'Command executed successfully.';
+                    delay = 500;
+            }
+            
+            // Simulate terminal typing
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 20; // milliseconds between characters
+            
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            typeChar();
+        }
+
+        function showOS(os) {
+            // Hide all OS content
+            document.querySelectorAll('.os-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.os-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected OS content
+            document.getElementById(os).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function normalizeCodeBlocks() {
+            document.querySelectorAll('.code-block code').forEach(el => {
+                let html = el.innerHTML;
+                html = html.replace(/^\n+|\n+$/g, '');
+                html = html.replace(/\n{2,}/g, '\n');
+                el.innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

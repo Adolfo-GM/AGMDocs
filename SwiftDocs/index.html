@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGM Swift Docs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #252526;
+            padding: 15px 20px;
+            border-bottom: 1px solid #3e3e42;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            color: var(--accent-color, #fa7343);
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .accent-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .accent-label {
+            color: #cccccc;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .tools-button {
+            display: inline-block;
+            background-color: var(--accent-color, #fa7343);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .tools-button:hover {
+            background-color: color-mix(in srgb, var(--accent-color, #fa7343) 80%, white);
+            transform: translateY(-1px);
+        }
+
+        .accent-dropdown {
+            background-color: #2d2d30;
+            color: #cccccc;
+            border: 1px solid #3e3e42;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .accent-dropdown:hover {
+            background-color: #404040;
+            border-color: var(--accent-color, #fa7343);
+        }
+
+        .accent-dropdown:focus {
+            outline: none;
+            border-color: var(--accent-color, #fa7343);
+            box-shadow: 0 0 0 2px rgba(250, 115, 67, 0.2);
+        }
+
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #fa7343;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+        .theme-orange { --accent-color: #fa7343; }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            margin-top: 60px;
+        }
+
+        .sidebar {
+            width: 280px;
+            background-color: #252526;
+            border-right: 1px solid #3e3e42;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin: 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 12px 20px;
+            color: #cccccc;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar a:hover {
+            background-color: #2d2d30;
+            color: #ffffff;
+            border-left-color: var(--accent-color, #fa7343);
+        }
+
+        .sidebar a.active {
+            background-color: color-mix(in srgb, var(--accent-color, #fa7343) 20%, transparent);
+            color: #ffffff;
+            border-left-color: var(--accent-color, #fa7343);
+        }
+
+        .content {
+            flex: 1;
+            background-color: #1e1e1e;
+            overflow: hidden;
+        }
+
+        .content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: #1e1e1e;
+        }
+
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+
+        .sidebar-section h3 {
+            color: var(--accent-color, #fa7343);
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 8px 20px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #3e3e42;
+        }
+
+        .welcome-content {
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .welcome-content h1 {
+            color: var(--accent-color, #fa7343);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .welcome-content h2 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            margin: 30px 0 15px 0;
+        }
+
+        .welcome-content p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .welcome-content ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-content li {
+            margin-bottom: 8px;
+        }
+
+        .code-example {
+            background-color: #2d2d30;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .coming-soon {
+            text-align: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, rgba(250, 115, 67, 0.1), rgba(255, 140, 66, 0.1));
+            border-radius: 12px;
+            margin: 40px;
+        }
+
+        .coming-soon h2 {
+            color: var(--accent-color, #fa7343);
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .coming-soon p {
+            font-size: 1.1rem;
+            color: #cccccc;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #3e3e42;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color, #fa7343), #ff8c42);
+            width: 25%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AGM Swift Docs</h1>
+        <div class="header-controls">
+            <a href="tools/tools.html" target="_blank" class="tools-button">Tools</a>
+            <a href="../index.html" class="tools-button">Home</a>
+            <div class="accent-controls">
+                <span class="accent-label">Accent Color:</span>
+                <select class="accent-dropdown" id="accentSelector" onchange="changeAccentColor(this.value)">
+                    <option value="blue">Blue</option>
+                    <option value="red">Red</option>
+                    <option value="green">Green</option>
+                    <option value="yellow">Yellow</option>
+                    <option value="purple">Purple</option>
+                    <option value="pink">Pink</option>
+                    <option value="orange" selected>Orange</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-section">
+                <ul>
+                    <li><a href="#" onclick="loadPage('swift-intro.html')" class="active" id="swift-intro-link">Swift Intro</a></li>
+                    <li><a href="#" onclick="loadPage('get-started.html')" id="get-started-link">Get Started</a></li>
+                    <li><a href="#" onclick="loadPage('swift-basics.html')" id="swift-basics-link">Swift Basics</a></li>
+                    <li><a href="#" onclick="loadPage('variables.html')" id="variables-link">Variables & Constants</a></li>
+                    <li><a href="#" onclick="loadPage('data-types.html')" id="data-types-link">Data Types</a></li>
+                    <li><a href="#" onclick="loadPage('functions.html')" id="functions-link">Functions</a></li>
+                    <li><a href="#" onclick="loadPage('classes.html')" id="classes-link">Classes & Structs</a></li>
+                    <li><a href="#" onclick="loadPage('protocols.html')" id="protocols-link">Protocols</a></li>
+                    <li><a href="#" onclick="loadPage('optionals.html')" id="optionals-link">Optionals</a></li>
+                    <li><a href="#" onclick="loadPage('collections.html')" id="collections-link">Collections</a></li>
+                    <li><a href="#" onclick="loadPage('swiftui.html')" id="swiftui-link">SwiftUI</a></li>
+                    <li><a href="#" onclick="loadPage('uikit.html')" id="uikit-link">UIKit</a></li>
+                    <li><a href="#" onclick="loadPage('networking.html')" id="networking-link">Networking</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="content">
+            <div class="welcome-content">
+                <h1>Welcome to Swift Documentation</h1>
+                
+                <div class="coming-soon">
+                    <h2>🚧 Coming Soon! 🚧</h2>
+                    <p>We're working hard to bring you comprehensive Swift documentation and tutorials.</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <p>Swift docs are currently under development. Check back soon for detailed tutorials covering:</p>
+                </div>
+
+                <h2>What's Coming:</h2>
+                <ul>
+                    <li><strong>Swift Fundamentals:</strong> Variables, constants, data types, and control flow</li>
+                    <li><strong>Object-Oriented Programming:</strong> Classes, structs, protocols, and inheritance</li>
+                    <li><strong>SwiftUI Development:</strong> Modern UI framework for iOS, macOS, watchOS, and tvOS</li>
+                    <li><strong>UIKit Integration:</strong> Traditional iOS development patterns and best practices</li>
+                    <li><strong>iOS App Development:</strong> Complete guides for building iOS applications</li>
+                    <li><strong>Advanced Topics:</strong> Concurrency, networking, data persistence, and more</li>
+                </ul>
+
+                <h2>Swift Overview</h2>
+                <p>
+                    Swift is a powerful and intuitive programming language developed by Apple for iOS, macOS, 
+                    watchOS, and tvOS app development. Swift code is safe by design, yet also produces 
+                    software that runs lightning-fast.
+                </p>
+
+                <div class="code-example">
+// Swift Hello World
+import Foundation
+
+func greetUser(name: String) -> String {
+    return "Hello, \(name)! Welcome to Swift development."
+}
+
+let userName = "Developer"
+let greeting = greetUser(name: userName)
+print(greeting)
+                </div>
+
+                <p>
+                    Swift combines the best of modern language thinking with wisdom from Apple's engineering 
+                    culture. The compiler is optimized for performance and the language is optimized for 
+                    development, without compromising on either.
+                </p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'orange';
+            changeAccentColor(savedColor);
+            document.getElementById('accentSelector').value = savedColor;
+        });
+
+        function changeAccentColor(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink', 'theme-orange');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+            
+            // Save to localStorage
+            localStorage.setItem('accentColor', color);
+        }
+
+        function loadPage(page) {
+            // For now, all pages show the coming soon content
+            // In the future, this will load actual content pages
+            console.log(`Loading ${page} - Coming soon!`);
+            
+            // Update active link
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Add active class to clicked link
+            const linkId = page.replace('.html', '-link');
+            const linkElement = document.getElementById(linkId);
+            if (linkElement) {
+                linkElement.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGM Java Docs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #252526;
+            padding: 15px 20px;
+            border-bottom: 1px solid #3e3e42;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            color: var(--accent-color, #f89820);
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .accent-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .accent-label {
+            color: #cccccc;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .tools-button {
+            display: inline-block;
+            background-color: var(--accent-color, #f89820);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .tools-button:hover {
+            background-color: color-mix(in srgb, var(--accent-color, #f89820) 80%, white);
+            transform: translateY(-1px);
+        }
+
+        .accent-dropdown {
+            background-color: #2d2d30;
+            color: #cccccc;
+            border: 1px solid #3e3e42;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .accent-dropdown:hover {
+            background-color: #404040;
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .accent-dropdown:focus {
+            outline: none;
+            border-color: var(--accent-color, #f89820);
+            box-shadow: 0 0 0 2px rgba(248, 152, 32, 0.2);
+        }
+
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #f89820;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+        .theme-orange { --accent-color: #f89820; }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            margin-top: 60px;
+        }
+
+        .sidebar {
+            width: 280px;
+            background-color: #252526;
+            border-right: 1px solid #3e3e42;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin: 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 12px 20px;
+            color: #cccccc;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar a:hover {
+            background-color: #2d2d30;
+            color: #ffffff;
+            border-left-color: var(--accent-color, #f89820);
+        }
+
+        .sidebar a.active {
+            background-color: color-mix(in srgb, var(--accent-color, #f89820) 20%, transparent);
+            color: #ffffff;
+            border-left-color: var(--accent-color, #f89820);
+        }
+
+        .content {
+            flex: 1;
+            background-color: #1e1e1e;
+            overflow: hidden;
+        }
+
+        .content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: #1e1e1e;
+        }
+
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+
+        .sidebar-section h3 {
+            color: var(--accent-color, #f89820);
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 8px 20px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #3e3e42;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AGM Java Docs</h1>
+        <div class="header-controls">
+            <a href="tools/tools.html" target="_blank" class="tools-button">Tools</a>
+            <a href="../index.html" class="tools-button">Home</a>
+            <div class="accent-controls">
+                <span class="accent-label">Accent Color:</span>
+                <select class="accent-dropdown" id="accentSelector" onchange="changeAccentColor(this.value)">
+                    <option value="blue">Blue</option>
+                    <option value="red">Red</option>
+                    <option value="green">Green</option>
+                    <option value="yellow">Yellow</option>
+                    <option value="purple">Purple</option>
+                    <option value="pink">Pink</option>
+                    <option value="orange" selected>Orange</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-section">
+                <ul>
+                    <li><a href="#" onclick="loadPage('java-intro.html')" class="active" id="java-intro-link">Java Intro</a></li>
+                    <li><a href="#" onclick="loadPage('get-started.html')" id="get-started-link">Get Started</a></li>
+                    <li><a href="#" onclick="loadPage('java-basics.html')" id="java-basics-link">Java Basics</a></li>
+                    <li><a href="#" onclick="loadPage('variables.html')" id="variables-link">Variables & Data Types</a></li>
+                    <li><a href="#" onclick="loadPage('operators.html')" id="operators-link">Operators</a></li>
+                    <li><a href="#" onclick="loadPage('control-flow.html')" id="control-flow-link">Control Flow</a></li>
+                    <li><a href="#" onclick="loadPage('methods.html')" id="methods-link">Methods</a></li>
+                    <li><a href="#" onclick="loadPage('classes.html')" id="classes-link">Classes & Objects</a></li>
+                    <li><a href="#" onclick="loadPage('inheritance.html')" id="inheritance-link">Inheritance</a></li>
+                    <li><a href="#" onclick="loadPage('interfaces.html')" id="interfaces-link">Interfaces</a></li>
+                    <li><a href="#" onclick="loadPage('collections.html')" id="collections-link">Collections</a></li>
+                    <li><a href="#" onclick="loadPage('exceptions.html')" id="exceptions-link">Exception Handling</a></li>
+                    <li><a href="#" onclick="loadPage('streams.html')" id="streams-link">Streams & Lambda</a></li>
+                    <li><a href="#" onclick="loadPage('spring.html')" id="spring-link">Spring Framework</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="content">
+            <iframe id="content-frame" src="java-intro.html"></iframe>
+        </main>
+    </div>
+
+    <script>
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'orange';
+            changeAccentColor(savedColor);
+            document.getElementById('accentSelector').value = savedColor;
+        });
+
+        function changeAccentColor(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink', 'theme-orange');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+            
+            // Save to localStorage
+            localStorage.setItem('accentColor', color);
+            
+            // Update the iframe content with the new accent color
+            const iframe = document.getElementById('content-frame');
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({type: 'updateAccentColor', color: color}, '*');
+            }
+        }
+
+        function loadPage(page) {
+            document.getElementById('content-frame').src = page;
+            
+            // Update active link
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            if (page === 'java-intro.html') {
+                document.getElementById('java-intro-link').classList.add('active');
+            } else if (page === 'get-started.html') {
+                document.getElementById('get-started-link').classList.add('active');
+            } else if (page === 'java-basics.html') {
+                document.getElementById('java-basics-link').classList.add('active');
+            } else if (page === 'variables.html') {
+                document.getElementById('variables-link').classList.add('active');
+            } else if (page === 'operators.html') {
+                document.getElementById('operators-link').classList.add('active');
+            } else if (page === 'control-flow.html') {
+                document.getElementById('control-flow-link').classList.add('active');
+            } else if (page === 'methods.html') {
+                document.getElementById('methods-link').classList.add('active');
+            } else if (page === 'classes.html') {
+                document.getElementById('classes-link').classList.add('active');
+            } else if (page === 'inheritance.html') {
+                document.getElementById('inheritance-link').classList.add('active');
+            } else if (page === 'interfaces.html') {
+                document.getElementById('interfaces-link').classList.add('active');
+            } else if (page === 'collections.html') {
+                document.getElementById('collections-link').classList.add('active');
+            } else if (page === 'exceptions.html') {
+                document.getElementById('exceptions-link').classList.add('active');
+            } else if (page === 'streams.html') {
+                document.getElementById('streams-link').classList.add('active');
+            } else if (page === 'spring.html') {
+                document.getElementById('spring-link').classList.add('active');
+            }
+
+            // Send accent color to the loaded iframe
+            setTimeout(() => {
+                const savedColor = localStorage.getItem('accentColor') || 'orange';
+                const iframe = document.getElementById('content-frame');
+                if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.postMessage({type: 'updateAccentColor', color: savedColor}, '*');
+                }
+            }, 100);
+        }
+    </script>
+</body>
+</html>

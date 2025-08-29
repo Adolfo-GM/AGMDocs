@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markov Chains</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #ff4444;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #ff4444);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #ff4444);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        h3 {
+            color: var(--accent-color, #ff4444);
+            font-size: 20px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ol, ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #cccccc;
+        }
+
+        .step {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #ff4444);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .step-number {
+            color: var(--accent-color, #ff4444);
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 15px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 20%, transparent);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:hover {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 30%, transparent);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color, #4caf50) !important;
+            border-color: var(--accent-color, #4caf50) !important;
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #ff4444) !important;
+            border-color: var(--accent-color, #ff4444) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius:0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .variable { color: #9cdcfe; }
+
+        .warning {
+            background-color: #2d2d1a;
+            border-left: 4px solid #ffcc02;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning-title {
+            color: #ffcc02;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .info {
+            background-color: #1a2332;
+            border-left: 4px solid #569cd6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: #569cd6;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Markov Chains</h1>
+    
+    <p>Markov chains are mathematical systems that undergo transitions from one state to another, where the probability of each transition depends only on the current state, not the history of previous states. In text generation, Markov chains can be used to predict likely next words based on the current sequence of words.</p>
+
+    <div class="step">
+        <div class="step-number">Word-Level Markov Chains</div>
+        <p>A word-level Markov chain uses sequences of words (rather than characters) to predict the next word in a sequence. By using tuples of two words as states, we can create more coherent text generation.</p>
+        
+        <h3>Understanding Word-Level Markov Chains</h3>
+        <p>In a word-level Markov chain with a state size of 2 (a tuple of two words):</p>
+        <ul>
+            <li>The <strong>state</strong> is a tuple of two consecutive words (e.g., "the cat")</li>
+            <li>The <strong>transition</strong> maps this state to potential next words with their probabilities</li>
+            <li>For example, if "the cat" is followed by "sat" 3 times and "jumped" 1 time in our training text, then P("sat" | "the cat") = 0.75 and P("jumped" | "the cat") = 0.25</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Implementing a Word-Level Markov Chain</div>
+        <p>Let's implement a simple word-level Markov chain model that uses tuples of 2 words to predict the most likely next word.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'markov-basic')">Run</button>
+                    </div>
+                    <code><span class="keyword">import</span> random
+<span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict
+
+<span class="keyword">def</span> <span class="function">build_markov_model</span>(text, n=2):
+    <span class="comment"># Split the text into words</span>
+    words = text.split()
+    
+    <span class="comment"># Create a dictionary to store the Markov chain</span>
+    <span class="comment"># Keys are tuples of n words (states)</span>
+    <span class="comment"># Values are dictionaries mapping possible next words to their counts</span>
+    model = defaultdict(lambda: defaultdict(int))
+    
+    <span class="comment"># Build the Markov chain</span>
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="function">len</span>(words) - n):
+        <span class="comment"># Current state (tuple of n words)</span>
+        state = <span class="function">tuple</span>(words[i:i+n])
+        
+        <span class="comment"># Next word</span>
+        next_word = words[i+n]
+        
+        <span class="comment"># Increment the count for this transition</span>
+        model[state][next_word] += 1
+    
+    <span class="keyword">return</span> model
+
+<span class="comment"># Sample text for training</span>
+text = """The quick brown fox jumps over the lazy dog. The dog barks at the fox.
+The fox runs away. The quick brown rabbit also jumps over the fence.
+The rabbit and the fox meet in the forest. The fox jumps over the rabbit."""
+
+<span class="comment"># Build a Markov model with state size 2</span>
+markov_model = build_markov_model(text, 2)
+
+<span class="comment"># Print a few examples from the model</span>
+<span class="keyword">for</span> state, transitions <span class="keyword">in</span> <span class="function">list</span>(markov_model.items())[:3]:
+    <span class="function">print</span>(<span class="string">f"State: {state}"</span>)
+    <span class="function">print</span>(<span class="string">f"Possible next words: {dict(transitions)}\n"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-markov-basic">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-markov-basic">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Generating Text with the Markov Model</div>
+        <p>Once we have a Markov model, we can use it to generate new text by starting with an initial state and sampling from the possible next words according to their probabilities.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'markov-generate')">Run</button>
+                    </div>
+                    <code><span class="keyword">def</span> <span class="function">generate_text</span>(model, start_state, length=20):
+    <span class="comment"># Ensure start_state is a tuple</span>
+    <span class="keyword">if</span> <span class="keyword">not</span> <span class="function">isinstance</span>(start_state, tuple):
+        <span class="keyword">raise</span> <span class="function">ValueError</span>(<span class="string">"start_state must be a tuple of words"</span>)
+    
+    <span class="comment"># Start with the given state</span>
+    current_state = start_state
+    result = <span class="function">list</span>(current_state)
+    
+    <span class="comment"># Generate 'length' words</span>
+    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="function">range</span>(length):
+        <span class="comment"># If the current state isn't in our model, we can't continue</span>
+        <span class="keyword">if</span> current_state <span class="keyword">not</span> <span class="keyword">in</span> model <span class="keyword">or</span> <span class="keyword">not</span> model[current_state]:
+            <span class="keyword">break</span>
+        
+        <span class="comment"># Get the possible next words and their counts</span>
+        next_words = model[current_state]
+        
+        <span class="comment"># Convert counts to probabilities and sample the next word</span>
+        total_count = <span class="function">sum</span>(next_words.values())
+        probabilities = {word: count/total_count <span class="keyword">for</span> word, count <span class="keyword">in</span> next_words.items()}
+        
+        <span class="comment"># Choose the next word based on its probability</span>
+        choices, weights = <span class="function">zip</span>(*probabilities.items())
+        next_word = random.choices(choices, weights=weights, k=1)[0]
+        
+        <span class="comment"># Add the next word to our result</span>
+        result.append(next_word)
+        
+        <span class="comment"># Update the current state (slide the window)</span>
+        current_state = <span class="function">tuple</span>(result[-<span class="function">len</span>(current_state):])
+    
+    <span class="keyword">return</span> <span class="string">' '</span>.join(result)
+
+<span class="comment"># Generate text starting with "The quick"</span>
+start_state = (<span class="string">"The"</span>, <span class="string">"quick"</span>)
+generated_text = generate_text(markov_model, start_state, 15)
+<span class="function">print</span>(<span class="string">"Generated text:"</span>)
+<span class="function">print</span>(generated_text)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-markov-generate">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-markov-generate">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info">
+        <div class="info-title">Key Properties of Markov Chains</div>
+        <ul>
+            <li><strong>Memoryless property:</strong> The future state depends only on the current state, not on the sequence of states that preceded it</li>
+            <li><strong>State size:</strong> Increasing the state size (using more words in the tuple) creates more coherent text but requires more training data</li>
+            <li><strong>Training data quality:</strong> The quality and diversity of your training text significantly affects the generated output</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Complete Markov Chain Text Generator</div>
+        <p>Here's a complete implementation of a word-level Markov chain text generator with functions to train the model, generate text, and analyze the model:</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'markov-complete')">Run</button>
+                    </div>
+                    <code><span class="keyword">import</span> random
+<span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict
+<span class="keyword">import</span> re
+
+<span class="keyword">class</span> <span class="keyword">WordMarkovChain</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, state_size=2):
+        self.state_size = state_size
+        self.model = defaultdict(lambda: defaultdict(int))
+        self.start_states = []
+
+    <span class="keyword">def</span> <span class="function">preprocess_text</span>(self, text):
+        <span class="comment"># Clean and preprocess the text</span>
+        text = text.lower()
+        <span class="comment"># Replace newlines with spaces</span>
+        text = text.replace('\n', ' ')
+        <span class="comment"># Remove extra whitespace</span>
+        text = re.sub(r'\s+', ' ', text).strip()
+        <span class="comment"># Split into sentences</span>
+        sentences = re.split(r'[.!?]', text)
+        <span class="comment"># Remove empty sentences</span>
+        sentences = [s.strip() <span class="keyword">for</span> s <span class="keyword">in</span> sentences <span class="keyword">if</span> s.strip()]
+        
+        <span class="keyword">return</span> sentences
+
+    <span class="keyword">def</span> <span class="function">train</span>(self, text):
+        <span class="comment"># Preprocess the text into sentences</span>
+        sentences = self.preprocess_text(text)
+        
+        <span class="keyword">for</span> sentence <span class="keyword">in</span> sentences:
+            words = sentence.split()
+            
+            <span class="comment"># Skip sentences that are too short</span>
+            <span class="keyword">if</span> <span class="function">len</span>(words) <= self.state_size:
+                <span class="keyword">continue</span>
+            
+            <span class="comment"># Store the start state of each sentence</span>
+            start_state = <span class="function">tuple</span>(words[:self.state_size])
+            self.start_states.append(start_state)
+            
+            <span class="comment"># Build the model</span>
+            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="function">len</span>(words) - self.state_size):
+                state = <span class="function">tuple</span>(words[i:i+self.state_size])
+                next_word = words[i+self.state_size]
+                self.model[state][next_word] += 1
+
+    <span class="keyword">def</span> <span class="function">generate</span>(self, length=20, start_state=None):
+        <span class="comment"># If no start state is provided, choose one randomly from training data</span>
+        <span class="keyword">if</span> start_state <span class="keyword">is</span> <span class="keyword">None</span> <span class="keyword">and</span> self.start_states:
+            start_state = random.choice(self.start_states)
+        <span class="keyword">elif</span> start_state <span class="keyword">is</span> <span class="keyword">None</span>:
+            <span class="comment"># If no start states are available, return an empty string</span>
+            <span class="keyword">return</span> <span class="string">""</span>
+        
+        <span class="comment"># Initialize with the start state</span>
+        result = <span class="function">list</span>(start_state)
+        current_state = start_state
+        
+        <span class="comment"># Generate the specified number of words</span>
+        <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="function">range</span>(length):
+            <span class="keyword">if</span> current_state <span class="keyword">not</span> <span class="keyword">in</span> self.model <span class="keyword">or</span> <span class="keyword">not</span> self.model[current_state]:
+                <span class="keyword">break</span>
+            
+            <span class="comment"># Get possible next words with their counts</span>
+            next_words = self.model[current_state]
+            
+            <span class="comment"># Convert counts to probabilities and choose the next word</span>
+            choices = <span class="function">list</span>(next_words.keys())
+            weights = <span class="function">list</span>(next_words.values())
+            next_word = random.choices(choices, weights=weights, k=1)[0]
+            
+            result.append(next_word)
+            
+            <span class="comment"># Update the current state</span>
+            current_state = <span class="function">tuple</span>(result[-self.state_size:])
+        
+        <span class="keyword">return</span> <span class="string">' '</span>.join(result)
+    
+    <span class="keyword">def</span> <span class="function">analyze_model</span>(self, max_states=5):
+        <span class="comment"># Display information about the model</span>
+        <span class="function">print</span>(<span class="string">f"Markov Chain Model with state size {self.state_size}"</span>)
+        <span class="function">print</span>(<span class="string">f"Total states in model: {len(self.model)}"</span>)
+        <span class="function">print</span>(<span class="string">f"Number of potential starting states: {len(self.start_states)}"</span>)
+        
+        <span class="comment"># Display a few sample states and transitions</span>
+        <span class="function">print</span>(<span class="string">"\nSample states and transitions:"</span>)
+        <span class="keyword">for</span> i, (state, transitions) <span class="keyword">in</span> <span class="function">enumerate</span>(<span class="function">list</span>(self.model.items())[:max_states]):
+            <span class="function">print</span>(<span class="string">f"\nState {i+1}: {state}"</span>)
+            <span class="function">print</span>(<span class="string">"Possible next words:"</span>)
+            
+            <span class="comment"># Calculate total transitions from this state</span>
+            total = <span class="function">sum</span>(transitions.values())
+            
+            <span class="comment"># Display the transitions with probabilities</span>
+            <span class="keyword">for</span> word, count <span class="keyword">in</span> <span class="function">sorted</span>(transitions.items(), key=<span class="keyword">lambda</span> x: x[1], reverse=<span class="keyword">True</span>):
+                probability = count / total
+                <span class="function">print</span>(<span class="string">f"  - '{word}' ({count} occurrences, {probability:.2f} probability)"</span>)
+
+<span class="comment"># Sample text for demonstration</span>
+sample_text = """
+The quick brown fox jumps over the lazy dog. The dog barks at the fox.
+The fox runs away quickly. The quick brown rabbit also jumps over the fence.
+The rabbit and the fox meet in the forest. The fox jumps over the rabbit.
+The dog runs after the fox. The quick response saves the day.
+The brown bear walks through the forest. The bear and the fox become friends.
+"""
+
+<span class="comment"># Create and train a Markov chain model</span>
+markov = WordMarkovChain(state_size=2)
+markov.train(sample_text)
+
+<span class="comment"># Analyze the model</span>
+markov.analyze_model(3)
+
+<span class="comment"># Generate some text</span>
+<span class="function">print</span>(<span class="string">"\nGenerated text samples:"</span>)
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(3):
+    generated = markov.generate(length=10)
+    <span class="function">print</span>(<span class="string">f"{i+1}. {generated}"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-markov-complete">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-markov-complete">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="warning">
+        <div class="warning-title">Limitations of Markov Chains</div>
+        <ul>
+            <li><strong>Limited context:</strong> Even with larger state sizes, Markov chains cannot capture long-range dependencies in text</li>
+            <li><strong>No semantic understanding:</strong> Markov chains work on statistical patterns, not meaning</li>
+            <li><strong>Training data requirements:</strong> Larger state sizes require exponentially more training data</li>
+            <li><strong>Repetition:</strong> Generated text may get stuck in loops, especially with small training datasets</li>
+        </ul>
+    </div>
+
+    <h2>Practical Applications</h2>
+    <p>Despite their limitations, word-level Markov chains have several practical applications:</p>
+    <ul>
+        <li><strong>Text completion:</strong> Suggesting likely next words in a sequence</li>
+        <li><strong>Creative writing aids:</strong> Generating ideas or variations</li>
+        <li><strong>Chat bots:</strong> Simple response generation</li>
+        <li><strong>Procedural content generation:</strong> Creating game dialogue or descriptions</li>
+        <li><strong>Text style imitation:</strong> Mimicking an author's writing style</li>
+    </ul>
+
+    <h2>Practice Exercise</h2>
+    <p>Try extending the Markov chain model:</p>
+    <ol>
+        <li>Modify the code to handle punctuation properly</li>
+        <li>Experiment with different state sizes to see how they affect text coherence</li>
+        <li>Implement a function to save and load the model</li>
+        <li>Train the model on a larger text corpus, such as a book</li>
+    </ol>
+    
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'red';
+            updateAccentColor(savedColor);
+            normalizeCodeBlocks(); // Remove extra blank lines from code blocks
+        });
+
+        function updateAccentColor(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            
+            // Clean up the text by trimming and normalizing whitespace
+            text = text.trim();
+            // Remove any leading whitespace from each line while preserving relative indentation
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const terminalSection = document.getElementById(`terminal-${codeType}`);
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            // Simulate typing effect
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 800;
+            
+            switch(codeType) {
+                case 'markov-basic':
+                    output = `State: ('The', 'quick')
+Possible next words: {'brown': 2}
+
+State: ('quick', 'brown')
+Possible next words: {'fox': 1, 'rabbit': 1}
+
+State: ('brown', 'fox')
+Possible next words: {'jumps': 1}`;
+                    break;
+                    
+                case 'markov-generate':
+                    output = `Generated text:
+The quick brown fox jumps over the lazy dog barks at the fox runs away The quick brown rabbit also jumps over`;
+                    break;
+                    
+                case 'markov-complete':
+                    output = `Markov Chain Model with state size 2
+Total states in model: 25
+Number of potential starting states: 7
+
+Sample states and transitions:
+
+State 1: ('the', 'quick')
+Possible next words:
+  - 'brown' (2 occurrences, 0.67 probability)
+  - 'response' (1 occurrences, 0.33 probability)
+
+State 2: ('quick', 'brown')
+Possible next words:
+  - 'fox' (1 occurrences, 0.50 probability)
+  - 'rabbit' (1 occurrences, 0.50 probability)
+
+State 3: ('brown', 'fox')
+Possible next words:
+  - 'jumps' (1 occurrences, 1.00 probability)
+
+Generated text samples:
+1. the quick brown fox jumps over the lazy dog barks at the
+2. the fox runs away quickly the quick brown fox jumps over the
+3. the quick response saves the day the brown bear walks through`;
+                    break;
+                    
+                default:
+                    output = 'Code executed successfully.';
+            }
+            
+            // Simulate terminal typing
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 30; // milliseconds between characters
+            
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            typeChar();
+        }
+
+        function normalizeCodeBlocks() {
+            document.querySelectorAll('.code-block code').forEach(el => {
+                let html = el.innerHTML;
+                html = html.replace(/^\n+|\n+$/g, '');
+                html = html.replace(/\n{2,}/g, '\n');
+                const lines = html.split('\n');
+                const result = [];
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i];
+                    if (/^\s*#/.test(line)) {
+                        if (result.length > 0 && result[result.length - 1].trim() !== '') {
+                            result.push('');
+                        }
+                    }
+                    result.push(line);
+                }
+                el.innerHTML = result.join('\n');
+            });
+        }
+    </script>
+</body>
+</html>

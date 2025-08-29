@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pygame Introduction</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #ff4444;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #ff4444);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #ff4444);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #cccccc;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 20%, transparent);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:hover {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 30%, transparent);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color, #4caf50) !important;
+            border-color: var(--accent-color, #4caf50) !important;
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #ff4444) !important;
+            border-color: var(--accent-color, #ff4444) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius: 0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        .highlight {
+            color: var(--accent-color, #ff4444);
+            font-weight: 600;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+
+        .info {
+            background-color: #1a2332;
+            border-left: 4px solid #569cd6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: #569cd6;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .warning {
+            background-color: #2d2d1a;
+            border-left: 4px solid #ffcc02;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning-title {
+            color: #ffcc02;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pygame Introduction</h1>
+    
+    <p>Pygame is a popular Python library for building 2D games and multimedia applications. It provides modules for <strong>graphics</strong>, <strong>sound</strong>, <strong>input</strong>, and more, built on top of SDL.</p>
+
+    <div class="warning">
+        <div class="warning-title">Installation Required</div>
+        <p>Before using Pygame, install it with: <code>pip install pygame</code><br>
+        Use a virtual environment for cleaner dependency management.</p>
+    </div>
+
+    <h2>Basic Game Window</h2>
+    <p>Every Pygame program follows an init, loop, quit pattern. The loop processes events and updates the screen at a controlled frame rate.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'pygame-basic')">Run</button>
+                </div>
+                <code><span class="comment"># Basic Pygame window</span>
+<span class="keyword">import</span> pygame, sys
+
+pygame.init()
+WIDTH, HEIGHT = <span class="number">640</span>, <span class="number">360</span>
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption(<span class="string">"Pygame Window"</span>)
+clock = pygame.time.Clock()
+
+<span class="comment"># Main loop</span>
+<span class="keyword">while</span> <span class="keyword">True</span>:
+    <span class="keyword">for</span> event <span class="keyword">in</span> pygame.event.get():
+        <span class="keyword">if</span> event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+    screen.fill((<span class="number">30</span>, <span class="number">30</span>, <span class="number">40</span>))
+    pygame.display.flip()
+    clock.tick(<span class="number">60</span>)  <span class="comment"># limit to 60 FPS</span></code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-pygame-basic">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-pygame-basic">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>Drawing Shapes & Text</h2>
+    <p>Use the <code>draw</code> module and <code>font</code> rendering for HUD elements.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'pygame-draw')">Run</button>
+                </div>
+                <code><span class="comment"># Drawing shapes and text</span>
+<span class="keyword">import</span> pygame, sys
+
+pygame.init()
+screen = pygame.display.set_mode((<span class="number">500</span>, <span class="number">300</span>))
+font = pygame.font.SysFont(<span class="string">"Arial"</span>, <span class="number">24</span>)
+clock = pygame.time.Clock()
+angle = <span class="number">0</span>
+
+<span class="keyword">while</span> <span class="keyword">True</span>:
+    <span class="keyword">for</span> e <span class="keyword">in</span> pygame.event.get():
+        <span class="keyword">if</span> e.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+    angle = (angle + <span class="number">2</span>) % <span class="number">360</span>
+    screen.fill((<span class="number">18</span>, <span class="number">18</span>, <span class="number">24</span>))
+    
+    <span class="comment"># Draw shapes</span>
+    pygame.draw.rect(screen, (<span class="number">70</span>, <span class="number">130</span>, <span class="number">180</span>), (<span class="number">40</span>, <span class="number">40</span>, <span class="number">120</span>, <span class="number">80</span>), border_radius=<span class="number">12</span>)
+    pygame.draw.circle(screen, (<span class="number">220</span>, <span class="number">90</span>, <span class="number">90</span>), (<span class="number">300</span>, <span class="number">150</span>), <span class="number">50</span>)
+    
+    <span class="comment"># Draw text</span>
+    txt = font.render(<span class="string">f"Angle: {angle}"</span>, <span class="keyword">True</span>, (<span class="number">200</span>, <span class="number">200</span>, <span class="number">210</span>))
+    screen.blit(txt, (<span class="number">20</span>, <span class="number">10</span>))
+
+    pygame.display.flip()
+    clock.tick(<span class="number">60</span>)</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-pygame-draw">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-pygame-draw">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>Moving a Player (Keyboard Input)</h2>
+    <p>Respond to key presses by adjusting a rect's position. Use <code>pygame.key.get_pressed()</code> for smooth movement.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'pygame-move')">Run</button>
+                </div>
+                <code><span class="comment"># Movement with keyboard</span>
+<span class="keyword">import</span> pygame, sys
+
+pygame.init()
+screen = pygame.display.set_mode((<span class="number">520</span>, <span class="number">320</span>))
+clock = pygame.time.Clock()
+player = pygame.Rect(<span class="number">240</span>, <span class="number">140</span>, <span class="number">40</span>, <span class="number">40</span>)
+speed = <span class="number">4</span>
+
+<span class="keyword">while</span> <span class="keyword">True</span>:
+    <span class="keyword">for</span> e <span class="keyword">in</span> pygame.event.get():
+        <span class="keyword">if</span> e.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+    <span class="comment"># Handle movement</span>
+    keys = pygame.key.get_pressed()
+    player.x += (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * speed
+    player.y += (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * speed
+
+    <span class="comment"># Draw everything</span>
+    screen.fill((<span class="number">25</span>, <span class="number">25</span>, <span class="number">32</span>))
+    pygame.draw.rect(screen, (<span class="number">255</span>, <span class="number">180</span>, <span class="number">55</span>), player, border_radius=<span class="number">6</span>)
+    
+    pygame.display.flip()
+    clock.tick(<span class="number">60</span>)</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-pygame-move">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-pygame-move">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>Basic Collision Detection</h2>
+    <p>Use <code>pygame.Rect</code> intersection methods for collision detection.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'pygame-collide')">Run</button>
+                </div>
+                <code><span class="comment"># Rect collision detection</span>
+<span class="keyword">import</span> pygame, sys, random
+
+pygame.init()
+screen = pygame.display.set_mode((<span class="number">520</span>, <span class="number">320</span>))
+clock = pygame.time.Clock()
+player = pygame.Rect(<span class="number">40</span>, <span class="number">40</span>, <span class="number">40</span>, <span class="number">40</span>)
+food = pygame.Rect(<span class="number">300</span>, <span class="number">180</span>, <span class="number">26</span>, <span class="number">26</span>)
+score = <span class="number">0</span>
+font = pygame.font.SysFont(<span class="string">"Arial"</span>, <span class="number">20</span>)
+speed = <span class="number">5</span>
+
+<span class="keyword">while</span> <span class="keyword">True</span>:
+    <span class="keyword">for</span> e <span class="keyword">in</span> pygame.event.get():
+        <span class="keyword">if</span> e.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+    <span class="comment"># Movement with WASD keys</span>
+    k = pygame.key.get_pressed()
+    player.x += (k[pygame.K_d] - k[pygame.K_a]) * speed
+    player.y += (k[pygame.K_s] - k[pygame.K_w]) * speed
+
+    <span class="comment"># Collision detection</span>
+    <span class="keyword">if</span> player.colliderect(food):
+        score += <span class="number">1</span>
+        food.x = random.randrange(<span class="number">0</span>, <span class="number">520</span> - <span class="number">26</span>)
+        food.y = random.randrange(<span class="number">0</span>, <span class="number">320</span> - <span class="number">26</span>)
+
+    <span class="comment"># Drawing</span>
+    screen.fill((<span class="number">20</span>, <span class="number">22</span>, <span class="number">28</span>))
+    pygame.draw.rect(screen, (<span class="number">50</span>, <span class="number">200</span>, <span class="number">90</span>), player, border_radius=<span class="number">4</span>)
+    pygame.draw.rect(screen, (<span class="number">230</span>, <span class="number">60</span>, <span class="number">80</span>), food)
+    
+    score_text = font.render(<span class="string">f"Score: {score}"</span>, <span class="keyword">True</span>, (<span class="number">220</span>, <span class="number">220</span>, <span class="number">230</span>))
+    screen.blit(score_text, (<span class="number">10</span>, <span class="number">8</span>))
+    
+    pygame.display.flip()
+    clock.tick(<span class="number">60</span>)</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-pygame-collide">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-pygame-collide">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <div class="info">
+        <div class="info-title">Suggested Project Structure</div>
+        <ul>
+            <li><strong>main.py:</strong> Entry point; creates window & runs loop.</li>
+            <li><strong>settings.py:</strong> Constants (WIDTH, HEIGHT, FPS).</li>
+            <li><strong>player.py:</strong> Player sprite class.</li>
+            <li><strong>scenes/:</strong> Menu, game, pause states.</li>
+            <li><strong>assets/:</strong> Images, sounds, fonts.</li>
+        </ul>
+    </div>
+
+    <div class="info">
+        <div class="info-title">Next Steps</div>
+        <p>Explore <code>pygame.sprite.Sprite</code>, delta time movement, tile maps, sound (<code>mixer</code>), and packaging (like <code>pyinstaller</code>).</p>
+    </div>
+
+    <h2>Next Steps</h2>
+    <p>You now have the basics of Pygame! These examples show the core concepts: game loops, event handling, drawing, and collision detection. Build upon these to create your own games and interactive applications.</p>
+
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'red';
+            updateAccentColor(savedColor);
+            normalizeCodeBlocks();
+        });
+
+        function updateAccentColor(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            
+            // Clean up the text by trimming and normalizing whitespace
+            text = text.trim();
+            // Remove any leading whitespace from each line while preserving relative indentation
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            // Simulate typing effect
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 800;
+            
+            switch(codeType) {
+                case 'pygame-basic':
+                    output = `pygame 2.5.2 (SDL 2.28.3, Python 3.11.5)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+
+Creating window: 640x360 pixels
+Window title: "Pygame Window"
+Background color: Dark gray (30, 30, 40)
+Running at 60 FPS
+Press X to close window.`;
+                    break;
+                    
+                case 'pygame-draw':
+                    output = `pygame 2.5.2 (SDL 2.28.3, Python 3.11.5)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+
+Drawing animated shapes:
+- Blue rounded rectangle at (40, 40)
+- Red circle at (300, 150)
+- Animated angle counter in top-left
+Window size: 500x300 pixels
+FPS: 60`;
+                    break;
+                    
+                case 'pygame-move':
+                    output = `pygame 2.5.2 (SDL 2.28.3, Python 3.11.5)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+
+Player movement demo:
+- Orange square starts at (240, 140)
+- Use arrow keys to move
+- Movement speed: 4 pixels per frame
+- Window size: 520x320 pixels
+Controls: ↑↓←→ arrow keys`;
+                    break;
+                    
+                case 'pygame-collide':
+                    output = `pygame 2.5.2 (SDL 2.28.3, Python 3.11.5)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+
+Collision detection game:
+- Green player square (use WASD keys)
+- Red food squares spawn randomly
+- Score increases when player touches food
+- Current score: 0
+Controls: WASD keys to move`;
+                    break;
+                    
+                default:
+                    output = 'Pygame program executed successfully.';
+            }
+            
+            // Simulate terminal typing
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 30; // milliseconds between characters
+            
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            typeChar();
+        }
+
+        function normalizeCodeBlocks() {
+            document.querySelectorAll('.code-block code').forEach(el => {
+                let html = el.innerHTML;
+                html = html.replace(/^\n+|\n+$/g, '');
+                html = html.replace(/\n{2,}/g, '\n');
+                el.innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

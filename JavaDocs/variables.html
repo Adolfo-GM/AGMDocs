@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variables & Data Types</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #f89820;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+        .theme-orange { --accent-color: #f89820; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #f89820);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #f89820);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        h3 {
+            color: var(--accent-color, #f89820);
+            font-size: 20px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #cccccc;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #f89820);
+        }
+
+        .run-button {
+            background-color: rgba(var(--accent-color), 0.2);
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .run-button:hover {
+            background-color: rgba(var(--accent-color), 0.3);
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #f89820);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #f89820) !important;
+            border-color: var(--accent-color, #f89820) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius: 0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        .highlight {
+            color: var(--accent-color, #f89820);
+            font-weight: 600;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .class { color: #4ec9b0; }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+        }
+
+        .info-table th, .info-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #3e3e42;
+        }
+
+        .info-table th {
+            background-color: var(--accent-color, #f89820);
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .info-table tr:hover {
+            background-color: #2d2d30;
+        }
+
+        .info-box {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #f89820);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: var(--accent-color, #f89820);
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Variables & Data Types</h1>
+    
+    <p>Variables are containers that store data values. In Java, every variable must be declared with a specific data type before it can be used.</p>
+
+    <h2>1. Variable Declaration</h2>
+    <p>In Java, you must declare variables before using them:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'declaration')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">VariableDeclaration</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Declare and initialize variables</span>
+        <span class="keyword">int</span> age = <span class="number">25</span>;
+        <span class="class">String</span> name = <span class="string">"Alice"</span>;
+        <span class="keyword">double</span> salary = <span class="number">50000.50</span>;
+        
+        <span class="comment">// Declare without initialization</span>
+        <span class="keyword">boolean</span> isEmployed;
+        isEmployed = <span class="keyword">true</span>;
+        
+        <span class="comment">// Multiple declarations</span>
+        <span class="keyword">int</span> x = <span class="number">10</span>, y = <span class="number">20</span>, z = <span class="number">30</span>;
+        
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Name: "</span> + name);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Age: "</span> + age);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Salary: $"</span> + salary);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Employed: "</span> + isEmployed);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Sum: "</span> + (x + y + z));
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-declaration">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-declaration">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>2. Primitive Data Types</h2>
+    <p>Java has 8 primitive data types that store simple values:</p>
+
+    <table class="info-table">
+        <thead>
+            <tr>
+                <th>Data Type</th>
+                <th>Size</th>
+                <th>Range</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="highlight">byte</span></td>
+                <td>1 byte</td>
+                <td>-128 to 127</td>
+                <td>byte b = 100;</td>
+            </tr>
+            <tr>
+                <td><span class="highlight">short</span></td>
+                <td>2 bytes</td>
+                <td>-32,768 to 32,767</td>
+                <td>short s = 1000;</td>
+            </tr>
+            <tr>
+                <td><span class="highlight">int</span></td>
+                <td>4 bytes</td>
+                <td>-2,147,483,648 to 2,147,483,647</td>
+                <td>int i = 100000;</td>
+            </tr>
+            <tr>
+                <td><span class="highlight">long</span></td>
+                <td>8 bytes</td>
+                <td>-9,223,372,036,854,775,808 to 9,223,372,036,854,775,807</td>
+                <td>long l = 100000L;</td>
+            </tr>
+            <tr>
+                <td><span class="highlight">float</span></td>
+                <td>4 bytes</td>
+                <td>6-7 decimal digits</td>
+                <td>float f = 5.75f;</td>
+            </tr>
+            <tr>
+                <td><span class="highlight">double</span></td>
+                <td>8 bytes</td>
+                <td>15 decimal digits</td>
+                <td>double d = 19.99;</td>
+            </tr>
+            <tr>
+                <td><span class="highlight">boolean</span></td>
+                <td>1 bit</td>
+                <td>true or false</td>
+                <td>boolean flag = true;</td>
+            </tr>
+            <tr>
+                <td><span class="highlight">char</span></td>
+                <td>2 bytes</td>
+                <td>0 to 65,535 (Unicode)</td>
+                <td>char c = 'A';</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Example: All Primitive Types</h3>
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'primitives')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">PrimitiveTypes</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Integer types</span>
+        <span class="keyword">byte</span> byteVar = <span class="number">127</span>;
+        <span class="keyword">short</span> shortVar = <span class="number">32767</span>;
+        <span class="keyword">int</span> intVar = <span class="number">2147483647</span>;
+        <span class="keyword">long</span> longVar = <span class="number">9223372036854775807L</span>;
+        
+        <span class="comment">// Floating-point types</span>
+        <span class="keyword">float</span> floatVar = <span class="number">3.14159f</span>;
+        <span class="keyword">double</span> doubleVar = <span class="number">3.141592653589793</span>;
+        
+        <span class="comment">// Character and boolean</span>
+        <span class="keyword">char</span> charVar = <span class="string">'J'</span>;
+        <span class="keyword">boolean</span> boolVar = <span class="keyword">true</span>;
+        
+        <span class="comment">// Print all values</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"byte: "</span> + byteVar);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"short: "</span> + shortVar);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"int: "</span> + intVar);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"long: "</span> + longVar);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"float: "</span> + floatVar);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"double: "</span> + doubleVar);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"char: "</span> + charVar);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"boolean: "</span> + boolVar);
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-primitives">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-primitives">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>3. String Data Type</h2>
+    <p>String is not a primitive type but a class. It's used to store text:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'strings')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">StringExamples</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Different ways to create strings</span>
+        <span class="class">String</span> str1 = <span class="string">"Hello World"</span>;
+        <span class="class">String</span> str2 = <span class="keyword">new</span> <span class="class">String</span>(<span class="string">"Java Programming"</span>);
+        <span class="class">String</span> str3 = <span class="string">""</span>; <span class="comment">// Empty string</span>
+        
+        <span class="comment">// String concatenation</span>
+        <span class="class">String</span> firstName = <span class="string">"John"</span>;
+        <span class="class">String</span> lastName = <span class="string">"Doe"</span>;
+        <span class="class">String</span> fullName = firstName + <span class="string">" "</span> + lastName;
+        
+        <span class="comment">// Using variables in strings</span>
+        <span class="keyword">int</span> age = <span class="number">30</span>;
+        <span class="class">String</span> message = <span class="string">"My name is "</span> + fullName + <span class="string">" and I am "</span> + age + <span class="string">" years old."</span>;
+        
+        <span class="class">System</span>.out.<span class="function">println</span>(str1);
+        <span class="class">System</span>.out.<span class="function">println</span>(str2);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Full name: "</span> + fullName);
+        <span class="class">System</span>.out.<span class="function">println</span>(message);
+        
+        <span class="comment">// String length</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Length of fullName: "</span> + fullName.<span class="function">length</span>());
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-strings">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-strings">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>4. Constants (final keyword)</h2>
+    <p>Use the <span class="highlight">final</span> keyword to create constants (variables that cannot be changed):</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'constants')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">Constants</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Constants cannot be changed once assigned</span>
+        <span class="keyword">final</span> <span class="keyword">double</span> PI = <span class="number">3.14159265359</span>;
+        <span class="keyword">final</span> <span class="keyword">int</span> MAX_STUDENTS = <span class="number">30</span>;
+        <span class="keyword">final</span> <span class="class">String</span> SCHOOL_NAME = <span class="string">"Java Academy"</span>;
+        
+        <span class="comment">// Using constants in calculations</span>
+        <span class="keyword">double</span> radius = <span class="number">5.0</span>;
+        <span class="keyword">double</span> area = PI * radius * radius;
+        <span class="keyword">double</span> circumference = <span class="number">2</span> * PI * radius;
+        
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"School: "</span> + SCHOOL_NAME);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Maximum students: "</span> + MAX_STUDENTS);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Circle with radius "</span> + radius + <span class="string">":"</span>);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Area: "</span> + area);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Circumference: "</span> + circumference);
+        
+        <span class="comment">// This would cause an error if uncommented:</span>
+        <span class="comment">// PI = 3.14;  // Cannot assign a value to final variable PI</span>
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-constants">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-constants">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>5. Type Casting</h2>
+    <p>Type casting allows you to convert one data type to another:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'casting')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">TypeCasting</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Automatic casting (widening)</span>
+        <span class="keyword">int</span> myInt = <span class="number">10</span>;
+        <span class="keyword">double</span> myDouble = myInt; <span class="comment">// Automatic casting</span>
+        
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"int: "</span> + myInt);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"double: "</span> + myDouble);
+        
+        <span class="comment">// Manual casting (narrowing)</span>
+        <span class="keyword">double</span> anotherDouble = <span class="number">9.78</span>;
+        <span class="keyword">int</span> anotherInt = (<span class="keyword">int</span>) anotherDouble; <span class="comment">// Manual casting</span>
+        
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Original double: "</span> + anotherDouble);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Casted to int: "</span> + anotherInt);
+        
+        <span class="comment">// String to number conversion</span>
+        <span class="class">String</span> numberStr = <span class="string">"123"</span>;
+        <span class="keyword">int</span> convertedInt = <span class="class">Integer</span>.<span class="function">parseInt</span>(numberStr);
+        <span class="keyword">double</span> convertedDouble = <span class="class">Double</span>.<span class="function">parseDouble</span>(<span class="string">"45.67"</span>);
+        
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"String to int: "</span> + convertedInt);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"String to double: "</span> + convertedDouble);
+        
+        <span class="comment">// Number to string conversion</span>
+        <span class="keyword">int</span> num = <span class="number">42</span>;
+        <span class="class">String</span> numStr = <span class="class">String</span>.<span class="function">valueOf</span>(num);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Number to string: "</span> + numStr);
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-casting">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-casting">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <div class="info-title">Important Notes:</div>
+        <ul>
+            <li>Always initialize variables before using them</li>
+            <li>Use meaningful variable names (camelCase convention)</li>
+            <li>Choose the appropriate data type for your needs</li>
+            <li>Be careful with type casting to avoid data loss</li>
+            <li>Use constants for values that don't change</li>
+        </ul>
+    </div>
+
+    <h2>Summary</h2>
+    <p>You've learned about:</p>
+    <ul>
+        <li>Variable declaration and initialization</li>
+        <li>All 8 primitive data types in Java</li>
+        <li>String data type and basic operations</li>
+        <li>Creating constants with the final keyword</li>
+        <li>Type casting and data conversion</li>
+    </ul>
+    
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'orange';
+            updateAccentColor(savedColor);
+            normalizeCodeBlocks();
+        });
+
+        function updateAccentColor(color) {
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink', 'theme-orange');
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            
+            text = text.trim();
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const terminalSection = document.getElementById(`terminal-${codeType}`);
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 800;
+            
+            switch(codeType) {
+                case 'declaration':
+                    output = `Name: Alice
+Age: 25
+Salary: $50000.5
+Employed: true
+Sum: 60`;
+                    delay = 600;
+                    break;
+                    
+                case 'primitives':
+                    output = `byte: 127
+short: 32767
+int: 2147483647
+long: 9223372036854775807
+float: 3.14159
+double: 3.141592653589793
+char: J
+boolean: true`;
+                    delay = 800;
+                    break;
+                    
+                case 'strings':
+                    output = `Hello World
+Java Programming
+Full name: John Doe
+My name is John Doe and I am 30 years old.
+Length of fullName: 8`;
+                    delay = 700;
+                    break;
+                    
+                case 'constants':
+                    output = `School: Java Academy
+Maximum students: 30
+Circle with radius 5.0:
+Area: 78.53981633975
+Circumference: 31.4159265359`;
+                    delay = 800;
+                    break;
+                    
+                case 'casting':
+                    output = `int: 10
+double: 10.0
+Original double: 9.78
+Casted to int: 9
+String to int: 123
+String to double: 45.67
+Number to string: 42`;
+                    delay = 900;
+                    break;
+                    
+                default:
+                    output = 'Code executed successfully.';
+                    delay = 500;
+            }
+            
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 30;
+            
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            typeChar();
+        }
+
+        function normalizeCodeBlocks() {
+            document.querySelectorAll('.code-block code').forEach(el => {
+                let html = el.innerHTML;
+                html = html.replace(/^\n+|\n+$/g, '');
+                html = html.replace(/\n{2,}/g, '\n');
+                el.innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

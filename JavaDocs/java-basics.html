@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Basics</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #f89820;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+        .theme-orange { --accent-color: #f89820; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #f89820);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #f89820);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        h3 {
+            color: var(--accent-color, #f89820);
+            font-size: 20px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #cccccc;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #f89820);
+        }
+
+        .run-button {
+            background-color: rgba(var(--accent-color), 0.2);
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .run-button:hover {
+            background-color: rgba(var(--accent-color), 0.3);
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #f89820);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #f89820) !important;
+            border-color: var(--accent-color, #f89820) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius: 0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        .highlight {
+            color: var(--accent-color, #f89820);
+            font-weight: 600;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .class { color: #4ec9b0; }
+
+        .info-box {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #f89820);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: var(--accent-color, #f89820);
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Java Basics</h1>
+    
+    <p>Let's learn the fundamental concepts of Java programming. Understanding these basics is essential for building more complex applications.</p>
+
+    <h2>1. Java Program Structure</h2>
+    <p>Every Java program has a specific structure. Here's a simple example:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'structure')">Run</button>
+                </div>
+                <code><span class="comment">// This is a comment</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="class">MyProgram</span> {
+    <span class="comment">// Main method - entry point of the program</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Welcome to Java programming!"</span>);
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-structure">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-structure">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <div class="info-title">Key Points:</div>
+        <ul>
+            <li>Every Java program must have at least one <span class="highlight">class</span></li>
+            <li>The class name must match the filename</li>
+            <li>The <span class="highlight">main method</span> is where program execution begins</li>
+            <li>Java is case-sensitive</li>
+        </ul>
+    </div>
+
+    <h2>2. Comments</h2>
+    <p>Comments help explain your code and are ignored by the compiler:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'comments')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">Comments</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Single-line comment</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"This line will print"</span>);
+        
+        <span class="comment">/* Multi-line comment
+           can span multiple lines
+           like this */</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Comments are helpful!"</span>);
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-comments">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-comments">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>3. Variables and Data Types</h2>
+    <p>Java has several built-in data types to store different kinds of information:</p>
+
+    <h3>Primitive Data Types</h3>
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'datatypes')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">DataTypes</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Integer types</span>
+        <span class="keyword">int</span> age = <span class="number">25</span>;
+        <span class="keyword">long</span> population = <span class="number">7800000000L</span>;
+        
+        <span class="comment">// Floating point types</span>
+        <span class="keyword">double</span> price = <span class="number">19.99</span>;
+        <span class="keyword">float</span> temperature = <span class="number">98.6f</span>;
+        
+        <span class="comment">// Character and boolean</span>
+        <span class="keyword">char</span> grade = <span class="string">'A'</span>;
+        <span class="keyword">boolean</span> isStudent = <span class="keyword">true</span>;
+        
+        <span class="comment">// String (not primitive, but commonly used)</span>
+        <span class="class">String</span> name = <span class="string">"John Doe"</span>;
+        
+        <span class="comment">// Print all variables</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Name: "</span> + name);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Age: "</span> + age);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Grade: "</span> + grade);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Is Student: "</span> + isStudent);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Price: $"</span> + price);
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-datatypes">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-datatypes">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>4. Basic Input and Output</h2>
+    <p>Learn how to get input from users and display output:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'input-output')">Run</button>
+                </div>
+                <code><span class="keyword">import</span> java.util.Scanner;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="class">InputOutput</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Create a Scanner object for input</span>
+        <span class="class">Scanner</span> scanner = <span class="keyword">new</span> <span class="class">Scanner</span>(<span class="class">System</span>.in);
+        
+        <span class="comment">// Get user input (simulated for this example)</span>
+        <span class="class">System</span>.out.<span class="function">print</span>(<span class="string">"Enter your name: "</span>);
+        <span class="class">String</span> userName = <span class="string">"Alice"</span>; <span class="comment">// scanner.nextLine();</span>
+        
+        <span class="class">System</span>.out.<span class="function">print</span>(<span class="string">"Enter your age: "</span>);
+        <span class="keyword">int</span> userAge = <span class="number">22</span>; <span class="comment">// scanner.nextInt();</span>
+        
+        <span class="comment">// Display output</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Hello, "</span> + userName + <span class="string">"!"</span>);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"You are "</span> + userAge + <span class="string">" years old."</span>);
+        
+        <span class="comment">// Close the scanner</span>
+        scanner.<span class="function">close</span>();
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-input-output">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-input-output">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>5. String Operations</h2>
+    <p>Strings are objects in Java with many useful methods:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'strings')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">StringOperations</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="class">String</span> message = <span class="string">"Hello, Java World!"</span>;
+        
+        <span class="comment">// String properties</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Original: "</span> + message);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Length: "</span> + message.<span class="function">length</span>());
+        
+        <span class="comment">// String methods</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Uppercase: "</span> + message.<span class="function">toUpperCase</span>());
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Lowercase: "</span> + message.<span class="function">toLowerCase</span>());
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Contains 'Java': "</span> + message.<span class="function">contains</span>(<span class="string">"Java"</span>));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Substring: "</span> + message.<span class="function">substring</span>(<span class="number">7</span>, <span class="number">11</span>));
+        
+        <span class="comment">// String concatenation</span>
+        <span class="class">String</span> greeting = <span class="string">"Welcome"</span>;
+        <span class="class">String</span> fullGreeting = greeting + <span class="string">" to Java programming!"</span>;
+        <span class="class">System</span>.out.<span class="function">println</span>(fullGreeting);
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-strings">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-strings">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>6. Mathematical Operations</h2>
+    <p>Java provides standard mathematical operators and the Math class:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'math')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">MathOperations</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="keyword">int</span> a = <span class="number">10</span>;
+        <span class="keyword">int</span> b = <span class="number">3</span>;
+        
+        <span class="comment">// Basic arithmetic</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Addition: "</span> + a + <span class="string">" + "</span> + b + <span class="string">" = "</span> + (a + b));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Subtraction: "</span> + a + <span class="string">" - "</span> + b + <span class="string">" = "</span> + (a - b));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Multiplication: "</span> + a + <span class="string">" * "</span> + b + <span class="string">" = "</span> + (a * b));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Division: "</span> + a + <span class="string">" / "</span> + b + <span class="string">" = "</span> + (a / b));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Remainder: "</span> + a + <span class="string">" % "</span> + b + <span class="string">" = "</span> + (a % b));
+        
+        <span class="comment">// Math class methods</span>
+        <span class="keyword">double</span> num = <span class="number">16.5</span>;
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Square root of "</span> + num + <span class="string">": "</span> + <span class="class">Math</span>.<span class="function">sqrt</span>(num));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Power of 2^3: "</span> + <span class="class">Math</span>.<span class="function">pow</span>(<span class="number">2</span>, <span class="number">3</span>));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Maximum of "</span> + a + <span class="string">" and "</span> + b + <span class="string">": "</span> + <span class="class">Math</span>.<span class="function">max</span>(a, b));
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-math">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-math">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>Summary</h2>
+    <p>You've learned the basic building blocks of Java programming:</p>
+    <ul>
+        <li>Java program structure and syntax</li>
+        <li>How to write comments</li>
+        <li>Variable declaration and primitive data types</li>
+        <li>Basic input and output operations</li>
+        <li>String manipulation</li>
+        <li>Mathematical operations</li>
+    </ul>
+    
+    <p>These fundamentals will serve as the foundation for more advanced Java programming concepts!</p>
+    
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'orange';
+            updateAccentColor(savedColor);
+            normalizeCodeBlocks(); // Remove extra blank lines from code blocks
+        });
+
+        function updateAccentColor(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink', 'theme-orange');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            
+            // Clean up the text by trimming and normalizing whitespace
+            text = text.trim();
+            // Remove any leading whitespace from each line while preserving relative indentation
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const terminalSection = document.getElementById(`terminal-${codeType}`);
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            // Simulate typing effect
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 800;
+            
+            switch(codeType) {
+                case 'structure':
+                    output = `Welcome to Java programming!`;
+                    delay = 500;
+                    break;
+                    
+                case 'comments':
+                    output = `This line will print
+Comments are helpful!`;
+                    delay = 600;
+                    break;
+                    
+                case 'datatypes':
+                    output = `Name: John Doe
+Age: 25
+Grade: A
+Is Student: true
+Price: $19.99`;
+                    delay = 800;
+                    break;
+                    
+                case 'input-output':
+                    output = `Enter your name: Enter your age: Hello, Alice!
+You are 22 years old.`;
+                    delay = 900;
+                    break;
+                    
+                case 'strings':
+                    output = `Original: Hello, Java World!
+Length: 18
+Uppercase: HELLO, JAVA WORLD!
+Lowercase: hello, java world!
+Contains 'Java': true
+Substring: Java
+Welcome to Java programming!`;
+                    delay = 1000;
+                    break;
+                    
+                case 'math':
+                    output = `Addition: 10 + 3 = 13
+Subtraction: 10 - 3 = 7
+Multiplication: 10 * 3 = 30
+Division: 10 / 3 = 3
+Remainder: 10 % 3 = 1
+Square root of 16.5: 4.06201920231798
+Power of 2^3: 8.0
+Maximum of 10 and 3: 10`;
+                    delay = 1200;
+                    break;
+                    
+                default:
+                    output = 'Code executed successfully.';
+                    delay = 500;
+            }
+            
+            // Simulate terminal typing
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 30; // milliseconds between characters
+            
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            typeChar();
+        }
+
+        function normalizeCodeBlocks() {
+            document.querySelectorAll('.code-block code').forEach(el => {
+                let html = el.innerHTML;
+                html = html.replace(/^\n+|\n+$/g, ''); // trim leading/trailing blank lines
+                html = html.replace(/\n{2,}/g, '\n'); // collapse multiple blank lines
+                el.innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Classes</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #ff4444;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #ff4444);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #ff4444);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        h3 {
+            color: var(--accent-color, #ff4444);
+            font-size: 20px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ol, ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #cccccc;
+        }
+
+        .step {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #ff4444);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .step-number {
+            color: var(--accent-color, #ff4444);
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 15px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 20%, transparent);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:hover {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 30%, transparent);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color, #4caf50) !important;
+            border-color: var(--accent-color, #4caf50) !important;
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #ff4444) !important;
+            border-color: var(--accent-color, #ff4444) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius:0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .variable { color: #9cdcfe; }
+        .class { color: #4ec9b0; }
+
+        .warning {
+            background-color: #2d2d1a;
+            border-left: 4px solid #ffcc02;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning-title {
+            color: #ffcc02;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .info {
+            background-color: #1a2332;
+            border-left: 4px solid #569cd6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: #569cd6;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Python Classes</h1>
+    
+    <p>Classes are blueprints for creating objects. They allow you to group related data and functions together, making your code more organized and reusable.</p>
+
+    <div class="info">
+        <div class="info-title">What are Classes and Objects?</div>
+        <p>Think of a class as a cookie cutter and objects as the cookies. The class defines the shape and properties, while objects are the actual instances you create. For example, "Car" is a class, while "my red Toyota" is an object (instance) of that class.</p>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Creating Your First Class</div>
+        <p>Let's start with a simple class that represents a person. Classes are defined using the <code>class</code> keyword.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'first-class')">Run</button>
+                    </div>
+                    <code><span class="comment"># Define a simple class</span>
+
+<span class="keyword">class</span> <span class="class">Person</span>:
+
+    <span class="comment"># Class attribute (shared by all instances)</span>
+
+    <span class="variable">species</span> <span class="operator">=</span> <span class="string">"Homo sapiens"</span>
+
+    
+
+    <span class="comment"># Constructor method (initializer)</span>
+
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="variable">self</span>, <span class="variable">name</span>, <span class="variable">age</span>):
+
+        <span class="comment"># Instance attributes (unique to each object)</span>
+
+        <span class="variable">self</span>.<span class="variable">name</span> <span class="operator">=</span> <span class="variable">name</span>
+
+        <span class="variable">self</span>.<span class="variable">age</span> <span class="operator">=</span> <span class="variable">age</span>
+
+<span class="comment"># Create objects (instances) of the class</span>
+
+<span class="variable">person1</span> <span class="operator">=</span> <span class="class">Person</span>(<span class="string">"Alice"</span>, <span class="number">25</span>)
+
+<span class="variable">person2</span> <span class="operator">=</span> <span class="class">Person</span>(<span class="string">"Bob"</span>, <span class="number">30</span>)
+
+<span class="comment"># Access attributes</span>
+
+<span class="function">print</span>(<span class="string">f"Person 1: {person1.name}, {person1.age} years old"</span>)
+
+<span class="function">print</span>(<span class="string">f"Person 2: {person2.name}, {person2.age} years old"</span>)
+
+<span class="function">print</span>(<span class="string">f"Species: {person1.species}"</span>)
+
+<span class="function">print</span>(<span class="string">f"Same species: {person2.species}"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-first-class">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-first-class">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Adding Methods to Classes</div>
+        <p>Methods are functions that belong to a class. They can access and modify the object's attributes.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'methods')">Run</button>
+                    </div>
+                    <code><span class="keyword">class</span> <span class="class">Person</span>:
+
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="variable">self</span>, <span class="variable">name</span>, <span class="variable">age</span>):
+
+        <span class="variable">self</span>.<span class="variable">name</span> <span class="operator">=</span> <span class="variable">name</span>
+
+        <span class="variable">self</span>.<span class="variable">age</span> <span class="operator">=</span> <span class="variable">age</span>
+
+    
+
+    <span class="comment"># Method to introduce the person</span>
+
+    <span class="keyword">def</span> <span class="function">introduce</span>(<span class="variable">self</span>):
+
+        <span class="keyword">return</span> <span class="string">f"Hi, I'm {self.name} and I'm {self.age} years old."</span>
+
+    
+
+    <span class="comment"># Method to have a birthday</span>
+
+    <span class="keyword">def</span> <span class="function">have_birthday</span>(<span class="variable">self</span>):
+
+        <span class="variable">self</span>.<span class="variable">age</span> <span class="operator">+=</span> <span class="number">1</span>
+
+        <span class="keyword">return</span> <span class="string">f"Happy birthday {self.name}! Now {self.age} years old."</span>
+
+    
+
+    <span class="comment"># Method to check if person is adult</span>
+
+    <span class="keyword">def</span> <span class="function">is_adult</span>(<span class="variable">self</span>):
+
+        <span class="keyword">return</span> <span class="variable">self</span>.<span class="variable">age</span> <span class="operator">>=</span> <span class="number">18</span>
+
+<span class="comment"># Create and use objects</span>
+
+<span class="variable">alice</span> <span class="operator">=</span> <span class="class">Person</span>(<span class="string">"Alice"</span>, <span class="number">17</span>)
+
+<span class="variable">bob</span> <span class="operator">=</span> <span class="class">Person</span>(<span class="string">"Bob"</span>, <span class="number">25</span>)
+
+<span class="comment"># Call methods</span>
+
+<span class="function">print</span>(<span class="variable">alice</span>.<span class="function">introduce</span>())
+
+<span class="function">print</span>(<span class="variable">bob</span>.<span class="function">introduce</span>())
+
+<span class="function">print</span>(<span class="string">f"Alice is adult: {alice.is_adult()}"</span>)
+
+<span class="function">print</span>(<span class="string">f"Bob is adult: {bob.is_adult()}"</span>)
+
+<span class="comment"># Alice has a birthday</span>
+
+<span class="function">print</span>(<span class="variable">alice</span>.<span class="function">have_birthday</span>())
+
+<span class="function">print</span>(<span class="string">f"Alice is now adult: {alice.is_adult()}"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-methods">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-methods">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">A Practical Example: Bank Account</div>
+        <p>Let's create a more practical class that represents a bank account with methods to deposit, withdraw, and check balance.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'bank-account')">Run</button>
+                    </div>
+                    <code><span class="keyword">class</span> <span class="class">BankAccount</span>:
+
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="variable">self</span>, <span class="variable">owner</span>, <span class="variable">initial_balance</span><span class="operator">=</span><span class="number">0</span>):
+
+        <span class="variable">self</span>.<span class="variable">owner</span> <span class="operator">=</span> <span class="variable">owner</span>
+
+        <span class="variable">self</span>.<span class="variable">balance</span> <span class="operator">=</span> <span class="variable">initial_balance</span>
+
+    
+
+    <span class="keyword">def</span> <span class="function">deposit</span>(<span class="variable">self</span>, <span class="variable">amount</span>):
+
+        <span class="keyword">if</span> <span class="variable">amount</span> <span class="operator">></span> <span class="number">0</span>:
+
+            <span class="variable">self</span>.<span class="variable">balance</span> <span class="operator">+=</span> <span class="variable">amount</span>
+
+            <span class="keyword">return</span> <span class="string">f"Deposited ${amount}. New balance: ${self.balance}"</span>
+
+        <span class="keyword">else</span>:
+
+            <span class="keyword">return</span> <span class="string">"Invalid deposit amount"</span>
+
+    
+
+    <span class="keyword">def</span> <span class="function">withdraw</span>(<span class="variable">self</span>, <span class="variable">amount</span>):
+
+        <span class="keyword">if</span> <span class="variable">amount</span> <span class="operator">></span> <span class="number">0</span> <span class="keyword">and</span> <span class="variable">amount</span> <span class="operator"><=</span> <span class="variable">self</span>.<span class="variable">balance</span>:
+
+            <span class="variable">self</span>.<span class="variable">balance</span> <span class="operator">-=</span> <span class="variable">amount</span>
+
+            <span class="keyword">return</span> <span class="string">f"Withdrew ${amount}. New balance: ${self.balance}"</span>
+
+        <span class="keyword">elif</span> <span class="variable">amount</span> <span class="operator">></span> <span class="variable">self</span>.<span class="variable">balance</span>:
+
+            <span class="keyword">return</span> <span class="string">"Insufficient funds"</span>
+
+        <span class="keyword">else</span>:
+
+            <span class="keyword">return</span> <span class="string">"Invalid withdrawal amount"</span>
+
+    
+
+    <span class="keyword">def</span> <span class="function">get_balance</span>(<span class="variable">self</span>):
+
+        <span class="keyword">return</span> <span class="string">f"{self.owner}'s balance: ${self.balance}"</span>
+
+<span class="comment"># Create bank accounts</span>
+
+<span class="variable">account1</span> <span class="operator">=</span> <span class="class">BankAccount</span>(<span class="string">"Alice"</span>, <span class="number">1000</span>)
+
+<span class="variable">account2</span> <span class="operator">=</span> <span class="class">BankAccount</span>(<span class="string">"Bob"</span>)  <span class="comment"># Starts with $0</span>
+
+<span class="comment"># Test the accounts</span>
+
+<span class="function">print</span>(<span class="variable">account1</span>.<span class="function">get_balance</span>())
+
+<span class="function">print</span>(<span class="variable">account2</span>.<span class="function">get_balance</span>())
+
+<span class="function">print</span>(<span class="variable">account1</span>.<span class="function">withdraw</span>(<span class="number">250</span>))
+
+<span class="function">print</span>(<span class="variable">account2</span>.<span class="function">deposit</span>(<span class="number">500</span>))
+
+<span class="function">print</span>(<span class="variable">account1</span>.<span class="function">withdraw</span>(<span class="number">1000</span>))  <span class="comment"># Should fail</span>
+
+<span class="function">print</span>(<span class="variable">account2</span>.<span class="function">withdraw</span>(<span class="number">100</span>))</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-bank-account">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-bank-account">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">String Representation: __str__ Method</div>
+        <p>The <code>__str__</code> method defines how your object appears when printed. This makes your objects more user-friendly.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'str-method')">Run</button>
+                    </div>
+                    <code><span class="keyword">class</span> <span class="class">Student</span>:
+
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="variable">self</span>, <span class="variable">name</span>, <span class="variable">grade</span>, <span class="variable">subjects</span>):
+
+        <span class="variable">self</span>.<span class="variable">name</span> <span class="operator">=</span> <span class="variable">name</span>
+
+        <span class="variable">self</span>.<span class="variable">grade</span> <span class="operator">=</span> <span class="variable">grade</span>
+
+        <span class="variable">self</span>.<span class="variable">subjects</span> <span class="operator">=</span> <span class="variable">subjects</span>
+
+    
+
+    <span class="comment"># This method defines how the object appears when printed</span>
+
+    <span class="keyword">def</span> <span class="function">__str__</span>(<span class="variable">self</span>):
+
+        <span class="keyword">return</span> <span class="string">f"Student: {self.name}, Grade: {self.grade}, Subjects: {', '.join(self.subjects)}"</span>
+
+    
+
+    <span class="keyword">def</span> <span class="function">add_subject</span>(<span class="variable">self</span>, <span class="variable">subject</span>):
+
+        <span class="keyword">if</span> <span class="variable">subject</span> <span class="keyword">not</span> <span class="keyword">in</span> <span class="variable">self</span>.<span class="variable">subjects</span>:
+
+            <span class="variable">self</span>.<span class="variable">subjects</span>.<span class="function">append</span>(<span class="variable">subject</span>)
+
+            <span class="keyword">return</span> <span class="string">f"Added {subject} to {self.name}'s subjects"</span>
+
+        <span class="keyword">else</span>:
+
+            <span class="keyword">return</span> <span class="string">f"{subject} is already in {self.name}'s subjects"</span>
+
+    
+
+    <span class="keyword">def</span> <span class="function">get_subject_count</span>(<span class="variable">self</span>):
+
+        <span class="keyword">return</span> <span class="function">len</span>(<span class="variable">self</span>.<span class="variable">subjects</span>)
+
+<span class="comment"># Create students</span>
+
+<span class="variable">student1</span> <span class="operator">=</span> <span class="class">Student</span>(<span class="string">"Emma"</span>, <span class="string">"A"</span>, [<span class="string">"Math"</span>, <span class="string">"Science"</span>])
+
+<span class="variable">student2</span> <span class="operator">=</span> <span class="class">Student</span>(<span class="string">"Alex"</span>, <span class="string">"B+"</span>, [<span class="string">"English"</span>, <span class="string">"History"</span>, <span class="string">"Art"</span>])
+
+<span class="comment"># Print students (uses __str__ method)</span>
+
+<span class="function">print</span>(<span class="variable">student1</span>)
+
+<span class="function">print</span>(<span class="variable">student2</span>)
+
+<span class="comment"># Add subjects and print again</span>
+
+<span class="function">print</span>(<span class="variable">student1</span>.<span class="function">add_subject</span>(<span class="string">"Chemistry"</span>))
+
+<span class="function">print</span>(<span class="variable">student1</span>.<span class="function">add_subject</span>(<span class="string">"Math"</span>))  <span class="comment"># Already exists</span>
+
+<span class="function">print</span>(<span class="string">f"Emma has {student1.get_subject_count()} subjects"</span>)
+
+<span class="function">print</span>(<span class="variable">student1</span>)  <span class="comment"># Print updated student</span></code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-str-method">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-str-method">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Class Inheritance (Simple)</div>
+        <p>Inheritance allows you to create new classes based on existing ones. The new class inherits all the properties and methods of the parent class.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'inheritance')">Run</button>
+                    </div>
+                    <code><span class="comment"># Parent class (base class)</span>
+
+<span class="keyword">class</span> <span class="class">Animal</span>:
+
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="variable">self</span>, <span class="variable">name</span>, <span class="variable">species</span>):
+
+        <span class="variable">self</span>.<span class="variable">name</span> <span class="operator">=</span> <span class="variable">name</span>
+
+        <span class="variable">self</span>.<span class="variable">species</span> <span class="operator">=</span> <span class="variable">species</span>
+
+    
+
+    <span class="keyword">def</span> <span class="function">introduce</span>(<span class="variable">self</span>):
+
+        <span class="keyword">return</span> <span class="string">f"I'm {self.name}, a {self.species}"</span>
+
+    
+
+    <span class="keyword">def</span> <span class="function">eat</span>(<span class="variable">self</span>):
+
+        <span class="keyword">return</span> <span class="string">f"{self.name} is eating"</span>
+
+<span class="comment"># Child class (inherits from Animal)</span>
+
+<span class="keyword">class</span> <span class="class">Dog</span>(<span class="class">Animal</span>):
+
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="variable">self</span>, <span class="variable">name</span>, <span class="variable">breed</span>):
+
+        <span class="comment"># Call parent constructor</span>
+
+        <span class="function">super</span>().<span class="function">__init__</span>(<span class="variable">name</span>, <span class="string">"Dog"</span>)
+
+        <span class="variable">self</span>.<span class="variable">breed</span> <span class="operator">=</span> <span class="variable">breed</span>
+
+    
+
+    <span class="comment"># New method specific to Dog</span>
+
+    <span class="keyword">def</span> <span class="function">bark</span>(<span class="variable">self</span>):
+
+        <span class="keyword">return</span> <span class="string">f"{self.name} says Woof!"</span>
+
+    
+
+    <span class="keyword">def</span> <span class="function">fetch</span>(<span class="variable">self</span>):
+
+        <span class="keyword">return</span> <span class="string">f"{self.name} is fetching the ball"</span>
+
+<span class="comment"># Another child class</span>
+
+<span class="keyword">class</span> <span class="class">Cat</span>(<span class="class">Animal</span>):
+
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="variable">self</span>, <span class="variable">name</span>, <span class="variable">color</span>):
+
+        <span class="function">super</span>().<span class="function">__init__</span>(<span class="variable">name</span>, <span class="string">"Cat"</span>)
+
+        <span class="variable">self</span>.<span class="variable">color</span> <span class="operator">=</span> <span class="variable">color</span>
+
+    
+
+    <span class="keyword">def</span> <span class="function">meow</span>(<span class="variable">self</span>):
+
+        <span class="keyword">return</span> <span class="string">f"{self.name} says Meow!"</span>
+
+    
+
+    <span class="keyword">def</span> <span class="function">purr</span>(<span class="variable">self</span>):
+
+        <span class="keyword">return</span> <span class="string">f"{self.name} is purring contentedly"</span>
+
+<span class="comment"># Create objects</span>
+
+<span class="variable">dog</span> <span class="operator">=</span> <span class="class">Dog</span>(<span class="string">"Buddy"</span>, <span class="string">"Golden Retriever"</span>)
+
+<span class="variable">cat</span> <span class="operator">=</span> <span class="class">Cat</span>(<span class="string">"Whiskers"</span>, <span class="string">"Orange"</span>)
+
+<span class="comment"># Use inherited methods</span>
+
+<span class="function">print</span>(<span class="variable">dog</span>.<span class="function">introduce</span>())
+
+<span class="function">print</span>(<span class="variable">cat</span>.<span class="function">introduce</span>())
+
+<span class="function">print</span>(<span class="variable">dog</span>.<span class="function">eat</span>())
+
+<span class="function">print</span>(<span class="variable">cat</span>.<span class="function">eat</span>())
+
+<span class="comment"># Use specific methods</span>
+
+<span class="function">print</span>(<span class="variable">dog</span>.<span class="function">bark</span>())
+
+<span class="function">print</span>(<span class="variable">dog</span>.<span class="function">fetch</span>())
+
+<span class="function">print</span>(<span class="variable">cat</span>.<span class="function">meow</span>())
+
+<span class="function">print</span>(<span class="variable">cat</span>.<span class="function">purr</span>())</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-inheritance">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-inheritance">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info">
+        <div class="info-title">Key OOP Concepts</div>
+        <ul>
+            <li><strong>Encapsulation:</strong> Grouping data and methods together in a class</li>
+            <li><strong>Inheritance:</strong> Creating new classes based on existing ones</li>
+            <li><strong>Objects/Instances:</strong> Actual examples created from a class blueprint</li>
+            <li><strong>Methods:</strong> Functions that belong to a class and can access its data</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Real-World Example: Simple Game Character</div>
+        <p>Let's create a game character class to demonstrate practical OOP usage.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'game-character')">Run</button>
+                    </div>
+                    <code><span class="keyword">class</span> <span class="class">GameCharacter</span>:
+
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="variable">self</span>, <span class="variable">name</span>, <span class="variable">health</span><span class="operator">=</span><span class="number">100</span>, <span class="variable">level</span><span class="operator">=</span><span class="number">1</span>):
+
+        <span class="variable">self</span>.<span class="variable">name</span> <span class="operator">=</span> <span class="variable">name</span>
+
+        <span class="variable">self</span>.<span class="variable">health</span> <span class="operator">=</span> <span class="variable">health</span>
+
+        <span class="variable">self</span>.<span class="variable">max_health</span> <span class="operator">=</span> <span class="variable">health</span>
+
+        <span class="variable">self</span>.<span class="variable">level</span> <span class="operator">=</span> <span class="variable">level</span>
+
+        <span class="variable">self</span>.<span class="variable">experience</span> <span class="operator">=</span> <span class="number">0</span>
+
+    
+
+    <span class="keyword">def</span> <span class="function">__str__</span>(<span class="variable">self</span>):
+
+        <span class="keyword">return</span> <span class="string">f"{self.name} (Level {self.level}) - Health: {self.health}/{self.max_health}, XP: {self.experience}"</span>
+
+    
+
+    <span class="keyword">def</span> <span class="function">take_damage</span>(<span class="variable">self</span>, <span class="variable">damage</span>):
+
+        <span class="variable">self</span>.<span class="variable">health</span> <span class="operator">-=</span> <span class="variable">damage</span>
+
+        <span class="keyword">if</span> <span class="variable">self</span>.<span class="variable">health</span> <span class="operator"><</span> <span class="number">0</span>:
+
+            <span class="variable">self</span>.<span class="variable">health</span> <span class="operator">=</span> <span class="number">0</span>
+
+        <span class="keyword">return</span> <span class="string">f"{self.name} took {damage} damage! Health: {self.health}"</span>
+
+    
+
+    <span class="keyword">def</span> <span class="function">heal</span>(<span class="variable">self</span>, <span class="variable">amount</span>):
+
+        <span class="variable">self</span>.<span class="variable">health</span> <span class="operator">+=</span> <span class="variable">amount</span>
+
+        <span class="keyword">if</span> <span class="variable">self</span>.<span class="variable">health</span> <span class="operator">></span> <span class="variable">self</span>.<span class="variable">max_health</span>:
+
+            <span class="variable">self</span>.<span class="variable">health</span> <span class="operator">=</span> <span class="variable">self</span>.<span class="variable">max_health</span>
+
+        <span class="keyword">return</span> <span class="string">f"{self.name} healed {amount} HP! Health: {self.health}"</span>
+
+    
+
+    <span class="keyword">def</span> <span class="function">gain_experience</span>(<span class="variable">self</span>, <span class="variable">xp</span>):
+
+        <span class="variable">self</span>.<span class="variable">experience</span> <span class="operator">+=</span> <span class="variable">xp</span>
+
+        <span class="keyword">if</span> <span class="variable">self</span>.<span class="variable">experience</span> <span class="operator">>=</span> <span class="variable">self</span>.<span class="variable">level</span> <span class="operator">*</span> <span class="number">100</span>:
+
+            <span class="keyword">return</span> <span class="variable">self</span>.<span class="function">level_up</span>()
+
+        <span class="keyword">return</span> <span class="string">f"{self.name} gained {xp} XP!"</span>
+
+    
+
+    <span class="keyword">def</span> <span class="function">level_up</span>(<span class="variable">self</span>):
+
+        <span class="variable">self</span>.<span class="variable">level</span> <span class="operator">+=</span> <span class="number">1</span>
+
+        <span class="variable">self</span>.<span class="variable">max_health</span> <span class="operator">+=</span> <span class="number">20</span>
+
+        <span class="variable">self</span>.<span class="variable">health</span> <span class="operator">=</span> <span class="variable">self</span>.<span class="variable">max_health</span>  <span class="comment"># Full heal on level up</span>
+
+        <span class="variable">self</span>.<span class="variable">experience</span> <span class="operator">=</span> <span class="number">0</span>
+
+        <span class="keyword">return</span> <span class="string">f"🎉 {self.name} leveled up to Level {self.level}! Max health increased to {self.max_health}!"</span>
+
+    
+
+    <span class="keyword">def</span> <span class="function">is_alive</span>(<span class="variable">self</span>):
+
+        <span class="keyword">return</span> <span class="variable">self</span>.<span class="variable">health</span> <span class="operator">></span> <span class="number">0</span>
+
+<span class="comment"># Create and test a game character</span>
+
+<span class="variable">hero</span> <span class="operator">=</span> <span class="class">GameCharacter</span>(<span class="string">"Hero"</span>)
+
+<span class="function">print</span>(<span class="variable">hero</span>)
+
+<span class="comment"># Battle simulation</span>
+
+<span class="function">print</span>(<span class="string">"\n--- Battle Begins! ---"</span>)
+
+<span class="function">print</span>(<span class="variable">hero</span>.<span class="function">take_damage</span>(<span class="number">30</span>))
+
+<span class="function">print</span>(<span class="variable">hero</span>.<span class="function">heal</span>(<span class="number">15</span>))
+
+<span class="comment"># Gain experience</span>
+
+<span class="function">print</span>(<span class="string">"\n--- Gaining Experience ---"</span>)
+
+<span class="function">print</span>(<span class="variable">hero</span>.<span class="function">gain_experience</span>(<span class="number">50</span>))
+
+<span class="function">print</span>(<span class="variable">hero</span>.<span class="function">gain_experience</span>(<span class="number">60</span>))  <span class="comment"># Should level up!</span>
+
+<span class="function">print</span>(<span class="string">f"\nFinal status: {hero}"</span>)
+
+<span class="function">print</span>(<span class="string">f"Is alive: {hero.is_alive()}"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-game-character">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-game-character">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <h2>Next Steps</h2>
+    <p>Excellent! You now understand the basics of classes and object-oriented programming in Python. Classes help you organize your code, model real-world objects, and create reusable components. Keep practicing by creating your own classes!</p>
+    
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'red';
+            updateAccentColor(savedColor);
+            normalizeCodeBlocks();
+        });
+
+        function updateAccentColor(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            
+            // Clean up the text by trimming and normalizing whitespace
+            text = text.trim();
+            // Remove any leading whitespace from each line while preserving relative indentation
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const terminalSection = document.getElementById(`terminal-${codeType}`);
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            // Simulate typing effect
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 800;
+            
+            switch(codeType) {
+                case 'first-class':
+                    output = `Person 1: Alice, 25 years old
+Person 2: Bob, 30 years old
+Species: Homo sapiens
+Same species: Homo sapiens`;
+                    break;
+                    
+                case 'methods':
+                    output = `Hi, I'm Alice and I'm 17 years old.
+Hi, I'm Bob and I'm 25 years old.
+Alice is adult: False
+Bob is adult: True
+Happy birthday Alice! Now 18 years old.
+Alice is now adult: True`;
+                    break;
+                    
+                case 'bank-account':
+                    output = `Alice's balance: $1000
+Bob's balance: $0
+Withdrew $250. New balance: $750
+Deposited $500. New balance: $500
+Insufficient funds
+Withdrew $100. New balance: $400`;
+                    break;
+                    
+                case 'str-method':
+                    output = `Student: Emma, Grade: A, Subjects: Math, Science
+Student: Alex, Grade: B+, Subjects: English, History, Art
+Added Chemistry to Emma's subjects
+Math is already in Emma's subjects
+Emma has 3 subjects
+Student: Emma, Grade: A, Subjects: Math, Science, Chemistry`;
+                    break;
+                    
+                case 'inheritance':
+                    output = `I'm Buddy, a Dog
+I'm Whiskers, a Cat
+Buddy is eating
+Whiskers is eating
+Buddy says Woof!
+Buddy is fetching the ball
+Whiskers says Meow!
+Whiskers is purring contentedly`;
+                    break;
+                    
+                case 'game-character':
+                    output = `Hero (Level 1) - Health: 100/100, XP: 0
+
+--- Battle Begins! ---
+Hero took 30 damage! Health: 70
+Hero healed 15 HP! Health: 85
+
+--- Gaining Experience ---
+Hero gained 50 XP!
+🎉 Hero leveled up to Level 2! Max health increased to 120!
+
+Final status: Hero (Level 2) - Health: 120/120, XP: 0
+Is alive: True`;
+                    break;
+                    
+                default:
+                    output = 'Code executed successfully.';
+            }
+            
+            // Simulate terminal typing
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 30; // milliseconds between characters
+            
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            typeChar();
+        }
+
+        function normalizeCodeBlocks() {
+            document.querySelectorAll('.code-block code').forEach(el => {
+                let html = el.innerHTML;
+                html = html.replace(/^\n+|\n+$/g, '');
+                html = html.replace(/\n{2,}/g, '\n');
+                el.innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

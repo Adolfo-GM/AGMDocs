@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Tkinter Layout</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #ff4444;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #ff4444);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #ff4444);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #cccccc;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 20%, transparent);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:hover {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 30%, transparent);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color, #4caf50) !important;
+            border-color: var(--accent-color, #4caf50) !important;
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #ff4444) !important;
+            border-color: var(--accent-color, #ff4444) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius: 0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        .highlight {
+            color: var(--accent-color, #ff4444);
+            font-weight: 600;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+
+        .info {
+            background-color: #1a2332;
+            border-left: 4px solid #569cd6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: #569cd6;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Advanced Tkinter Layout & Geometry Managers</h1>
+    
+    <p>Beyond simple <code>pack()</code> usage, Tkinter offers powerful layout control with <strong>pack</strong>, <strong>grid</strong>, and <strong>place</strong>. You can also combine frames strategically to build complex responsive interfaces.</p>
+
+    <div class="info">
+        <div class="info-title">Geometry Manager Overview</div>
+        <ul>
+            <li><strong>pack():</strong> Great for stacking widgets vertically or horizontally; uses side, fill, expand.</li>
+            <li><strong>grid():</strong> Table-like rows/columns; supports weight-based resizing.</li>
+            <li><strong>place():</strong> Absolute or relative positioning (x/y, relx/rely); least flexible for responsive UIs.</li>
+        </ul>
+    </div>
+
+    <h2>Advanced pack(): Vertical vs Horizontal</h2>
+    <p>Use nested frames and the <code>side</code>, <code>fill</code>, and <code>expand</code> options to control distribution.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'pack-advanced')">Run</button>
+                </div>
+                <code><span class="comment"># Advanced vertical + horizontal stacking with pack()</span>
+<span class="keyword">import</span> tkinter <span class="keyword">as</span> tk
+
+root = tk.Tk()
+root.title(<span class="string">"pack() Advanced"</span>)
+root.geometry(<span class="string">"420x260"</span>)
+
+<span class="comment"># Top bar (horizontal)</span>
+top_bar = tk.Frame(root, bg=<span class="string">"#222"</span>, height=<span class="number">40</span>)
+top_bar.pack(side=<span class="string">"top"</span>, fill=<span class="string">"x"</span>)
+
+for txt in [<span class="string">"File"</span>, <span class="string">"Edit"</span>, <span class="string">"View"</span>]:
+    tk.Label(top_bar, text=txt, fg=<span class="string">"white"</span>, bg=<span class="string">"#222"</span>, padx=<span class="number">12</span>).pack(side=<span class="string">"left"</span>)
+
+<span class="comment"># Main area split left nav / right content</span>
+main = tk.Frame(root)
+main.pack(fill=<span class="string">"both"</span>, expand=<span class="keyword">True</span>)
+
+nav = tk.Frame(main, bg=<span class="string">"#333"</span>, width=<span class="number">120</span>)
+nav.pack(side=<span class="string">"left"</span>, fill=<span class="string">"y"</span>)
+
+content = tk.Frame(main, bg=<span class="string">"#111"</span>)
+content.pack(side=<span class="string">"left"</span>, fill=<span class="string">"both"</span>, expand=<span class="keyword">True</span>)
+
+<span class="comment"># Add some vertical buttons in nav</span>
+for i in range(<span class="number">1</span>, <span class="number">6</span>):
+    tk.Button(nav, text=f"Option {i}", relief=<span class="string">"flat"</span>).pack(fill=<span class="string">"x"</span>, pady=<span class="number">2</span>, padx=<span class="number">6</span>)
+
+<span class="comment"># Content area demonstrates vertical expansion</span>
+header = tk.Label(content, text=<span class="string">"Dashboard"</span>, font=(<span class="string">"Segoe UI"</span>, <span class="number">14</span>, <span class="string">"bold"</span>), bg=<span class="string">"#111"</span>, fg=<span class="string">"white"</span>)
+header.pack(anchor=<span class="string">"w"</span>, padx=<span class="number">10</span>, pady=(<span class="number">10</span>,<span class="number">6</span>))
+
+cards = tk.Frame(content, bg=<span class="string">"#111"</span>)
+cards.pack(fill=<span class="string">"both"</span>, expand=<span class="keyword">True</span>)
+
+<span class="comment"># Create row of 3 pseudo cards horizontally inside cards frame</span>
+for label in [<span class="string">"Users"</span>, <span class="string">"Sales"</span>, <span class="string">"Errors"</span>]:
+    box = tk.Frame(cards, bg=<span class="string">"#222"</span>, bd=<span class="number">1</span>, relief=<span class="string">"ridge"</span>, padx=<span class="number">10</span>, pady=<span class="number">8</span>)
+    box.pack(side=<span class="string">"left"</span>, fill=<span class="string">"both"</span>, expand=<span class="keyword">True</span>, padx=<span class="number">6</span>, pady=<span class="number">4</span>)
+    tk.Label(box, text=label, fg=<span class="string">"white"</span>, bg=<span class="string">"#222"</span>, font=(<span class="string">"Segoe UI"</span>, <span class="number">12</span>, <span class="string">"bold"</span>)).pack(anchor=<span class="string">"w"</span>)
+    tk.Label(box, text=<span class="string">"Value: 0"</span>, fg=<span class="string">"white"</span>, bg=<span class="string">"#222"</span>).pack(anchor=<span class="string">"w"</span>, pady=<span class="number">4</span>)
+
+root.mainloop()</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-pack-advanced">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-pack-advanced">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>Responsive grid() with Weight</h2>
+    <p>Assign a weight to rows and columns so space distributes proportionally during window resize.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'grid-weight')">Run</button>
+                </div>
+                <code><span class="comment"># Responsive grid() layout using row/column weights</span>
+<span class="keyword">import</span> tkinter <span class="keyword">as</span> tk
+root = tk.Tk()
+root.title(<span class="string">"grid() Weights"</span>)
+root.geometry(<span class="string">"420x240"</span>)
+
+for c in range(<span class="number">3</span>):
+    root.columnconfigure(c, weight=<span class="number">1</span>)
+for r in range(<span class="number">3</span>):
+    root.rowconfigure(r, weight=<span class="number">1</span>)
+
+colors = [<span class="string">"#394"</span>, <span class="string">"#349"</span>, <span class="string">"#933"</span>, <span class="string">"#884"</span>, <span class="string">"#268"</span>, <span class="string">"#666"</span>, <span class="string">"#055"</span>, <span class="string">"#550"</span>, <span class="string">"#333"</span>]
+
+<span class="comment"># Fill the 3x3 grid</span>
+idx = <span class="number">0</span>
+for r in range(<span class="number">0</span>, <span class="number">3</span>):
+    for c in range(<span class="number">0</span>, <span class="number">3</span>):
+        frame = tk.Frame(root, bg=colors[idx], bd=<span class="number">1</span>)
+        frame.grid(row=r, column=c, sticky=<span class="string">"nsew"</span>, padx=<span class="number">2</span>, pady=<span class="number">2</span>)
+        tk.Label(frame, text=f"{r},{c}", bg=colors[idx], fg=<span class="string">"white"</span>).pack(expand=<span class="keyword">True</span>)
+        idx += <span class="number">1</span>
+
+root.mainloop()</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-grid-weight">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-grid-weight">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>Mixing pack() and grid() Safely</h2>
+    <p>You can use <code>pack</code> in one container (frame) and <code>grid</code> in another. Just never mix them within the <em>same</em> container.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'mix-pack-grid')">Run</button>
+                </div>
+                <code><span class="comment"># pack() in root, grid() inside a form frame</span>
+<span class="keyword">import</span> tkinter <span class="keyword">as</span> tk
+root = tk.Tk()
+root.title(<span class="string">"Mix pack & grid"</span>)
+root.geometry(<span class="string">"360x200"</span>)
+
+banner = tk.Label(root, text=<span class="string">"User Login"</span>, font=(<span class="string">"Segoe UI"</span>, <span class="number">14</span>, <span class="string">"bold"</span>))
+banner.pack(pady=<span class="number">8</span>)
+
+form = tk.Frame(root, padx=<span class="number">10</span>, pady=<span class="number">10</span>)
+form.pack(fill=<span class="string">"x"</span>)
+
+<span class="comment"># grid inside form</span>
+for i in range(<span class="number">0</span>, <span class="number">2</span>):
+    form.columnconfigure(i, weight=<span class="number">1</span>)
+
+labels = [<span class="string">"Username:"</span>, <span class="string">"Password:"</span>]
+entries = []
+for r, text in enumerate(labels):
+    tk.Label(form, text=text).grid(row=r, column=<span class="number">0</span>, sticky=<span class="string">"e"</span>, pady=<span class="number">4</span>)
+    e = tk.Entry(form, show=<span class="string">"*"</span>) if <span class="string">"Password"</span> in text else tk.Entry(form)
+    e.grid(row=r, column=<span class="number">1</span>, sticky=<span class="string">"ew"</span>, pady=<span class="number">4</span>)
+    entries.append(e)
+
+status = tk.Label(root, text=<span class="string">"Ready"</span>, fg=<span class="string">"gray"</span>)
+status.pack(side=<span class="string">"bottom"</span>, fill=<span class="string">"x"</span>)
+
+root.mainloop()</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-mix-pack-grid">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-mix-pack-grid">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>place(): Absolute & Relative Positioning</h2>
+    <p><code>place()</code> is useful for pixel-perfect overlays or dragging. Use <code>relx</code>/<code>rely</code> (0.0–1.0) for responsive relative placement.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'place-demo')">Run</button>
+                </div>
+                <code><span class="comment"># place() absolute + relative demo</span>
+<span class="keyword">import</span> tkinter <span class="keyword">as</span> tk
+root = tk.Tk()
+root.title(<span class="string">"place() Demo"</span>)
+root.geometry(<span class="string">"360x220"</span>)
+
+canvas = tk.Frame(root, bg=<span class="string">"#222"</span>)
+canvas.pack(fill=<span class="string">"both"</span>, expand=<span class="keyword">True</span>)
+
+<span class="comment"># Absolute</span>
+box1 = tk.Label(canvas, text=<span class="string">"(20,20)"</span>, bg=<span class="string">"#e91e63"</span>, fg=<span class="string">"white"</span>)
+box1.place(x=<span class="number">20</span>, y=<span class="number">20</span>)
+
+<span class="comment"># Relative center</span>
+box2 = tk.Label(canvas, text=<span class="string">"center"</span>, bg=<span class="string">"#2196f3"</span>, fg=<span class="string">"white"</span>)
+box2.place(relx=<span class="number">0.5</span>, rely=<span class="number">0.5</span>, anchor=<span class="string">"center"</span>)
+
+<span class="comment"># Relative bottom right</span>
+box3 = tk.Label(canvas, text=<span class="string">"br"</span>, bg=<span class="string">"#4caf50"</span>, fg=<span class="string">"white"</span>)
+box3.place(relx=<span class="number">0.95</span>, rely=<span class="number">0.95</span>, anchor=<span class="string">"se"</span>)
+
+root.mainloop()</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-place-demo">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-place-demo">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>Scrollable Frame Pattern</h2>
+    <p>Tkinter lacks a native scrollable frame, but you can create one with <code>Canvas + Frame + scrollbar</code>.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'scrollable-frame')">Run</button>
+                </div>
+                <code><span class="comment"># Reusable scrollable frame pattern</span>
+<span class="keyword">import</span> tkinter <span class="keyword">as</span> tk
+
+<span class="keyword">class</span> <span class="function">ScrollFrame</span>(tk.Frame):
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, master, *args, **kwargs):
+        super().__init__(master, *args, **kwargs)
+        canvas = tk.Canvas(self, highlightthickness=<span class="number">0</span>)
+        vsb = tk.Scrollbar(self, orient=<span class="string">"vertical"</span>, command=canvas.yview)
+        self.inner = tk.Frame(canvas)
+        self.inner.bind(<span class="string">"<Configure>"</span>, <span class="keyword">lambda</span> e: canvas.configure(scrollregion=canvas.bbox(<span class="string">"all"</span>)))
+        canvas.create_window((<span class="number">0</span>,<span class="number">0</span>), window=self.inner, anchor=<span class="string">"nw"</span>)
+        canvas.configure(yscrollcommand=vsb.set)
+        canvas.pack(side=<span class="string">"left"</span>, fill=<span class="string">"both"</span>, expand=<span class="keyword">True</span>)
+        vsb.pack(side=<span class="string">"right"</span>, fill=<span class="string">"y"</span>)
+
+root = tk.Tk()
+root.title(<span class="string">"Scrollable Frame"</span>)
+root.geometry(<span class="string">"300x260"</span>)
+scroll = ScrollFrame(root)
+scroll.pack(fill=<span class="string">"both"</span>, expand=<span class="keyword">True</span>)
+
+for i in range(<span class="number">1</span>, <span class="number">51</span>):
+    tk.Label(scroll.inner, text=f"Item {i}").pack(anchor=<span class="string">"w"</span>, padx=<span class="number">8</span>, pady=<span class="number">2</span>)
+
+root.mainloop()</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-scrollable-frame">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-scrollable-frame">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>Dynamic Column / Row Spanning</h2>
+    <p>Use <code>columnspan</code> and <code>rowspan</code> to merge cells for headers or sidebars.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'grid-span')">Run</button>
+                </div>
+                <code><span class="comment"># columnspan / rowspan usage</span>
+<span class="keyword">import</span> tkinter <span class="keyword">as</span> tk
+root = tk.Tk()
+root.title(<span class="string">"grid() span"</span>)
+root.geometry(<span class="string">"400x260"</span>)
+
+for c in range(<span class="number">4</span>):
+    root.columnconfigure(c, weight=<span class="number">1</span>)
+for r in range(<span class="number">6</span>):
+    root.rowconfigure(r, weight=<span class="number">1</span>)
+
+header = tk.Label(root, text=<span class="string">"Report Overview"</span>, bg=<span class="string">"#222"</span>, fg=<span class="string">"white"</span>)
+header.grid(row=<span class="number">0</span>, column=<span class="number">0</span>, columnspan=<span class="number">4</span>, sticky=<span class="string">"nsew"</span>)
+
+sidebar = tk.Label(root, text=<span class="string">"Filters"</span>, bg=<span class="string">"#394"</span>, fg=<span class="string">"white"</span>)
+sidebar.grid(row=<span class="number">1</span>, column=<span class="number">0</span>, rowspan=<span class="number">5</span>, sticky=<span class="string">"nsew"</span>)
+
+for r in range(<span class="number">1</span>, <span class="number">6</span>):
+    for c in range(<span class="number">1</span>, <span class="number">4</span>):
+        tk.Label(root, text=f"{r},{c}", bg=<span class="string">"#333"</span>, fg=<span class="string">"white"</span>).grid(row=r, column=c, sticky=<span class="string">"nsew"</span>, padx=<span class="number">1</span>, pady=<span class="number">1</span>)
+
+root.mainloop()</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-grid-span">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-grid-span">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>Next Steps</h2>
+    <p>You now understand advanced Tkinter layout techniques! These geometry managers give you precise control over your GUI appearance. Try combining different approaches to create professional-looking applications.</p>
+
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'red';
+            updateAccentColor(savedColor);
+            normalizeCodeBlocks();
+        });
+
+        function updateAccentColor(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            
+            // Clean up the text by trimming and normalizing whitespace
+            text = text.trim();
+            // Remove any leading whitespace from each line while preserving relative indentation
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            // Simulate typing effect
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 800;
+            
+            switch(codeType) {
+                case 'pack-advanced':
+                    output = `Creates a window with:
+- Top menu bar (File, Edit, View)
+- Left navigation panel with 5 option buttons
+- Right content area with dashboard header
+- Three expandable cards (Users, Sales, Errors)
+Window demonstrates proper pack() hierarchy.`;
+                    break;
+                    
+                case 'grid-weight':
+                    output = `Creates responsive 3x3 grid:
+- Each cell expands proportionally when window resizes
+- Uses different colors for each grid position
+- Shows coordinates (0,0) to (2,2) in each cell
+- Demonstrates weight-based column/row distribution.`;
+                    break;
+                    
+                case 'mix-pack-grid':
+                    output = `Creates login form:
+- pack() used for main layout (banner, form, status)
+- grid() used inside form frame for labels/entries
+- Shows safe mixing of geometry managers
+- Username and password fields properly aligned.`;
+                    break;
+                    
+                case 'place-demo':
+                    output = `Demonstrates place() positioning:
+- Pink label at absolute position (20,20)
+- Blue label at relative center (50%, 50%)
+- Green label at bottom-right corner
+- Shows both absolute and relative positioning.`;
+                    break;
+                    
+                case 'scrollable-frame':
+                    output = `Creates scrollable content area:
+- 50 items in a scrollable list
+- Canvas + Frame + Scrollbar pattern
+- Vertical scrolling when content exceeds window
+- Reusable ScrollFrame class implementation.`;
+                    break;
+                    
+                case 'grid-span':
+                    output = `Creates layout with spanning:
+- Header spans all 4 columns (columnspan=4)
+- Sidebar spans 5 rows (rowspan=5)
+- Content grid fills remaining cells
+- Demonstrates professional layout structure.`;
+                    break;
+                    
+                default:
+                    output = 'Tkinter window created successfully.';
+            }
+            
+            // Simulate terminal typing
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 30; // milliseconds between characters
+            
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            typeChar();
+        }
+
+        function normalizeCodeBlocks() {
+            document.querySelectorAll('.code-block code').forEach(el => {
+                let html = el.innerHTML;
+                html = html.replace(/^\n+|\n+$/g, '');
+                html = html.replace(/\n{2,}/g, '\n');
+                el.innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

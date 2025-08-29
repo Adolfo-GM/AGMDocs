@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Math Module</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #ff4444;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #ff4444);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #ff4444);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        h3 {
+            color: var(--accent-color, #ff4444);
+            font-size: 20px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ol, ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #cccccc;
+        }
+
+        .step {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #ff4444);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .step-number {
+            color: var(--accent-color, #ff4444);
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 15px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 20%, transparent);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:hover {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 30%, transparent);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color, #4caf50) !important;
+            border-color: var(--accent-color, #4caf50) !important;
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #ff4444) !important;
+            border-color: var(--accent-color, #ff4444) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius:0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .variable { color: #9cdcfe; }
+
+        .warning {
+            background-color: #2d2d1a;
+            border-left: 4px solid #ffcc02;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning-title {
+            color: #ffcc02;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .info {
+            background-color: #1a2332;
+            border-left: 4px solid #569cd6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: #569cd6;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .type-table {
+            background-color: #252526;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .type-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .type-table th {
+            background-color: #2d2d30;
+            color: var(--accent-color, #ff4444);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid #3e3e42;
+        }
+
+        .type-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #3e3e42;
+            color: #d4d4d4;
+        }
+
+        .type-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .type-table code {
+            background-color: #1e1e1e;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            color: #ce9178;
+        }
+
+        a {
+            color: var(--accent-color, #ff4444);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+    </style>
+</head>
+<body>
+    <h1>Python Math Module</h1>
+    
+    <p>Python's built-in <code>math</code> module provides access to common mathematical functions and constants. It's useful for more advanced numerical operations beyond basic arithmetic.</p>
+
+    <div class="info">
+        <div class="info-title">Importing the Math Module</div>
+        <p>Before you can use functions from the <code>math</code> module, you need to import it:</p>
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'import-math')">Run</button>
+                    </div>
+                    <code><span class="keyword">import</span> <span class="variable">math</span>
+
+<span class="function">print</span>(<span class="string">"Math module imported successfully!"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-import-math">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-import-math">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Mathematical Constants</div>
+        <p>The <code>math</code> module includes useful mathematical constants like Pi (π) and Euler's number (e).</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'math-constants')">Run</button>
+                    </div>
+                    <code><span class="keyword">import</span> <span class="variable">math</span>
+
+<span class="function">print</span>(<span class="string">f"Value of Pi: {math.pi}"</span>)
+
+<span class="function">print</span>(<span class="string">f"Value of e: {math.e}"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-math-constants">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-math-constants">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Basic Mathematical Functions</div>
+        <p>Functions for common mathematical operations.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'basic-math-functions')">Run</button>
+                    </div>
+                    <code><span class="keyword">import</span> <span class="variable">math</span>
+
+<span class="comment"># Absolute value</span>
+
+<span class="variable">num</span> <span class="operator">=</span> <span class="number">-10.5</span>
+
+<span class="function">print</span>(<span class="string">f"Absolute value of {num}: {math.fabs(num)}"</span>)
+
+<span class="comment"># Square root</span>
+
+<span class="variable">x</span> <span class="operator">=</span> <span class="number">25</span>
+
+<span class="function">print</span>(<span class="string">f"Square root of {x}: {math.sqrt(x)}"</span>)
+
+<span class="comment"># Power</span>
+
+<span class="variable">base</span> <span class="operator">=</span> <span class="number">2</span>
+
+<span class="variable">exponent</span> <span class="operator">=</span> <span class="number">3</span>
+
+<span class="function">print</span>(<span class="string">f"{base} raised to the power of {exponent}: {math.pow(base, exponent)}"</span>)
+
+<span class="comment"># Ceiling and Floor</span>
+
+<span class="variable">val</span> <span class="operator">=</span> <span class="number">4.7</span>
+
+<span class="function">print</span>(<span class="string">f"Ceiling of {val}: {math.ceil(val)}"</span>)
+
+<span class="function">print</span>(<span class="string">f"Floor of {val}: {math.floor(val)}"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-basic-math-functions">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-basic-math-functions">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Logarithmic and Trigonometric Functions</div>
+        <p>The <code>math</code> module also provides functions for logarithms and trigonometry.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'log-trig-functions')">Run</button>
+                    </div>
+                    <code><span class="keyword">import</span> <span class="variable">math</span>
+
+<span class="comment"># Logarithms</span>
+
+<span class="variable">num</span> <span class="operator">=</span> <span class="number">100</span>
+
+<span class="function">print</span>(<span class="string">f"Natural logarithm of {num}: {math.log(num)}"</span>)
+
+<span class="function">print</span>(<span class="string">f"Logarithm base 10 of {num}: {math.log10(num)}"</span>)
+
+<span class="comment"># Trigonometric functions (angles in radians)</span>
+
+<span class="variable">angle_degrees</span> <span class="operator">=</span> <span class="number">90</span>
+
+<span class="variable">angle_radians</span> <span class="operator">=</span> <span class="variable">math</span>.<span class="function">radians</span>(<span class="variable">angle_degrees</span>)
+
+<span class="function">print</span>(<span class="string">f"Sine of {angle_degrees} degrees: {math.sin(angle_radians)}"</span>)
+
+<span class="function">print</span>(<span class="string">f"Cosine of {angle_degrees} degrees: {math.cos(angle_radians)}"</span>)
+
+<span class="function">print</span>(<span class="string">f"Tangent of {angle_degrees} degrees: {math.tan(angle_radians)}"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-log-trig-functions">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-log-trig-functions">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="warning">
+        <div class="warning-title">Important Notes</div>
+        <ul>
+            <li>Most trigonometric functions in the <code>math</code> module expect angles in <strong>radians</strong>. Use <code>math.radians()</code> to convert degrees to radians.</li>
+            <li>The <code>math</code> module does not handle complex numbers. For complex number operations, use the <code>cmath</code> module.</li>
+        </ul>
+    </div>
+
+    <h2>Next Steps</h2>
+    <p>The <code>math</code> module is a powerful tool for numerical computations. Explore its <a href="https://docs.python.org/3/library/math.html" target="_blank">official documentation</a> for a complete list of functions.</p>
+    
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'red';
+            updateAccentColor(savedColor);
+            normalizeCodeBlocks();
+        });
+
+        function updateAccentColor(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            
+            // Clean up the text by trimming and normalizing whitespace
+            text = text.trim();
+            // Remove any leading whitespace from each line while preserving relative indentation
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const terminalSection = document.getElementById(`terminal-${codeType}`);
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            // Simulate typing effect
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 800;
+            
+            switch(codeType) {
+                case 'import-math':
+                    output = `Math module imported successfully!`;
+                    break;
+                case 'math-constants':
+                    output = `Value of Pi: 3.141592653589793
+Value of e: 2.718281828459045`;
+                    break;
+                case 'basic-math-functions':
+                    output = `Absolute value of -10.5: 10.5
+Square root of 25: 5.0
+2 raised to the power of 3: 8.0
+Ceiling of 4.7: 5
+Floor of 4.7: 4`;
+                    break;
+                case 'log-trig-functions':
+                    output = `Natural logarithm of 100: 4.605170185988092
+Logarithm base 10 of 100: 2.0
+Sine of 90 degrees: 1.0
+Cosine of 90 degrees: 6.123233995736766e-17
+Tangent of 90 degrees: 1.633123935319537e+16`;
+                    break;
+                default:
+                    output = 'Code executed successfully.';
+            }
+            
+            // Simulate terminal typing
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 30; // milliseconds between characters
+            
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            typeChar();
+        }
+
+        function normalizeCodeBlocks() {
+            document.querySelectorAll('.code-block code').forEach(el => {
+                let html = el.innerHTML;
+                html = html.replace(/^\n+|\n+$/g, '');
+                html = html.replace(/\n{2,}/g, '\n');
+                el.innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

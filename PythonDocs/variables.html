@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Variables</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #ff4444;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #ff4444);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #ff4444);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        h3 {
+            color: var(--accent-color, #ff4444);
+            font-size: 20px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ol, ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #cccccc;
+        }
+
+        .step {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #ff4444);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .step-number {
+            color: var(--accent-color, #ff4444);
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 15px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 20%, transparent);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:hover {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 30%, transparent);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color, #4caf50) !important;
+            border-color: var(--accent-color, #4caf50) !important;
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #ff4444) !important;
+            border-color: var(--accent-color, #ff4444) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius:0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .variable { color: #9cdcfe; }
+
+        .warning {
+            background-color: #2d2d1a;
+            border-left: 4px solid #ffcc02;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning-title {
+            color: #ffcc02;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .info {
+            background-color: #1a2332;
+            border-left: 4px solid #569cd6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: #569cd6;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .type-table {
+            background-color: #252526;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .type-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .type-table th {
+            background-color: #2d2d30;
+            color: var(--accent-color, #ff4444);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid #3e3e42;
+        }
+
+        .type-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #3e3e42;
+            color: #d4d4d4;
+        }
+
+        .type-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .type-table code {
+            background-color: #1e1e1e;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            color: #ce9178;
+        }
+    </style>
+</head>
+<body>
+    <h1>Python Variables</h1>
+    
+    <p>Variables are containers for storing data values. Python has several built-in data types that you can use to store different kinds of information.</p>
+
+    <div class="info">
+        <div class="info-title">What is a Variable?</div>
+        <p>A variable is like a labeled box where you can store information. You can put different types of data in these boxes and refer to them by their name (label) whenever you need the data.</p>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Creating Variables</div>
+        <p>In Python, you create variables by simply assigning values to them using the <code>=</code> operator. No need to declare the type beforehand!</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'creating-vars')">Run</button>
+                    </div>
+                    <code><span class="comment"># Creating different variables</span>
+
+<span class="variable">name</span> <span class="operator">=</span> <span class="string">"Alice"</span>
+
+<span class="variable">age</span> <span class="operator">=</span> <span class="number">25</span>
+
+<span class="variable">height</span> <span class="operator">=</span> <span class="number">5.6</span>
+
+<span class="variable">is_student</span> <span class="operator">=</span> <span class="keyword">True</span>
+
+<span class="function">print</span>(<span class="string">"Name:"</span>, <span class="variable">name</span>)
+
+<span class="function">print</span>(<span class="string">"Age:"</span>, <span class="variable">age</span>)
+
+<span class="function">print</span>(<span class="string">"Height:"</span>, <span class="variable">height</span>)
+
+<span class="function">print</span>(<span class="string">"Is student:"</span>, <span class="variable">is_student</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-creating-vars">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-creating-vars">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <h2>Python Data Types</h2>
+    <p>Python has several built-in data types. Here's a comprehensive overview:</p>
+
+    <div class="type-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Data Type</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>int</strong></td>
+                    <td>Whole numbers (positive or negative)</td>
+                    <td><code>42</code>, <code>-17</code>, <code>0</code></td>
+                </tr>
+                <tr>
+                    <td><strong>float</strong></td>
+                    <td>Decimal numbers</td>
+                    <td><code>3.14</code>, <code>-2.5</code>, <code>0.0</code></td>
+                </tr>
+                <tr>
+                    <td><strong>str</strong></td>
+                    <td>Text (strings)</td>
+                    <td><code>"Hello"</code>, <code>'Python'</code></td>
+                </tr>
+                <tr>
+                    <td><strong>bool</strong></td>
+                    <td>True or False values</td>
+                    <td><code>True</code>, <code>False</code></td>
+                </tr>
+                <tr>
+                    <td><strong>list</strong></td>
+                    <td>Ordered collection of items</td>
+                    <td><code>[1, 2, 3]</code>, <code>["a", "b"]</code></td>
+                </tr>
+                <tr>
+                    <td><strong>tuple</strong></td>
+                    <td>Immutable ordered collection</td>
+                    <td><code>(1, 2, 3)</code>, <code>("x", "y")</code></td>
+                </tr>
+                <tr>
+                    <td><strong>dict</strong></td>
+                    <td>Key-value pairs</td>
+                    <td><code>{"name": "Bob", "age": 30}</code></td>
+                </tr>
+                <tr>
+                    <td><strong>set</strong></td>
+                    <td>Unordered collection of unique items</td>
+                    <td><code>{1, 2, 3}</code>, <code>{"a", "b"}</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Integers (int)</div>
+        <p>Integers are whole numbers without decimal points. They can be positive, negative, or zero.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'integers')">Run</button>
+                    </div>
+                    <code><span class="comment"># Integer examples</span>
+
+<span class="variable">positive_number</span> <span class="operator">=</span> <span class="number">42</span>
+
+<span class="variable">negative_number</span> <span class="operator">=</span> <span class="number">-17</span>
+
+<span class="variable">zero</span> <span class="operator">=</span> <span class="number">0</span>
+
+<span class="variable">large_number</span> <span class="operator">=</span> <span class="number">1000000</span>
+
+<span class="function">print</span>(<span class="string">"Positive:"</span>, <span class="variable">positive_number</span>)
+
+<span class="function">print</span>(<span class="string">"Negative:"</span>, <span class="variable">negative_number</span>)
+
+<span class="function">print</span>(<span class="string">"Zero:"</span>, <span class="variable">zero</span>)
+
+<span class="function">print</span>(<span class="string">"Large:"</span>, <span class="variable">large_number</span>)
+
+<span class="comment"># Check the type</span>
+
+<span class="function">print</span>(<span class="string">"Type:"</span>, <span class="function">type</span>(<span class="variable">positive_number</span>))</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-integers">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-integers">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Floating Point Numbers (float)</div>
+        <p>Floats are numbers that contain decimal points. They're used for precise calculations.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'floats')">Run</button>
+                    </div>
+                    <code><span class="comment"># Float examples</span>
+
+<span class="variable">pi</span> <span class="operator">=</span> <span class="number">3.14159</span>
+
+<span class="variable">temperature</span> <span class="operator">=</span> <span class="number">-2.5</span>
+
+<span class="variable">price</span> <span class="operator">=</span> <span class="number">19.99</span>
+
+<span class="variable">percentage</span> <span class="operator">=</span> <span class="number">0.85</span>
+
+<span class="function">print</span>(<span class="string">"Pi:"</span>, <span class="variable">pi</span>)
+
+<span class="function">print</span>(<span class="string">"Temperature:"</span>, <span class="variable">temperature</span>)
+
+<span class="function">print</span>(<span class="string">"Price: $"</span>, <span class="variable">price</span>)
+
+<span class="function">print</span>(<span class="string">"Percentage:"</span>, <span class="variable">percentage</span>)
+
+<span class="comment"># Mathematical operations</span>
+
+<span class="variable">area</span> <span class="operator">=</span> <span class="variable">pi</span> <span class="operator">*</span> <span class="number">5</span> <span class="operator">*</span> <span class="number">5</span>  <span class="comment"># pi * r^2</span>
+
+<span class="function">print</span>(<span class="string">"Circle area:"</span>, <span class="variable">area</span>)
+
+<span class="function">print</span>(<span class="string">"Type:"</span>, <span class="function">type</span>(<span class="variable">pi</span>))</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-floats">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-floats">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Strings (str)</div>
+        <p>Strings are sequences of characters used to store text. They can be enclosed in single or double quotes.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'strings')">Run</button>
+                    </div>
+                    <code><span class="comment"># String examples</span>
+
+<span class="variable">single_quotes</span> <span class="operator">=</span> <span class="string">'Hello, World!'</span>
+
+<span class="variable">double_quotes</span> <span class="operator">=</span> <span class="string">"Python Programming"</span>
+
+<span class="variable">empty_string</span> <span class="operator">=</span> <span class="string">""</span>
+
+<span class="variable">multiline</span> <span class="operator">=</span> <span class="string">"""This is a
+
+multiline string"""</span>
+
+<span class="function">print</span>(<span class="variable">single_quotes</span>)
+
+<span class="function">print</span>(<span class="variable">double_quotes</span>)
+
+<span class="function">print</span>(<span class="string">"Empty string length:"</span>, <span class="function">len</span>(<span class="variable">empty_string</span>))
+
+<span class="function">print</span>(<span class="variable">multiline</span>)
+
+<span class="comment"># String operations</span>
+
+<span class="variable">first_name</span> <span class="operator">=</span> <span class="string">"John"</span>
+
+<span class="variable">last_name</span> <span class="operator">=</span> <span class="string">"Doe"</span>
+
+<span class="variable">full_name</span> <span class="operator">=</span> <span class="variable">first_name</span> <span class="operator">+</span> <span class="string">" "</span> <span class="operator">+</span> <span class="variable">last_name</span>
+
+<span class="function">print</span>(<span class="string">"Full name:"</span>, <span class="variable">full_name</span>)
+
+<span class="function">print</span>(<span class="string">"Type:"</span>, <span class="function">type</span>(<span class="variable">single_quotes</span>))</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-strings">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-strings">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Booleans (bool)</div>
+        <p>Booleans represent truth values: either <code>True</code> or <code>False</code>. They're essential for logical operations and conditions.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'booleans')">Run</button>
+                    </div>
+                    <code><span class="comment"># Boolean examples</span>
+
+<span class="variable">is_sunny</span> <span class="operator">=</span> <span class="keyword">True</span>
+
+<span class="variable">is_raining</span> <span class="operator">=</span> <span class="keyword">False</span>
+
+<span class="variable">has_umbrella</span> <span class="operator">=</span> <span class="keyword">True</span>
+
+<span class="function">print</span>(<span class="string">"Is sunny:"</span>, <span class="variable">is_sunny</span>)
+
+<span class="function">print</span>(<span class="string">"Is raining:"</span>, <span class="variable">is_raining</span>)
+
+<span class="function">print</span>(<span class="string">"Has umbrella:"</span>, <span class="variable">has_umbrella</span>)
+
+<span class="comment"># Boolean operations</span>
+
+<span class="variable">need_jacket</span> <span class="operator">=</span> <span class="keyword">not</span> <span class="variable">is_sunny</span>
+
+<span class="variable">go_outside</span> <span class="operator">=</span> <span class="variable">is_sunny</span> <span class="keyword">or</span> <span class="variable">has_umbrella</span>
+
+<span class="function">print</span>(<span class="string">"Need jacket:"</span>, <span class="variable">need_jacket</span>)
+
+<span class="function">print</span>(<span class="string">"Go outside:"</span>, <span class="variable">go_outside</span>)
+
+<span class="function">print</span>(<span class="string">"Type:"</span>, <span class="function">type</span>(<span class="variable">is_sunny</span>))</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-booleans">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-booleans">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Lists</div>
+        <p>Lists are ordered collections that can store multiple items. They're mutable (can be changed) and allow duplicates.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'lists')">Run</button>
+                    </div>
+                    <code><span class="comment"># List examples</span>
+
+<span class="variable">numbers</span> <span class="operator">=</span> [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]
+
+<span class="variable">fruits</span> <span class="operator">=</span> [<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"orange"</span>]
+
+<span class="variable">mixed</span> <span class="operator">=</span> [<span class="number">1</span>, <span class="string">"hello"</span>, <span class="number">3.14</span>, <span class="keyword">True</span>]
+
+<span class="variable">empty_list</span> <span class="operator">=</span> []
+
+<span class="function">print</span>(<span class="string">"Numbers:"</span>, <span class="variable">numbers</span>)
+
+<span class="function">print</span>(<span class="string">"Fruits:"</span>, <span class="variable">fruits</span>)
+
+<span class="function">print</span>(<span class="string">"Mixed:"</span>, <span class="variable">mixed</span>)
+
+<span class="function">print</span>(<span class="string">"First fruit:"</span>, <span class="variable">fruits</span>[<span class="number">0</span>])
+
+<span class="function">print</span>(<span class="string">"List length:"</span>, <span class="function">len</span>(<span class="variable">fruits</span>))
+
+<span class="comment"># Adding items</span>
+
+<span class="variable">fruits</span>.<span class="function">append</span>(<span class="string">"grape"</span>)
+
+<span class="function">print</span>(<span class="string">"After adding grape:"</span>, <span class="variable">fruits</span>)
+
+<span class="function">print</span>(<span class="string">"Type:"</span>, <span class="function">type</span>(<span class="variable">numbers</span>))</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-lists">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-lists">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Tuples</div>
+        <p>Tuples are similar to lists but are immutable (cannot be changed after creation). They're perfect for storing related data that shouldn't change.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'tuples')">Run</button>
+                    </div>
+                    <code><span class="comment"># Tuple examples</span>
+
+<span class="variable">coordinates</span> <span class="operator">=</span> (<span class="number">10</span>, <span class="number">20</span>)
+
+<span class="variable">rgb_color</span> <span class="operator">=</span> (<span class="number">255</span>, <span class="number">128</span>, <span class="number">0</span>)
+
+<span class="variable">person</span> <span class="operator">=</span> (<span class="string">"Alice"</span>, <span class="number">25</span>, <span class="string">"Engineer"</span>)
+
+<span class="variable">single_item</span> <span class="operator">=</span> (<span class="number">42</span>,)  <span class="comment"># Note the comma!</span>
+
+<span class="function">print</span>(<span class="string">"Coordinates:"</span>, <span class="variable">coordinates</span>)
+
+<span class="function">print</span>(<span class="string">"RGB Color:"</span>, <span class="variable">rgb_color</span>)
+
+<span class="function">print</span>(<span class="string">"Person:"</span>, <span class="variable">person</span>)
+
+<span class="function">print</span>(<span class="string">"X coordinate:"</span>, <span class="variable">coordinates</span>[<span class="number">0</span>])
+
+<span class="function">print</span>(<span class="string">"Y coordinate:"</span>, <span class="variable">coordinates</span>[<span class="number">1</span>])
+
+<span class="comment"># Unpacking tuples</span>
+
+<span class="variable">name</span>, <span class="variable">age</span>, <span class="variable">job</span> <span class="operator">=</span> <span class="variable">person</span>
+
+<span class="function">print</span>(<span class="string">f"Name: {name}, Age: {age}, Job: {job}"</span>)
+
+<span class="function">print</span>(<span class="string">"Type:"</span>, <span class="function">type</span>(<span class="variable">coordinates</span>))</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-tuples">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-tuples">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Dictionaries</div>
+        <p>Dictionaries store data in key-value pairs. They're perfect for storing related information that you want to access by name rather than position.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'dictionaries')">Run</button>
+                    </div>
+                    <code><span class="comment"># Dictionary examples</span>
+
+<span class="variable">student</span> <span class="operator">=</span> {
+
+    <span class="string">"name"</span>: <span class="string">"Bob"</span>,
+
+    <span class="string">"age"</span>: <span class="number">20</span>,
+
+    <span class="string">"grade"</span>: <span class="string">"A"</span>,
+
+    <span class="string">"subjects"</span>: [<span class="string">"Math"</span>, <span class="string">"Science"</span>, <span class="string">"English"</span>]
+
+}
+
+<span class="variable">empty_dict</span> <span class="operator">=</span> {}
+
+<span class="variable">scores</span> <span class="operator">=</span> {<span class="string">"math"</span>: <span class="number">95</span>, <span class="string">"science"</span>: <span class="number">87</span>, <span class="string">"english"</span>: <span class="number">92</span>}
+
+<span class="function">print</span>(<span class="string">"Student:"</span>, <span class="variable">student</span>)
+
+<span class="function">print</span>(<span class="string">"Student name:"</span>, <span class="variable">student</span>[<span class="string">"name"</span>])
+
+<span class="function">print</span>(<span class="string">"Student age:"</span>, <span class="variable">student</span>[<span class="string">"age"</span>])
+
+<span class="function">print</span>(<span class="string">"Subjects:"</span>, <span class="variable">student</span>[<span class="string">"subjects"</span>])
+
+<span class="comment"># Adding new key-value pair</span>
+
+<span class="variable">student</span>[<span class="string">"city"</span>] <span class="operator">=</span> <span class="string">"New York"</span>
+
+<span class="function">print</span>(<span class="string">"Updated student:"</span>, <span class="variable">student</span>)
+
+<span class="function">print</span>(<span class="string">"Type:"</span>, <span class="function">type</span>(<span class="variable">student</span>))</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-dictionaries">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-dictionaries">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Sets</div>
+        <p>Sets are unordered collections of unique items. They automatically remove duplicates and are great for membership testing.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'sets')">Run</button>
+                    </div>
+                    <code><span class="comment"># Set examples</span>
+
+<span class="variable">unique_numbers</span> <span class="operator">=</span> {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">5</span>}
+
+<span class="variable">colors</span> <span class="operator">=</span> {<span class="string">"red"</span>, <span class="string">"green"</span>, <span class="string">"blue"</span>}
+
+<span class="variable">empty_set</span> <span class="operator">=</span> <span class="function">set</span>()  <span class="comment"># {} creates an empty dict, not set!</span>
+
+<span class="function">print</span>(<span class="string">"Unique numbers:"</span>, <span class="variable">unique_numbers</span>)  <span class="comment"># Duplicates removed</span>
+
+<span class="function">print</span>(<span class="string">"Colors:"</span>, <span class="variable">colors</span>)
+
+<span class="function">print</span>(<span class="string">"Set length:"</span>, <span class="function">len</span>(<span class="variable">colors</span>))
+
+<span class="comment"># Set operations</span>
+
+<span class="variable">colors</span>.<span class="function">add</span>(<span class="string">"yellow"</span>)
+
+<span class="function">print</span>(<span class="string">"After adding yellow:"</span>, <span class="variable">colors</span>)
+
+<span class="comment"># Check membership</span>
+
+<span class="function">print</span>(<span class="string">"Is red in colors?"</span>, <span class="string">"red"</span> <span class="keyword">in</span> <span class="variable">colors</span>)
+
+<span class="function">print</span>(<span class="string">"Is purple in colors?"</span>, <span class="string">"purple"</span> <span class="keyword">in</span> <span class="variable">colors</span>)
+
+<span class="function">print</span>(<span class="string">"Type:"</span>, <span class="function">type</span>(<span class="variable">colors</span>))</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-sets">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-sets">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Type Checking and Conversion</div>
+        <p>Python provides functions to check and convert between different data types.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'type-conversion')">Run</button>
+                    </div>
+                    <code><span class="comment"># Type checking</span>
+
+<span class="variable">x</span> <span class="operator">=</span> <span class="number">42</span>
+
+<span class="variable">y</span> <span class="operator">=</span> <span class="string">"Hello"</span>
+
+<span class="variable">z</span> <span class="operator">=</span> <span class="number">3.14</span>
+
+<span class="function">print</span>(<span class="string">f"x = {x}, type: {type(x)}"</span>)
+
+<span class="function">print</span>(<span class="string">f"y = {y}, type: {type(y)}"</span>)
+
+<span class="function">print</span>(<span class="string">f"z = {z}, type: {type(z)}"</span>)
+
+<span class="comment"># Type conversion</span>
+
+<span class="variable">num_str</span> <span class="operator">=</span> <span class="string">"123"</span>
+
+<span class="variable">num_int</span> <span class="operator">=</span> <span class="function">int</span>(<span class="variable">num_str</span>)
+
+<span class="variable">num_float</span> <span class="operator">=</span> <span class="function">float</span>(<span class="variable">num_str</span>)
+
+<span class="function">print</span>(<span class="string">f"Original: '{num_str}' (type: {type(num_str)})"</span>)
+
+<span class="function">print</span>(<span class="string">f"As int: {num_int} (type: {type(num_int)})"</span>)
+
+<span class="function">print</span>(<span class="string">f"As float: {num_float} (type: {type(num_float)})"</span>)
+
+<span class="comment"># Converting back to string</span>
+
+<span class="variable">back_to_str</span> <span class="operator">=</span> <span class="function">str</span>(<span class="variable">num_int</span>)
+
+<span class="function">print</span>(<span class="string">f"Back to string: '{back_to_str}' (type: {type(back_to_str)})"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-type-conversion">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-type-conversion">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="warning">
+        <div class="warning-title">Important Notes</div>
+        <ul>
+            <li><strong>Variable names</strong> can contain letters, numbers, and underscores but cannot start with a number</li>
+            <li><strong>Python is case-sensitive</strong>: <code>name</code> and <code>Name</code> are different variables</li>
+            <li><strong>Use descriptive names</strong>: <code>student_age</code> is better than <code>a</code></li>
+            <li><strong>Constants</strong> are usually written in UPPERCASE: <code>MAX_SIZE = 100</code></li>
+        </ul>
+    </div>
+
+    <h2>Practice Exercise</h2>
+    <p>Create variables of different types and practice working with them:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'practice')">Run</button>
+                </div>
+                <code><span class="comment"># Practice: Create a student profile</span>
+
+<span class="variable">student_name</span> <span class="operator">=</span> <span class="string">"Emma Wilson"</span>
+
+<span class="variable">student_id</span> <span class="operator">=</span> <span class="number">12345</span>
+
+<span class="variable">gpa</span> <span class="operator">=</span> <span class="number">3.85</span>
+
+<span class="variable">is_honor_student</span> <span class="operator">=</span> <span class="variable">gpa</span> <span class="operator">>=</span> <span class="number">3.5</span>
+
+<span class="variable">courses</span> <span class="operator">=</span> [<span class="string">"Python"</span>, <span class="string">"Data Science"</span>, <span class="string">"Statistics"</span>]
+
+<span class="variable">contact_info</span> <span class="operator">=</span> {
+
+    <span class="string">"email"</span>: <span class="string">"emma@university.edu"</span>,
+
+    <span class="string">"phone"</span>: <span class="string">"555-0123"</span>
+
+}
+
+<span class="function">print</span>(<span class="string">"=== Student Profile ==="</span>)
+
+<span class="function">print</span>(<span class="string">f"Name: {student_name}"</span>)
+
+<span class="function">print</span>(<span class="string">f"ID: {student_id}"</span>)
+
+<span class="function">print</span>(<span class="string">f"GPA: {gpa}"</span>)
+
+<span class="function">print</span>(<span class="string">f"Honor Student: {is_honor_student}"</span>)
+
+<span class="function">print</span>(<span class="string">f"Courses: {courses}"</span>)
+
+<span class="function">print</span>(<span class="string">f"Email: {contact_info['email']}"</span>)</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-practice">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-practice">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>Next Steps</h2>
+    <p>Excellent! You now understand Python's main data types. Next, you can learn about operators, control structures, and functions to manipulate these variables in more complex ways.</p>
+    
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'red';
+            updateAccentColor(savedColor);
+            normalizeCodeBlocks();
+        });
+
+        function updateAccentColor(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            
+            // Clean up the text by trimming and normalizing whitespace
+            text = text.trim();
+            // Remove any leading whitespace from each line while preserving relative indentation
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const terminalSection = document.getElementById(`terminal-${codeType}`);
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            // Simulate typing effect
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 800;
+            
+            switch(codeType) {
+                case 'creating-vars':
+                    output = `Name: Alice
+Age: 25
+Height: 5.6
+Is student: True`;
+                    break;
+                    
+                case 'integers':
+                    output = `Positive: 42
+Negative: -17
+Zero: 0
+Large: 1000000
+Type: <class 'int'>`;
+                    break;
+                    
+                case 'floats':
+                    output = `Pi: 3.14159
+Temperature: -2.5
+Price: $ 19.99
+Percentage: 0.85
+Circle area: 78.53975
+Type: <class 'float'>`;
+                    break;
+                    
+                case 'strings':
+                    output = `Hello, World!
+Python Programming
+Empty string length: 0
+This is a
+multiline string
+Full name: John Doe
+Type: <class 'str'>`;
+                    break;
+                    
+                case 'booleans':
+                    output = `Is sunny: True
+Is raining: False
+Has umbrella: True
+Need jacket: False
+Go outside: True
+Type: <class 'bool'>`;
+                    break;
+                    
+                case 'lists':
+                    output = `Numbers: [1, 2, 3, 4, 5]
+Fruits: ['apple', 'banana', 'orange']
+Mixed: [1, 'hello', 3.14, True]
+First fruit: apple
+List length: 3
+After adding grape: ['apple', 'banana', 'orange', 'grape']
+Type: <class 'list'>`;
+                    break;
+                    
+                case 'tuples':
+                    output = `Coordinates: (10, 20)
+RGB Color: (255, 128, 0)
+Person: ('Alice', 25, 'Engineer')
+X coordinate: 10
+Y coordinate: 20
+Name: Alice, Age: 25, Job: Engineer
+Type: <class 'tuple'>`;
+                    break;
+                    
+                case 'dictionaries':
+                    output = `Student: {'name': 'Bob', 'age': 20, 'grade': 'A', 'subjects': ['Math', 'Science', 'English']}
+Student name: Bob
+Student age: 20
+Subjects: ['Math', 'Science', 'English']
+Updated student: {'name': 'Bob', 'age': 20, 'grade': 'A', 'subjects': ['Math', 'Science', 'English'], 'city': 'New York'}
+Type: <class 'dict'>`;
+                    break;
+                    
+                case 'sets':
+                    output = `Unique numbers: {1, 2, 3, 4, 5}
+Colors: {'red', 'green', 'blue'}
+Set length: 3
+After adding yellow: {'red', 'green', 'blue', 'yellow'}
+Is red in colors? True
+Is purple in colors? False
+Type: <class 'set'>`;
+                    break;
+                    
+                case 'type-conversion':
+                    output = `x = 42, type: <class 'int'>
+y = Hello, type: <class 'str'>
+z = 3.14, type: <class 'float'>
+Original: '123' (type: <class 'str'>)
+As int: 123 (type: <class 'int'>)
+As float: 123.0 (type: <class 'float'>)
+Back to string: '123' (type: <class 'str'>)`;
+                    break;
+                    
+                case 'practice':
+                    output = `=== Student Profile ===
+Name: Emma Wilson
+ID: 12345
+GPA: 3.85
+Honor Student: True
+Courses: ['Python', 'Data Science', 'Statistics']
+Email: emma@university.edu`;
+                    break;
+                    
+                default:
+                    output = 'Code executed successfully.';
+            }
+            
+            // Simulate terminal typing
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 30; // milliseconds between characters
+            
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            typeChar();
+        }
+
+        function normalizeCodeBlocks() {
+            document.querySelectorAll('.code-block code').forEach(el => {
+                let html = el.innerHTML;
+                html = html.replace(/^\n+|\n+$/g, '');
+                html = html.replace(/\n{2,}/g, '\n');
+                el.innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

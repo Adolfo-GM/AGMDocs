@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Random Module</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #ff4444;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #ff4444);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #ff4444);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        h3 {
+            color: var(--accent-color, #ff4444);
+            font-size: 20px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ol, ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #cccccc;
+        }
+
+        .step {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #ff4444);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .step-number {
+            color: var(--accent-color, #ff4444);
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 15px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 20%, transparent);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:hover {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 30%, transparent);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color, #4caf50) !important;
+            border-color: var(--accent-color, #4caf50) !important;
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #ff4444) !important;
+            border-color: var(--accent-color, #ff4444) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius:0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .variable { color: #9cdcfe; }
+
+        .warning {
+            background-color: #2d2d1a;
+            border-left: 4px solid #ffcc02;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning-title {
+            color: #ffcc02;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .info {
+            background-color: #1a2332;
+            border-left: 4px solid #569cd6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: #569cd6;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .type-table {
+            background-color: #252526;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .type-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .type-table th {
+            background-color: #2d2d30;
+            color: var(--accent-color, #ff4444);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid #3e3e42;
+        }
+
+        .type-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #3e3e42;
+            color: #d4d4d4;
+        }
+
+        .type-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .type-table code {
+            background-color: #1e1e1e;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            color: #ce9178;
+        }
+        a {
+            color: var(--accent-color, #ff4444);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+    </style>
+</head>
+<body>
+    <h1>Python Random Module</h1>
+    
+    <p>The <code>random</code> module in Python is used to generate pseudo-random numbers. It's useful for simulations, games, security applications (though for cryptographic security, use <code>secrets</code> module), and more.</p>
+
+    <div class="info">
+        <div class="info-title">Importing the Random Module</div>
+        <p>Before you can use functions from the <code>random</code> module, you need to import it:</p>
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'import-random')">Run</button>
+                    </div>
+                    <code><span class="keyword">import</span> <span class="variable">random</span>
+
+<span class="function">print</span>(<span class="string">"Random module imported successfully!"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-import-random">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-import-random">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Generating Random Integers: <code>randint()</code></div>
+        <p>The <code>randint(a, b)</code> function returns a random integer <code>N</code> such that <code>a <= N <= b</code>.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'random-int')">Run</button>
+                    </div>
+                    <code><span class="keyword">import</span> <span class="variable">random</span>
+
+<span class="comment"># Generate a random integer between 1 and 10 (inclusive)</span>
+
+<span class="variable">random_number</span> <span class="operator">=</span> <span class="variable">random</span>.<span class="function">randint</span>(<span class="number">1</span>, <span class="number">10</span>)
+
+<span class="function">print</span>(<span class="string">f"Random number between 1 and 10: {random_number}"</span>)
+
+<span class="comment"># Simulate a dice roll</span>
+
+<span class="variable">dice_roll</span> <span class="operator">=</span> <span class="variable">random</span>.<span class="function">randint</span>(<span class="number">1</span>, <span class="number">6</span>)
+
+<span class="function">print</span>(<span class="string">f"Dice roll: {dice_roll}"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-random-int">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-random-int">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Generating Random Floats: <code>random()</code> and <code>uniform()</code></div>
+        <p><code>random()</code> returns a random float in the range <code>[0.0, 1.0)</code>. <code>uniform(a, b)</code> returns a random float <code>N</code> such that <code>a <= N <= b</code>.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'random-float')">Run</button>
+                    </div>
+                    <code><span class="keyword">import</span> <span class="variable">random</span>
+
+<span class="comment"># Random float between 0.0 and 1.0</span>
+
+<span class="variable">rand_float_0_1</span> <span class="operator">=</span> <span class="variable">random</span>.<span class="function">random</span>()
+
+<span class="function">print</span>(<span class="string">f"Random float (0.0 to 1.0): {rand_float_0_1}"</span>)
+
+<span class="comment"># Random float between 10.0 and 20.0</span>
+
+<span class="variable">rand_float_10_20</span> <span class="operator">=</span> <span class="variable">random</span>.<span class="function">uniform</span>(<span class="number">10.0</span>, <span class="number">20.0</span>)
+
+<span class="function">print</span>(<span class="string">f"Random float (10.0 to 20.0): {rand_float_10_20}"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-random-float">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-random-float">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Choosing from a Sequence: <code>choice()</code> and <code>choices()</code></div>
+        <p><code>choice(sequence)</code> returns a random element from a non-empty sequence. <code>choices(sequence, k=n)</code> returns a list of <code>n</code> random elements with replacement.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'random-choice')">Run</button>
+                    </div>
+                    <code><span class="keyword">import</span> <span class="variable">random</span>
+
+<span class="comment"># Choose a random fruit</span>
+
+<span class="variable">fruits</span> <span class="operator">=</span> [<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"cherry"</span>, <span class="string">"date"</span>]
+
+<span class="variable">selected_fruit</span> <span class="operator">=</span> <span class="variable">random</span>.<span class="function">choice</span>(<span class="variable">fruits</span>)
+
+<span class="function">print</span>(<span class="string">f"Random fruit: {selected_fruit}"</span>)
+
+<span class="comment"># Choose multiple random items with replacement</span>
+
+<span class="variable">lucky_numbers</span> <span class="operator">=</span> <span class="variable">random</span>.<span class="function">choices</span>(<span class="variable">range</span>(<span class="number">1</span>, <span class="number">100</span>), <span class="variable">k</span><span class="operator">=</span><span class="number">5</span>)
+
+<span class="function">print</span>(<span class="string">f"Five lucky numbers: {lucky_numbers}"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-random-choice">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-random-choice">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Shuffling a Sequence: <code>shuffle()</code></div>
+        <p>The <code>shuffle(x)</code> function shuffles the items of a list in place (modifies the original list).</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'random-shuffle')">Run</button>
+                    </div>
+                    <code><span class="keyword">import</span> <span class="variable">random</span>
+
+<span class="comment"># Shuffle a deck of cards (represented as a list)</span>
+
+<span class="variable">deck</span> <span class="operator">=</span> [<span class="string">'Ace'</span>, <span class="string">'King'</span>, <span class="string">'Queen'</span>, <span class="string">'Jack'</span>, <span class="string">'10'</span>]
+
+<span class="function">print</span>(<span class="string">f"Original deck: {deck}"</span>)
+
+<span class="variable">random</span>.<span class="function">shuffle</span>(<span class="variable">deck</span>)
+
+<span class="function">print</span>(<span class="string">f"Shuffled deck: {deck}"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-random-shuffle">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-random-shuffle">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="warning">
+        <div class="warning-title">Important Notes</div>
+        <ul>
+            <li>The <code>random</code> module uses a pseudo-random number generator, meaning the numbers are not truly random but are generated by an algorithm.</li>
+            <li>For cryptographic or security-sensitive applications, use the <code>secrets</code> module, which provides a more secure way to generate random numbers.</li>
+            <li>To reproduce a sequence of random numbers, you can use <code>random.seed()</code> with a specific value.</li>
+        </ul>
+    </div>
+
+    <h2>Next Steps</h2>
+    <p>The <code>random</code> module is incredibly versatile for adding unpredictability to your programs. Explore its <a href="https://docs.python.org/3/library/random.html" target="_blank">official documentation</a> for more advanced functions like <code>sample()</code>, <code>gauss()</code>, and more.</p>
+    
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'red';
+            updateAccentColor(savedColor);
+            normalizeCodeBlocks();
+        });
+
+        function updateAccentColor(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            
+            // Clean up the text by trimming and normalizing whitespace
+            text = text.trim();
+            // Remove any leading whitespace from each line while preserving relative indentation
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const terminalSection = document.getElementById(`terminal-${codeType}`);
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            // Simulate typing effect
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 800;
+            
+            switch(codeType) {
+                case 'import-random':
+                    output = `Random module imported successfully!`;
+                    break;
+                case 'random-int':
+                    const randInt = Math.floor(Math.random() * 10) + 1;
+                    const diceRoll = Math.floor(Math.random() * 6) + 1;
+                    output = `Random number between 1 and 10: ${randInt}\nDice roll: ${diceRoll}`;
+                    break;
+                case 'random-float':
+                    const randFloat01 = Math.random();
+                    const randFloat1020 = Math.random() * 10 + 10;
+                    output = `Random float (0.0 to 1.0): ${randFloat01}\nRandom float (10.0 to 20.0): ${randFloat1020}`;
+                    break;
+                case 'random-choice':
+                    const fruits = ["apple", "banana", "cherry", "date"];
+                    const selectedFruit = fruits[Math.floor(Math.random() * fruits.length)];
+                    const luckyNumbers = Array.from({length: 5}, () => Math.floor(Math.random() * 99) + 1);
+                    output = `Random fruit: ${selectedFruit}\nFive lucky numbers: [${luckyNumbers.join(', ')}]`;
+                    break;
+                case 'random-shuffle':
+                    let deck = ['Ace', 'King', 'Queen', 'Jack', '10'];
+                    let originalDeck = [...deck]; // Copy for display
+                    for (let i = deck.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [deck[i], deck[j]] = [deck[j], deck[i]];
+                    }
+                    output = `Original deck: [${originalDeck.map(s => `'${s}'`).join(', ')}]\nShuffled deck: [${deck.map(s => `'${s}'`).join(', ')}]`;
+                    break;
+                default:
+                    output = 'Code executed successfully.';
+            }
+            
+            // Simulate terminal typing
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 30; // milliseconds between characters
+            
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            typeChar();
+        }
+
+        function normalizeCodeBlocks() {
+            document.querySelectorAll('.code-block code').forEach(el => {
+                let html = el.innerHTML;
+                html = html.replace(/^\n+|\n+$/g, '');
+                html = html.replace(/\n{2,}/g, '\n');
+                el.innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

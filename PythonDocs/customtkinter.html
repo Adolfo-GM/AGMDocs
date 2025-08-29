@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CustomTkinter Module</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #ff4444;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #ff4444);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #ff4444);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #cccccc;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button {
+            background-color: rgba(var(--accent-color), 0.2);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:hover {
+            background-color: rgba(var(--accent-color), 0.3);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #ff4444) !important;
+            border-color: var(--accent-color, #ff4444) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius: 0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 55px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        .highlight {
+            color: var(--accent-color, #ff4444);
+            font-weight: 600;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+
+        /* Windows Window Style */
+        .windows-window {
+            background-color: #f0f0f0; /* Light gray background for the window */
+            border: 1px solid #adadad;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 20px 0;
+            color: #000; /* Default text color for the window content */
+        }
+
+        .windows-title-bar {
+            background: linear-gradient(to bottom, #e3e3e3 0%, #d0d0d0 100%);
+            padding: 8px 10px;
+            border-bottom: 1px solid #adadad;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            cursor: default;
+        }
+
+        .windows-title-bar-buttons {
+            display: flex;
+            gap: 1px;
+        }
+
+        .windows-title-bar-button {
+            width: 30px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+
+        .windows-title-bar-button:hover {
+            background-color: #c0c0c0;
+        }
+
+        .windows-title-bar-button.close:hover {
+            background-color: #e81123;
+            color: white;
+        }
+
+        .windows-content {
+            padding: 10px;
+            background-color: #fff; /* White background for the content area */
+            min-height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: #000;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>CustomTkinter Module</h1>
+    
+    <p>CustomTkinter is a modern and customizable Python UI library based on Tkinter. It provides a modern look and feel for Tkinter applications, with support for dark mode, custom themes, and a variety of modern widgets.</p>
+
+    <h2>Basic CustomTkinter Window</h2>
+    <p>Here's a simple example of creating a basic CustomTkinter window:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'customtkinter-basic-window')">Run</button>
+                </div>
+                <code id="code-customtkinter-1"><span class="keyword">import</span> <span class="keyword">customtkinter</span> <span class="keyword">as</span> <span class="highlight">ctk</span>
+
+<span class="comment"># Set the appearance mode (Light, Dark, System)</span>
+<span class="highlight">ctk</span>.<span class="function">set_appearance_mode</span>(<span class="string">"System"</span>)
+
+<span class="comment"># Create the main window</span>
+<span class="highlight">root</span> = <span class="highlight">ctk</span>.<span class="function">CTk</span>()
+<span class="highlight">root</span>.<span class="function">title</span>(<span class="string">"My First CustomTkinter Window"</span>)
+<span class="highlight">root</span>.<span class="function">geometry</span>(<span class="string">"400x250"</span>)
+
+<span class="comment"># Create a label widget</span>
+<span class="highlight">label</span> = <span class="highlight">ctk</span>.<span class="function">CTkLabel</span>(<span class="highlight">root</span>, <span class="keyword">text</span>=<span class="string">"Hello from CustomTkinter!"</span>)
+<span class="highlight">label</span>.<span class="function">pack</span>(<span class="keyword">pady</span>=<span class="number">20</span>)
+
+<span class="comment"># Run the CustomTkinter event loop</span>
+<span class="highlight">root</span>.<span class="function">mainloop</span>()</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-customtkinter-basic-window">
+            <div class="terminal-header">CustomTkinter Window Output</div>
+            <div class="windows-window">
+                <div class="windows-title-bar">
+                    <span>My First CustomTkinter Window</span>
+                    <div class="windows-title-bar-buttons">
+                        <div class="windows-title-bar-button minimize">–</div>
+                        <div class="windows-title-bar-button maximize">◻</div>
+                        <div class="windows-title-bar-button close">✕</div>
+                    </div>
+                </div>
+                <div class="windows-content" id="output-customtkinter-basic-window">
+                    Click "Run" to see the CustomTkinter window content...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>Widgets</h2>
+    <p>CustomTkinter offers enhanced versions of standard Tkinter widgets and new ones:</p>
+    <ul>
+        <li><strong>CTkLabel:</strong> Modern label widget.</li>
+        <li><strong>CTkButton:</strong> Modern button widget with customizable appearance.</li>
+        <li><strong>CTkEntry:</strong> Modern single-line text input.</li>
+        <li><strong>CTkTextbox:</strong> Modern multi-line text input.</li>
+        <li><strong>CTkFrame:</strong> Modern frame for organizing widgets.</li>
+        <li><strong>CTkOptionMenu:</strong> Dropdown menu.</li>
+        <li><strong>CTkProgressBar:</strong> Progress indicator.</li>
+        <li><strong>CTkSlider:</strong> Slider for selecting values in a range.</li>
+        <li><strong>CTkSwitch:</strong> Toggle switch for on/off options.</li>
+        <li><strong>CTkTabview:</strong> Tabbed interface for organizing content.</li>
+    </ul>
+
+    <h2>Theme Selection Example</h2>
+    <p>CustomTkinter supports both light and dark themes. Here's an example that allows users to switch between them:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'customtkinter-theme')">Run</button>
+                </div>
+                <code id="code-customtkinter-2"><span class="keyword">import</span> <span class="keyword">customtkinter</span> <span class="keyword">as</span> <span class="highlight">ctk</span>
+
+<span class="comment"># Function to switch appearance mode</span>
+<span class="keyword">def</span> <span class="function">change_appearance_mode</span>(<span class="highlight">new_appearance_mode</span>):
+    <span class="highlight">ctk</span>.<span class="function">set_appearance_mode</span>(<span class="highlight">new_appearance_mode</span>)
+    <span class="highlight">mode_label</span>.<span class="function">configure</span>(<span class="keyword">text</span>=<span class="string">f"Current Mode: {new_appearance_mode}"</span>)
+
+<span class="comment"># Set initial appearance mode</span>
+<span class="highlight">ctk</span>.<span class="function">set_appearance_mode</span>(<span class="string">"Dark"</span>)
+<span class="highlight">ctk</span>.<span class="function">set_default_color_theme</span>(<span class="string">"blue"</span>)
+
+<span class="comment"># Create the main window</span>
+<span class="highlight">app</span> = <span class="highlight">ctk</span>.<span class="function">CTk</span>()
+<span class="highlight">app</span>.<span class="function">title</span>(<span class="string">"Theme Selection"</span>)
+<span class="highlight">app</span>.<span class="function">geometry</span>(<span class="string">"400x300"</span>)
+
+<span class="comment"># Create a frame</span>
+<span class="highlight">frame</span> = <span class="highlight">ctk</span>.<span class="function">CTkFrame</span>(<span class="highlight">app</span>)
+<span class="highlight">frame</span>.<span class="function">pack</span>(<span class="keyword">fill</span>=<span class="string">"both"</span>, <span class="keyword">expand</span>=<span class="keyword">True</span>, <span class="keyword">padx</span>=<span class="number">20</span>, <span class="keyword">pady</span>=<span class="number">20</span>)
+
+<span class="comment"># Title label</span>
+<span class="highlight">title_label</span> = <span class="highlight">ctk</span>.<span class="function">CTkLabel</span>(<span class="highlight">frame</span>, <span class="keyword">text</span>=<span class="string">"Appearance Mode Selection"</span>, 
+                             <span class="keyword">font</span>=<span class="highlight">ctk</span>.<span class="function">CTkFont</span>(<span class="keyword">size</span>=<span class="number">20</span>, <span class="keyword">weight</span>=<span class="string">"bold"</span>))
+<span class="highlight">title_label</span>.<span class="function">pack</span>(<span class="keyword">pady</span>=<span class="number">20</span>)
+
+<span class="comment"># Current mode label</span>
+<span class="highlight">mode_label</span> = <span class="highlight">ctk</span>.<span class="function">CTkLabel</span>(<span class="highlight">frame</span>, <span class="keyword">text</span>=<span class="string">"Current Mode: Dark"</span>)
+<span class="highlight">mode_label</span>.<span class="function">pack</span>(<span class="keyword">pady</span>=<span class="number">10</span>)
+
+<span class="comment"># Light mode button</span>
+<span class="highlight">light_button</span> = <span class="highlight">ctk</span>.<span class="function">CTkButton</span>(<span class="highlight">frame</span>, <span class="keyword">text</span>=<span class="string">"Light Mode"</span>, 
+                               <span class="keyword">command</span>=<span class="keyword">lambda</span>: <span class="function">change_appearance_mode</span>(<span class="string">"Light"</span>))
+<span class="highlight">light_button</span>.<span class="function">pack</span>(<span class="keyword">pady</span>=<span class="number">10</span>)
+
+<span class="comment"># Dark mode button</span>
+<span class="highlight">dark_button</span> = <span class="highlight">ctk</span>.<span class="function">CTkButton</span>(<span class="highlight">frame</span>, <span class="keyword">text</span>=<span class="string">"Dark Mode"</span>, 
+                              <span class="keyword">command</span>=<span class="keyword">lambda</span>: <span class="function">change_appearance_mode</span>(<span class="string">"Dark"</span>))
+<span class="highlight">dark_button</span>.<span class="function">pack</span>(<span class="keyword">pady</span>=<span class="number">10</span>)
+
+<span class="comment"># System mode button</span>
+<span class="highlight">system_button</span> = <span class="highlight">ctk</span>.<span class="function">CTkButton</span>(<span class="highlight">frame</span>, <span class="keyword">text</span>=<span class="string">"System Mode"</span>, 
+                                <span class="keyword">command</span>=<span class="keyword">lambda</span>: <span class="function">change_appearance_mode</span>(<span class="string">"System"</span>))
+<span class="highlight">system_button</span>.<span class="function">pack</span>(<span class="keyword">pady</span>=<span class="number">10</span>)
+
+<span class="highlight">app</span>.<span class="function">mainloop</span>()</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-customtkinter-theme">
+            <div class="terminal-header">CustomTkinter Window Output</div>
+            <div class="windows-window">
+                <div class="windows-title-bar">
+                    <span>Theme Selection</span>
+                    <div class="windows-title-bar-buttons">
+                        <div class="windows-title-bar-button minimize">–</div>
+                        <div class="windows-title-bar-button maximize">◻</div>
+                        <div class="windows-title-bar-button close">✕</div>
+                    </div>
+                </div>
+                <div class="windows-content" id="output-customtkinter-theme">
+                    Click "Run" to see the CustomTkinter window content...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>Modern UI Form Example</h2>
+    <p>This example demonstrates a modern login form using CustomTkinter widgets:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'customtkinter-login')">Run</button>
+                </div>
+                <code id="code-customtkinter-3"><span class="keyword">import</span> <span class="keyword">customtkinter</span> <span class="keyword">as</span> <span class="highlight">ctk</span>
+
+<span class="keyword">def</span> <span class="function">login</span>():
+    <span class="highlight">username</span> = <span class="highlight">username_entry</span>.<span class="function">get</span>()
+    <span class="highlight">password</span> = <span class="highlight">password_entry</span>.<span class="function">get</span>()
+    
+    <span class="keyword">if</span> <span class="highlight">username</span> <span class="keyword">and</span> <span class="highlight">password</span>:
+        <span class="highlight">status_label</span>.<span class="function">configure</span>(<span class="keyword">text</span>=<span class="string">f"Welcome, {username}!"</span>, <span class="keyword">text_color</span>=<span class="string">"green"</span>)
+        <span class="highlight">login_button</span>.<span class="function">configure</span>(<span class="keyword">state</span>=<span class="string">"disabled"</span>)
+    <span class="keyword">else</span>:
+        <span class="highlight">status_label</span>.<span class="function">configure</span>(<span class="keyword">text</span>=<span class="string">"Please enter both username and password!"</span>, <span class="keyword">text_color</span>=<span class="string">"red"</span>)
+
+<span class="comment"># Set appearance mode and default color theme</span>
+<span class="highlight">ctk</span>.<span class="function">set_appearance_mode</span>(<span class="string">"Dark"</span>)
+<span class="highlight">ctk</span>.<span class="function">set_default_color_theme</span>(<span class="string">"blue"</span>)
+
+<span class="comment"># Create the main window</span>
+<span class="highlight">app</span> = <span class="highlight">ctk</span>.<span class="function">CTk</span>()
+<span class="highlight">app</span>.<span class="function">title</span>(<span class="string">"Modern Login"</span>)
+<span class="highlight">app</span>.<span class="function">geometry</span>(<span class="string">"400x450"</span>)
+
+<span class="comment"># Create a frame</span>
+<span class="highlight">frame</span> = <span class="highlight">ctk</span>.<span class="function">CTkFrame</span>(<span class="highlight">app</span>)
+<span class="highlight">frame</span>.<span class="function">pack</span>(<span class="keyword">fill</span>=<span class="string">"both"</span>, <span class="keyword">expand</span>=<span class="keyword">True</span>, <span class="keyword">padx</span>=<span class="number">40</span>, <span class="keyword">pady</span>=<span class="number">40</span>)
+
+<span class="comment"># Login title</span>
+<span class="highlight">title_label</span> = <span class="highlight">ctk</span>.<span class="function">CTkLabel</span>(<span class="highlight">frame</span>, <span class="keyword">text</span>=<span class="string">"Login"</span>, 
+                             <span class="keyword">font</span>=<span class="highlight">ctk</span>.<span class="function">CTkFont</span>(<span class="keyword">size</span>=<span class="number">24</span>, <span class="keyword">weight</span>=<span class="string">"bold"</span>))
+<span class="highlight">title_label</span>.<span class="function">pack</span>(<span class="keyword">pady</span>=<span class="number">20</span>)
+
+<span class="comment"># Username entry</span>
+<span class="highlight">username_label</span> = <span class="highlight">ctk</span>.<span class="function">CTkLabel</span>(<span class="highlight">frame</span>, <span class="keyword">text</span>=<span class="string">"Username:"</span>)
+<span class="highlight">username_label</span>.<span class="function">pack</span>(<span class="keyword">anchor</span>=<span class="string">"w"</span>, <span class="keyword">pady</span>=(<span class="number">10</span>, <span class="number">0</span>))
+<span class="highlight">username_entry</span> = <span class="highlight">ctk</span>.<span class="function">CTkEntry</span>(<span class="highlight">frame</span>, <span class="keyword">width</span>=<span class="number">300</span>, <span class="keyword">placeholder_text</span>=<span class="string">"Enter your username"</span>)
+<span class="highlight">username_entry</span>.<span class="function">pack</span>(<span class="keyword">pady</span>=<span class="number">5</span>)
+
+<span class="comment"># Password entry</span>
+<span class="highlight">password_label</span> = <span class="highlight">ctk</span>.<span class="function">CTkLabel</span>(<span class="highlight">frame</span>, <span class="keyword">text</span>=<span class="string">"Password:"</span>)
+<span class="highlight">password_label</span>.<span class="function">pack</span>(<span class="keyword">anchor</span>=<span class="string">"w"</span>, <span class="keyword">pady</span>=(<span class="number">10</span>, <span class="number">0</span>))
+<span class="highlight">password_entry</span> = <span class="highlight">ctk</span>.<span class="function">CTkEntry</span>(<span class="highlight">frame</span>, <span class="keyword">width</span>=<span class="number">300</span>, <span class="keyword">show</span>=<span class="string">"*"</span>, <span class="keyword">placeholder_text</span>=<span class="string">"Enter your password"</span>)
+<span class="highlight">password_entry</span>.<span class="function">pack</span>(<span class="keyword">pady</span>=<span class="number">5</span>)
+
+<span class="comment"># Remember me checkbox</span>
+<span class="highlight">remember_checkbox</span> = <span class="highlight">ctk</span>.<span class="function">CTkCheckBox</span>(<span class="highlight">frame</span>, <span class="keyword">text</span>=<span class="string">"Remember me"</span>)
+<span class="highlight">remember_checkbox</span>.<span class="function">pack</span>(<span class="keyword">anchor</span>=<span class="string">"w"</span>, <span class="keyword">pady</span>=<span class="number">15</span>)
+
+<span class="comment"># Login button</span>
+<span class="highlight">login_button</span> = <span class="highlight">ctk</span>.<span class="function">CTkButton</span>(<span class="highlight">frame</span>, <span class="keyword">text</span>=<span class="string">"Login"</span>, <span class="keyword">command</span>=<span class="function">login</span>, <span class="keyword">width</span>=<span class="number">200</span>)
+<span class="highlight">login_button</span>.<span class="function">pack</span>(<span class="keyword">pady</span>=<span class="number">20</span>)
+
+<span class="comment"># Status label</span>
+<span class="highlight">status_label</span> = <span class="highlight">ctk</span>.<span class="function">CTkLabel</span>(<span class="highlight">frame</span>, <span class="keyword">text</span>=<span class="string">""</span>)
+<span class="highlight">status_label</span>.<span class="function">pack</span>(<span class="keyword">pady</span>=<span class="number">10</span>)
+
+<span class="highlight">app</span>.<span class="function">mainloop</span>()</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-customtkinter-login">
+            <div class="terminal-header">CustomTkinter Window Output</div>
+            <div class="windows-window">
+                <div class="windows-title-bar">
+                    <span>Modern Login</span>
+                    <div class="windows-title-bar-buttons">
+                        <div class="windows-title-bar-button minimize">–</div>
+                        <div class="windows-title-bar-button maximize">◻</div>
+                        <div class="windows-title-bar-button close">✕</div>
+                    </div>
+                </div>
+                <div class="windows-content" id="output-customtkinter-login">
+                    Click "Run" to see the CustomTkinter window content...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'red';
+            updateAccentColor(savedColor);
+            normalizeCodeBlocks(); // Remove extra blank lines from code blocks
+        });
+
+        function updateAccentColor(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            
+            // Clean up the text by trimming and normalizing whitespace
+            text = text.trim();
+            // Remove any leading whitespace from each line while preserving relative indentation
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            // Simulate typing effect
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let outputContent = '';
+            let delay = 800;
+            
+            switch(codeType) {
+                case 'customtkinter-basic-window':
+                    // Dark themed CustomTkinter window with blue accent color
+                    outputContent = `
+                        <div style="font-family: 'Segoe UI', sans-serif; text-align: center; width: 100%; background-color: #2b2b2b; color: white; padding: 20px; border-radius: 8px;">
+                            <p style="font-size: 16px; margin: 40px 0;">Hello from CustomTkinter!</p>
+                        </div>
+                    `;
+                    delay = 1000;
+                    break;
+                
+                case 'customtkinter-theme':
+                    // Dark themed UI by default
+                    outputContent = `
+                        <div style="font-family: 'Segoe UI', sans-serif; width: 100%; background-color: #2b2b2b; color: white; padding: 20px; border-radius: 8px;">
+                            <div style="text-align: center; margin-bottom: 20px;">
+                                <h3 style="margin-bottom: 15px; font-size: 20px; font-weight: bold;">Appearance Mode Selection</h3>
+                                <p style="margin-bottom: 20px; font-size: 14px;" id="theme-mode-label">Current Mode: Dark</p>
+                                
+                                <button id="light-mode-btn" style="background-color: #1f6aa5; color: white; border: none; padding: 8px 15px; border-radius: 6px; margin: 5px; cursor: pointer; width: 120px;">Light Mode</button><br>
+                                <button id="dark-mode-btn" style="background-color: #1f6aa5; color: white; border: none; padding: 8px 15px; border-radius: 6px; margin: 5px; cursor: pointer; width: 120px;">Dark Mode</button><br>
+                                <button id="system-mode-btn" style="background-color: #1f6aa5; color: white; border: none; padding: 8px 15px; border-radius: 6px; margin: 5px; cursor: pointer; width: 120px;">System Mode</button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Set up interactivity
+                    delay = 1000;
+                    setTimeout(() => {
+                        outputDiv.innerHTML = outputContent;
+                        
+                        // Theme switching functionality
+                        const container = outputDiv.querySelector('div');
+                        const modeLabel = document.getElementById('theme-mode-label');
+                        const lightBtn = document.getElementById('light-mode-btn');
+                        const darkBtn = document.getElementById('dark-mode-btn');
+                        const systemBtn = document.getElementById('system-mode-btn');
+                        
+                        if (lightBtn && darkBtn && systemBtn && modeLabel) {
+                            lightBtn.addEventListener('click', function() {
+                                container.style.backgroundColor = '#ebebeb';
+                                container.style.color = '#000000';
+                                modeLabel.textContent = 'Current Mode: Light';
+                            });
+                            
+                            darkBtn.addEventListener('click', function() {
+                                container.style.backgroundColor = '#2b2b2b';
+                                container.style.color = '#ffffff';
+                                modeLabel.textContent = 'Current Mode: Dark';
+                            });
+                            
+                            systemBtn.addEventListener('click', function() {
+                                // Just toggle between light and dark for the demo
+                                if (container.style.backgroundColor === '#2b2b2b') {
+                                    container.style.backgroundColor = '#ebebeb';
+                                    container.style.color = '#000000';
+                                } else {
+                                    container.style.backgroundColor = '#2b2b2b';
+                                    container.style.color = '#ffffff';
+                                }
+                                modeLabel.textContent = 'Current Mode: System';
+                            });
+                        }
+                        
+                        button.textContent = 'Run';
+                        button.disabled = false;
+                        button.classList.remove('run-success');
+                    }, delay);
+                    
+                    return; // Early return to handle the interactivity
+                    
+                case 'customtkinter-login':
+                    outputContent = `
+                        <div style="font-family: 'Segoe UI', sans-serif; width: 100%; background-color: #2b2b2b; color: white; padding: 20px; border-radius: 8px;">
+                            <div style="max-width: 300px; margin: 0 auto; text-align: center;">
+                                <h3 style="font-size: 24px; margin-bottom: 20px; font-weight: bold;">Login</h3>
+                                
+                                <div style="text-align: left; margin-bottom: 5px;">
+                                    <label style="display: block; margin-bottom: 2px;">Username:</label>
+                                    <input id="username-field" type="text" placeholder="Enter your username" style="width: 100%; padding: 8px; border-radius: 6px; border: none; background-color: #404040; color: white; margin-bottom: 10px;">
+                                </div>
+                                
+                                <div style="text-align: left; margin-bottom: 5px;">
+                                    <label style="display: block; margin-bottom: 2px;">Password:</label>
+                                    <input id="password-field" type="password" placeholder="Enter your password" style="width: 100%; padding: 8px; border-radius: 6px; border: none; background-color: #404040; color: white; margin-bottom: 10px;">
+                                </div>
+                                
+                                <div style="text-align: left; margin-bottom: 15px;">
+                                    <label style="display: flex; align-items: center; cursor: pointer;">
+                                        <input type="checkbox" style="margin-right: 5px;"> Remember me
+                                    </label>
+                                </div>
+                                
+                                <button id="login-button" style="background-color: #1f6aa5; color: white; border: none; padding: 10px; border-radius: 6px; width: 200px; cursor: pointer; margin-bottom: 15px;">Login</button>
+                                
+                                <p id="login-status" style="height: 20px; font-size: 14px;"></p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Set up login form interactivity
+                    delay = 1000;
+                    setTimeout(() => {
+                        outputDiv.innerHTML = outputContent;
+                        
+                        // Add login functionality
+                        const usernameField = document.getElementById('username-field');
+                        const passwordField = document.getElementById('password-field');
+                        const loginButton = document.getElementById('login-button');
+                        const statusLabel = document.getElementById('login-status');
+                        
+                        if (usernameField && passwordField && loginButton && statusLabel) {
+                            loginButton.addEventListener('click', function() {
+                                if (usernameField.value.trim() && passwordField.value.trim()) {
+                                    statusLabel.textContent = `Welcome, ${usernameField.value.trim()}!`;
+                                    statusLabel.style.color = '#4caf50';
+                                    loginButton.disabled = true;
+                                    loginButton.style.opacity = '0.7';
+                                    loginButton.style.cursor = 'not-allowed';
+                                } else {
+                                    statusLabel.textContent = 'Please enter both username and password!';
+                                    statusLabel.style.color = '#f44336';
+                                }
+                            });
+                        }
+                        
+                        button.textContent = 'Run';
+                        button.disabled = false;
+                        button.classList.remove('run-success');
+                    }, delay);
+                    
+                    return; // Early return for login form handling
+                    
+                default:
+                    outputContent = 'Simulated code execution.';
+                    delay = 500;
+            }
+            
+            // Simulate content display
+            setTimeout(() => {
+                outputDiv.innerHTML = outputContent;
+                button.textContent = 'Run';
+                button.disabled = false;
+                button.classList.remove('run-success');
+            }, delay);
+        }
+        
+        function normalizeCodeBlocks() {
+            document.querySelectorAll('.code-block code').forEach(el => {
+                let html = el.innerHTML;
+                html = html.replace(/^\n+|\n+$/g, ''); // trim leading/trailing blank lines
+                html = html.replace(/\n{2,}/g, '\n'); // collapse multiple blank lines
+                el.innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGM Docs - Programming Documentation Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e1e1e 0%, #2d2d30 100%);
+            color: #d4d4d4;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(37, 37, 38, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            border-bottom: 1px solid #3e3e42;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff4444, #ff6b6b);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 18px;
+        }
+
+        .logo h1 {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .accent-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .accent-label {
+            color: #cccccc;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .accent-dropdown {
+            background-color: #2d2d30;
+            color: #cccccc;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .accent-dropdown:hover {
+            background-color: #404040;
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .main-content {
+            margin-top: 80px;
+            padding: 60px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-color, #ff4444), #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #cccccc;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: #999999;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .doc-card {
+            background: rgba(37, 37, 38, 0.8);
+            border: 1px solid #3e3e42;
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .doc-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color, #ff4444), #ff6b6b);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .doc-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .doc-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color, #ff4444);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .doc-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .python-icon {
+            background: linear-gradient(135deg, #3776ab, #4584b6);
+        }
+
+        .swift-icon {
+            background: linear-gradient(135deg, #fa7343, #ff8c42);
+        }
+
+        .java-icon {
+            background: linear-gradient(135deg, #f89820, #ed8b00);
+        }
+
+        .doc-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .doc-description {
+            color: #cccccc;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .doc-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-color, #ff4444);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .doc-link:hover {
+            color: #ff6b6b;
+            transform: translateX(5px);
+        }
+
+        .doc-link::after {
+            content: '→';
+            transition: transform 0.2s ease;
+        }
+
+        .doc-link:hover::after {
+            transform: translateX(3px);
+        }
+
+        .features-section {
+            margin-top: 80px;
+            text-align: center;
+        }
+
+        .features-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .features-subtitle {
+            font-size: 1.2rem;
+            color: #cccccc;
+            margin-bottom: 50px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-item {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-color, #ff4444);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 20px;
+            color: white;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .feature-description {
+            color: #cccccc;
+            line-height: 1.6;
+        }
+
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #ff4444;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .docs-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <h1>AGM Docs</h1>
+            </div>
+            <p>by Adolfo GM</p>
+            <div class="accent-controls">
+                <span class="accent-label">Theme:</span>
+                <select class="accent-dropdown" id="accentSelector" onchange="changeAccentColor(this.value)">
+                    <option value="blue">Blue</option>
+                    <option value="red" selected>Red</option>
+                    <option value="green">Green</option>
+                    <option value="yellow">Yellow</option>
+                    <option value="purple">Purple</option>
+                    <option value="pink">Pink</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero-section">
+                <h1 class="hero-title">AGM Docs</h1>
+                <p class="hero-subtitle">Programming Documentation & Tools</p>
+                <p class="hero-description">
+                    AGM Docs is a comprehensive toolbase that provides high-quality documentation, 
+                    and development tools for multiple programming languages. Whether you're 
+                    a beginner learning your first language or an experienced developer exploring new 
+                    technologies, we've got you covered.
+                </p>
+            </section>
+
+            <section class="docs-grid">
+                <div class="doc-card">
+                    <h3 class="doc-title">Python Documentation</h3>
+                    <p class="doc-description">
+                        Comprehensive Python tutorials covering basics, advanced concepts, popular libraries 
+                        like Tkinter, Pygame, and powerful tools for data science and automation.
+                    </p>
+                    <a href="PythonDocs/index.html" class="doc-link">
+                        Learn Python
+                    </a>
+                </div>
+
+                <div class="doc-card">
+                    <h3 class="doc-title">Swift Documentation</h3>
+                    <p class="doc-description">
+                        Master Swift programming for iOS, macOS, and beyond. From fundamentals to advanced 
+                        SwiftUI concepts, build amazing apps with Apple's powerful language.
+                    </p>
+                    <a href="SwiftDocs/index.html" class="doc-link">
+                        Learn Swift
+                    </a>
+                </div>
+
+                <div class="doc-card">
+                    <h3 class="doc-title">Java Documentation</h3>
+                    <p class="doc-description">
+                        Dive into Java development with comprehensive guides covering core concepts, 
+                        object-oriented programming, frameworks, and enterprise application development.
+                    </p>
+                    <a href="JavaDocs/index.html" class="doc-link">
+                        Learn Java
+                    </a>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'red';
+            changeAccentColor(savedColor);
+            document.getElementById('accentSelector').value = savedColor;
+        });
+
+        function changeAccentColor(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+            
+            // Save to localStorage
+            localStorage.setItem('accentColor', color);
+        }
+    </script>
+</body>
+</html>

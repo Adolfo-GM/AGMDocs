@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Functions</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #ff4444;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #ff4444);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #ff4444);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        h3 {
+            color: var(--accent-color, #ff4444);
+            font-size: 20px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ol, ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #cccccc;
+        }
+
+        .step {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #ff4444);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .step-number {
+            color: var(--accent-color, #ff4444);
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 15px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 20%, transparent);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:hover {
+            background-color: color-mix(in srgb, var(--accent-color, #ff4444) 30%, transparent);
+            border-color: var(--accent-color, #ff4444);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color, #4caf50) !important;
+            border-color: var(--accent-color, #4caf50) !important;
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #ff4444) !important;
+            border-color: var(--accent-color, #ff4444) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius:0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .variable { color: #9cdcfe; }
+
+        .warning {
+            background-color: #2d2d1a;
+            border-left: 4px solid #ffcc02;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning-title {
+            color: #ffcc02;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .info {
+            background-color: #1a2332;
+            border-left: 4px solid #569cd6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: #569cd6;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Python Functions</h1>
+    
+    <p>Functions are reusable blocks of code that perform specific tasks. They help organize your code, make it more readable, and avoid repetition.</p>
+
+    <div class="info">
+        <div class="info-title">What is a Function?</div>
+        <p>A function is like a recipe. You give it some ingredients (parameters), it follows a set of instructions (the function body), and it gives you back a result (return value). Once you write a function, you can use it as many times as you want!</p>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Basic Function Definition</div>
+        <p>To create a function in Python, use the <code>def</code> keyword followed by the function name and parentheses.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'basic-function')">Run</button>
+                    </div>
+                    <code><span class="comment"># Define a simple function</span>
+
+<span class="keyword">def</span> <span class="function">say_hello</span>():
+
+    <span class="function">print</span>(<span class="string">"Hello, World!"</span>)
+
+    <span class="function">print</span>(<span class="string">"Welcome to Python functions!"</span>)
+
+<span class="comment"># Call the function</span>
+
+<span class="function">say_hello</span>()
+
+<span class="comment"># You can call it multiple times</span>
+
+<span class="function">say_hello</span>()
+
+<span class="function">say_hello</span>()</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-basic-function">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-basic-function">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Functions with Parameters</div>
+        <p>Parameters allow you to pass data into functions, making them more flexible and reusable.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'parameters')">Run</button>
+                    </div>
+                    <code><span class="comment"># Function with one parameter</span>
+
+<span class="keyword">def</span> <span class="function">greet_person</span>(<span class="variable">name</span>):
+
+    <span class="function">print</span>(<span class="string">f"Hello, {name}!"</span>)
+
+    <span class="function">print</span>(<span class="string">f"Nice to meet you, {name}."</span>)
+
+<span class="comment"># Function with multiple parameters</span>
+
+<span class="keyword">def</span> <span class="function">introduce_person</span>(<span class="variable">name</span>, <span class="variable">age</span>, <span class="variable">city</span>):
+
+    <span class="function">print</span>(<span class="string">f"Name: {name}"</span>)
+
+    <span class="function">print</span>(<span class="string">f"Age: {age}"</span>)
+
+    <span class="function">print</span>(<span class="string">f"City: {city}"</span>)
+
+<span class="comment"># Call the functions</span>
+
+<span class="function">greet_person</span>(<span class="string">"Alice"</span>)
+
+<span class="function">greet_person</span>(<span class="string">"Bob"</span>)
+
+<span class="function">introduce_person</span>(<span class="string">"Emma"</span>, <span class="number">25</span>, <span class="string">"New York"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-parameters">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-parameters">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Functions that Return Values</div>
+        <p>Functions can return values using the <code>return</code> statement. This allows you to get results back from the function.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'return-values')">Run</button>
+                    </div>
+                    <code><span class="comment"># Function that returns a value</span>
+
+<span class="keyword">def</span> <span class="function">add_numbers</span>(<span class="variable">a</span>, <span class="variable">b</span>):
+
+    <span class="variable">result</span> <span class="operator">=</span> <span class="variable">a</span> <span class="operator">+</span> <span class="variable">b</span>
+
+    <span class="keyword">return</span> <span class="variable">result</span>
+
+<span class="keyword">def</span> <span class="function">calculate_area</span>(<span class="variable">length</span>, <span class="variable">width</span>):
+
+    <span class="keyword">return</span> <span class="variable">length</span> <span class="operator">*</span> <span class="variable">width</span>
+
+<span class="keyword">def</span> <span class="function">get_full_name</span>(<span class="variable">first</span>, <span class="variable">last</span>):
+
+    <span class="keyword">return</span> <span class="variable">first</span> <span class="operator">+</span> <span class="string">" "</span> <span class="operator">+</span> <span class="variable">last</span>
+
+<span class="comment"># Use the returned values</span>
+
+<span class="variable">sum_result</span> <span class="operator">=</span> <span class="function">add_numbers</span>(<span class="number">10</span>, <span class="number">5</span>)
+
+<span class="function">print</span>(<span class="string">f"10 + 5 = {sum_result}"</span>)
+
+<span class="variable">area</span> <span class="operator">=</span> <span class="function">calculate_area</span>(<span class="number">8</span>, <span class="number">6</span>)
+
+<span class="function">print</span>(<span class="string">f"Area: {area} square units"</span>)
+
+<span class="variable">name</span> <span class="operator">=</span> <span class="function">get_full_name</span>(<span class="string">"John"</span>, <span class="string">"Smith"</span>)
+
+<span class="function">print</span>(<span class="string">f"Full name: {name}"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-return-values">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-return-values">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Default Parameters</div>
+        <p>You can provide default values for parameters. If no argument is passed, the default value is used.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'default-params')">Run</button>
+                    </div>
+                    <code><span class="comment"># Function with default parameters</span>
+
+<span class="keyword">def</span> <span class="function">greet</span>(<span class="variable">name</span>, <span class="variable">greeting</span><span class="operator">=</span><span class="string">"Hello"</span>):
+
+    <span class="keyword">return</span> <span class="string">f"{greeting}, {name}!"</span>
+
+<span class="keyword">def</span> <span class="function">create_profile</span>(<span class="variable">name</span>, <span class="variable">age</span><span class="operator">=</span><span class="number">0</span>, <span class="variable">city</span><span class="operator">=</span><span class="string">"Unknown"</span>):
+
+    <span class="keyword">return</span> <span class="string">f"{name}, {age} years old, from {city}"</span>
+
+<span class="comment"># Call with different combinations</span>
+
+<span class="function">print</span>(<span class="function">greet</span>(<span class="string">"Alice"</span>))  <span class="comment"># Uses default greeting</span>
+
+<span class="function">print</span>(<span class="function">greet</span>(<span class="string">"Bob"</span>, <span class="string">"Hi"</span>))  <span class="comment"># Custom greeting</span>
+
+<span class="function">print</span>(<span class="function">greet</span>(<span class="string">"Charlie"</span>, <span class="string">"Good morning"</span>))
+
+<span class="function">print</span>(<span class="function">create_profile</span>(<span class="string">"Emma"</span>))  <span class="comment"># Uses defaults</span>
+
+<span class="function">print</span>(<span class="function">create_profile</span>(<span class="string">"David"</span>, <span class="number">30</span>))  <span class="comment"># Custom age</span>
+
+<span class="function">print</span>(<span class="function">create_profile</span>(<span class="string">"Sarah"</span>, <span class="number">25</span>, <span class="string">"Boston"</span>))  <span class="comment"># All custom</span></code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-default-params">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-default-params">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Functions with Lists and Dictionaries</div>
+        <p>Functions can work with complex data types like lists and dictionaries.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'complex-data')">Run</button>
+                    </div>
+                    <code><span class="comment"># Function that works with lists</span>
+
+<span class="keyword">def</span> <span class="function">calculate_average</span>(<span class="variable">numbers</span>):
+
+    <span class="keyword">if</span> <span class="function">len</span>(<span class="variable">numbers</span>) <span class="operator">==</span> <span class="number">0</span>:
+
+        <span class="keyword">return</span> <span class="number">0</span>
+
+    <span class="keyword">return</span> <span class="function">sum</span>(<span class="variable">numbers</span>) <span class="operator">/</span> <span class="function">len</span>(<span class="variable">numbers</span>)
+
+<span class="keyword">def</span> <span class="function">find_largest</span>(<span class="variable">numbers</span>):
+
+    <span class="keyword">return</span> <span class="function">max</span>(<span class="variable">numbers</span>)
+
+<span class="comment"># Function that works with dictionaries</span>
+
+<span class="keyword">def</span> <span class="function">display_student</span>(<span class="variable">student</span>):
+
+    <span class="function">print</span>(<span class="string">f"Student: {student['name']}"</span>)
+
+    <span class="function">print</span>(<span class="string">f"Age: {student['age']}"</span>)
+
+    <span class="function">print</span>(<span class="string">f"Grade: {student['grade']}"</span>)
+
+<span class="comment"># Test the functions</span>
+
+<span class="variable">scores</span> <span class="operator">=</span> [<span class="number">85</span>, <span class="number">92</span>, <span class="number">78</span>, <span class="number">96</span>, <span class="number">89</span>]
+
+<span class="variable">avg</span> <span class="operator">=</span> <span class="function">calculate_average</span>(<span class="variable">scores</span>)
+
+<span class="variable">highest</span> <span class="operator">=</span> <span class="function">find_largest</span>(<span class="variable">scores</span>)
+
+<span class="function">print</span>(<span class="string">f"Scores: {scores}"</span>)
+
+<span class="function">print</span>(<span class="string">f"Average: {avg:.1f}"</span>)
+
+<span class="function">print</span>(<span class="string">f"Highest: {highest}"</span>)
+
+<span class="variable">student</span> <span class="operator">=</span> {<span class="string">"name"</span>: <span class="string">"Alice"</span>, <span class="string">"age"</span>: <span class="number">20</span>, <span class="string">"grade"</span>: <span class="string">"A"</span>}
+
+<span class="function">display_student</span>(<span class="variable">student</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-complex-data">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-complex-data">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Variable Scope</div>
+        <p>Variables defined inside functions have local scope, while variables outside have global scope.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'scope')">Run</button>
+                    </div>
+                    <code><span class="comment"># Global variable</span>
+
+<span class="variable">global_message</span> <span class="operator">=</span> <span class="string">"I'm global!"</span>
+
+<span class="keyword">def</span> <span class="function">test_scope</span>():
+
+    <span class="comment"># Local variable</span>
+
+    <span class="variable">local_message</span> <span class="operator">=</span> <span class="string">"I'm local!"</span>
+
+    <span class="function">print</span>(<span class="string">"Inside function:"</span>)
+
+    <span class="function">print</span>(<span class="variable">global_message</span>)  <span class="comment"># Can access global</span>
+
+    <span class="function">print</span>(<span class="variable">local_message</span>)   <span class="comment"># Can access local</span>
+
+<span class="keyword">def</span> <span class="function">modify_global</span>():
+
+    <span class="keyword">global</span> <span class="variable">global_message</span>
+
+    <span class="variable">global_message</span> <span class="operator">=</span> <span class="string">"I've been modified!"</span>
+
+<span class="function">print</span>(<span class="string">"Before function call:"</span>)
+
+<span class="function">print</span>(<span class="variable">global_message</span>)
+
+<span class="function">test_scope</span>()
+
+<span class="function">print</span>(<span class="string">"\nAfter modifying global:"</span>)
+
+<span class="function">modify_global</span>()
+
+<span class="function">print</span>(<span class="variable">global_message</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-scope">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-scope">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info">
+        <div class="info-title">Function Best Practices</div>
+        <ul>
+            <li><strong>Use descriptive names:</strong> <code>calculate_area()</code> is better than <code>calc()</code></li>
+            <li><strong>Keep functions small:</strong> Each function should do one thing well</li>
+            <li><strong>Use docstrings:</strong> Document what your function does</li>
+            <li><strong>Return values:</strong> Prefer returning values over printing inside functions</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Practical Example: Calculator</div>
+        <p>Let's create a simple calculator using functions to demonstrate real-world usage.</p>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'calculator')">Run</button>
+                    </div>
+                    <code><span class="comment"># Simple calculator functions</span>
+
+<span class="keyword">def</span> <span class="function">add</span>(<span class="variable">x</span>, <span class="variable">y</span>):
+
+    <span class="string">"""Add two numbers and return the result."""</span>
+
+    <span class="keyword">return</span> <span class="variable">x</span> <span class="operator">+</span> <span class="variable">y</span>
+
+<span class="keyword">def</span> <span class="function">subtract</span>(<span class="variable">x</span>, <span class="variable">y</span>):
+
+    <span class="string">"""Subtract y from x and return the result."""</span>
+
+    <span class="keyword">return</span> <span class="variable">x</span> <span class="operator">-</span> <span class="variable">y</span>
+
+<span class="keyword">def</span> <span class="function">multiply</span>(<span class="variable">x</span>, <span class="variable">y</span>):
+
+    <span class="string">"""Multiply two numbers and return the result."""</span>
+
+    <span class="keyword">return</span> <span class="variable">x</span> <span class="operator">*</span> <span class="variable">y</span>
+
+<span class="keyword">def</span> <span class="function">divide</span>(<span class="variable">x</span>, <span class="variable">y</span>):
+
+    <span class="string">"""Divide x by y and return the result."""</span>
+
+    <span class="keyword">if</span> <span class="variable">y</span> <span class="operator">==</span> <span class="number">0</span>:
+
+        <span class="keyword">return</span> <span class="string">"Error: Cannot divide by zero!"</span>
+
+    <span class="keyword">return</span> <span class="variable">x</span> <span class="operator">/</span> <span class="variable">y</span>
+
+<span class="comment"># Test the calculator</span>
+
+<span class="variable">a</span>, <span class="variable">b</span> <span class="operator">=</span> <span class="number">10</span>, <span class="number">3</span>
+
+<span class="function">print</span>(<span class="string">f"Calculator Demo with {a} and {b}:"</span>)
+
+<span class="function">print</span>(<span class="string">f"{a} + {b} = {add(a, b)}"</span>)
+
+<span class="function">print</span>(<span class="string">f"{a} - {b} = {subtract(a, b)}"</span>)
+
+<span class="function">print</span>(<span class="string">f"{a} * {b} = {multiply(a, b)}"</span>)
+
+<span class="function">print</span>(<span class="string">f"{a} / {b} = {divide(a, b):.2f}"</span>)
+
+<span class="function">print</span>(<span class="string">f"{a} / 0 = {divide(a, 0)}"</span>)</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-calculator">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-calculator">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <h2>Next Steps</h2>
+    <p>Great! You now understand how to create and use functions in Python. Functions are essential for writing organized, reusable code. Next, you can explore classes and object-oriented programming!</p>
+    
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'red';
+            updateAccentColor(savedColor);
+            normalizeCodeBlocks();
+        });
+
+        function updateAccentColor(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink');
+            
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            
+            // Clean up the text by trimming and normalizing whitespace
+            text = text.trim();
+            // Remove any leading whitespace from each line while preserving relative indentation
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const terminalSection = document.getElementById(`terminal-${codeType}`);
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            // Simulate typing effect
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 800;
+            
+            switch(codeType) {
+                case 'basic-function':
+                    output = `Hello, World!
+Welcome to Python functions!
+Hello, World!
+Welcome to Python functions!
+Hello, World!
+Welcome to Python functions!`;
+                    break;
+                    
+                case 'parameters':
+                    output = `Hello, Alice!
+Nice to meet you, Alice.
+Hello, Bob!
+Nice to meet you, Bob.
+Name: Emma
+Age: 25
+City: New York`;
+                    break;
+                    
+                case 'return-values':
+                    output = `10 + 5 = 15
+Area: 48 square units
+Full name: John Smith`;
+                    break;
+                    
+                case 'default-params':
+                    output = `Hello, Alice!
+Hi, Bob!
+Good morning, Charlie!
+Emma, 0 years old, from Unknown
+David, 30 years old, from Unknown
+Sarah, 25 years old, from Boston`;
+                    break;
+                    
+                case 'complex-data':
+                    output = `Scores: [85, 92, 78, 96, 89]
+Average: 88.0
+Highest: 96
+Student: Alice
+Age: 20
+Grade: A`;
+                    break;
+                    
+                case 'scope':
+                    output = `Before function call:
+I'm global!
+Inside function:
+I'm global!
+I'm local!
+
+After modifying global:
+I've been modified!`;
+                    break;
+                    
+                case 'calculator':
+                    output = `Calculator Demo with 10 and 3:
+10 + 3 = 13
+10 - 3 = 7
+10 * 3 = 30
+10 / 3 = 3.33
+10 / 0 = Error: Cannot divide by zero!`;
+                    break;
+                    
+                default:
+                    output = 'Code executed successfully.';
+            }
+            
+            // Simulate terminal typing
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 30; // milliseconds between characters
+            
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            typeChar();
+        }
+
+        function normalizeCodeBlocks() {
+            document.querySelectorAll('.code-block code').forEach(el => {
+                let html = el.innerHTML;
+                html = html.replace(/^\n+|\n+$/g, '');
+                html = html.replace(/\n{2,}/g, '\n');
+                el.innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

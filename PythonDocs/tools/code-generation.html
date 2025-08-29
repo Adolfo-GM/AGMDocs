@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Generator - AGM Python Tools</title>
+    <style>
+        :root {
+            --accent-color: #ff4444;
+        }
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+        .top-bar {
+            background: #252526;
+            border-bottom: 1px solid #3e3e42;
+            padding: 15px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .tool-title {
+            color: var(--accent-color, #ff4444);
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .tool-subtitle {
+            color: #cccccc;
+            font-size: 13px;
+            margin-left: 12px;
+            opacity: 0.7;
+        }
+        .main-content {
+            padding: 32px 24px 24px 24px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .section {
+            margin-bottom: 32px;
+        }
+        label {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--accent-color, #ff4444);
+            margin-bottom: 8px;
+            display: block;
+        }
+        select, button {
+            font-size: 15px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #3e3e42;
+            background: #252526;
+            color: #d4d4d4;
+            margin-bottom: 16px;
+            margin-right: 10px;
+        }
+        select:focus, button:focus {
+            outline: 2px solid var(--accent-color, #ff4444);
+        }
+        button {
+            background: var(--accent-color, #ff4444);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: color-mix(in srgb, var(--accent-color, #ff4444) 80%, white);
+        }
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+        .copy-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .copy-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #ff4444);
+        }
+        .copy-button:active {
+            background-color: var(--accent-color, #ff4444);
+        }
+        .copy-success {
+            background-color: var(--accent-color, #4caf50) !important;
+            border-color: var(--accent-color, #4caf50) !important;
+        }
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        /* Responsive */
+        @media (max-width: 700px) {
+            .main-content { padding: 16px 4vw; }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div>
+            <span class="tool-title">Code Generator</span>
+            <span class="tool-subtitle">Generate Python code for common project types</span>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="section">
+            <label for="main-category">Select a project type:</label>
+            <select id="main-category">
+                    <option value="ui">UI</option>
+                    <option value="game">Game</option>
+                    <option value="app">App</option>
+                    <option value="data">Data Science</option>
+                    <option value="web">Web</option>
+                    <option value="cli">CLI Tool</option>
+                    <option value="script">Script</option>
+                    <option value="network">Network</option>
+            </select>
+            <label for="sub-category">Select a template:</label>
+            <select id="sub-category"></select>
+            <button id="generate-btn">Generate Code</button>
+        </div>
+        <div class="section" id="output-section" style="display:none;">
+            <div class="code-block"><div class="code-actions"><button class="copy-button" onclick="copyCode(this)">Copy</button></div><code id="code-output"></code></div>
+        </div>
+    </div>
+    <script>
+        // Theme management
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'updateAccentColor') {
+                applyAccentColor(event.data.color);
+            }
+        });
+        function applyAccentColor(color) {
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink');
+            document.body.classList.add(`theme-${color}`);
+        }
+        // Code templates
+        const templates = {
+            ui: {
+                'Tkinter Window': `<span class="comment"># Simple Tkinter window</span>\n<span class="keyword">import</span> <span class="function">tkinter</span> <span class="keyword">as</span> <span class="function">tk</span>\n\n<span class="function">root</span> = <span class="function">tk.Tk</span>()\n<span class="function">root.title</span>(<span class="string">\"Hello Tkinter\"</span>)\n<span class="function">root.geometry</span>(<span class="string">\"300x200\"</span>)\n\n<span class="function">label</span> = <span class="function">tk.Label</span>(root, text=<span class="string">\"Welcome!\"</span>)\n<span class="function">label.pack</span>(padx=20, pady=20)\n\n<span class="function">root.mainloop</span>()`,
+                'CustomTkinter Modern UI': `<span class="comment"># Modern UI with CustomTkinter</span>\n<span class="keyword">import</span> <span class="function">customtkinter</span>\n\n<span class="function">app</span> = <span class="function">customtkinter.CTk</span>()\n<span class="function">app.title</span>(<span class="string">\"CustomTkinter App\"</span>)\n<span class="function">app.geometry</span>(<span class="string">\"400x250\"</span>)\n\n<span class="function">label</span> = <span class="function">customtkinter.CTkLabel</span>(app, text=<span class="string">\"Hello, CustomTkinter!\"</span>)\n<span class="function">label.pack</span>(padx=30, pady=30)\n\n<span class="function">app.mainloop</span>()`,
+                'PyQt5 Window': `<span class="comment"># Simple PyQt5 window</span>\n<span class="keyword">from</span> <span class="function">PyQt5.QtWidgets</span> <span class="keyword">import</span> <span class="function">QApplication</span>, <span class="function">QLabel</span>, <span class="function">QWidget</span>\n<span class="keyword">import</span> <span class="function">sys</span>\n\napp = <span class="function">QApplication</span>([])\nwindow = <span class="function">QWidget</span>()\nwindow.setWindowTitle(<span class="string">\"PyQt5 App\"</span>)\nwindow.resize(300, 200)\nlabel = <span class="function">QLabel</span>(<span class="string">\"Hello, PyQt5!\"</span>, parent=window)\nlabel.move(80, 80)\nwindow.show()\n<span class="function">sys.exit</span>(app.exec_())`
+            },
+            game: {
+                'Pygame Window': `<span class="comment"># Simple Pygame window</span>\n<span class="keyword">import</span> <span class="function">pygame</span>\n\n<span class="function">pygame.init</span>()\n<span class="function">screen</span> = <span class="function">pygame.display.set_mode</span>((400, 300))\n<span class="function">pygame.display.set_caption</span>(<span class="string">\"Pygame Example\"</span>)\n\nrunning = <span class="keyword">True</span>\n<span class="keyword">while</span> running:\n    <span class="keyword">for</span> event <span class="keyword">in</span> <span class="function">pygame.event.get</span>():\n        <span class="keyword">if</span> event.type == <span class="function">pygame.QUIT</span>:\n            running = <span class="keyword">False</span>\n    <span class="function">screen.fill</span>((30, 30, 30))\n    <span class="function">pygame.display.flip</span>()\n<span class="function">pygame.quit</span>()`,
+                'Text Adventure': `<span class="comment"># Simple text adventure game</span>\ndef <span class="function">start_game</span>():\n    <span class="keyword">print</span>(<span class="string">\"Welcome to the Adventure!\"</span>)\n    choice = <span class="keyword">input</span>(<span class="string">\"Go left or right? \\n\"</span>)\n    <span class="keyword">if</span> choice.lower() == <span class="string">\"left\"</span>:\n        <span class="keyword">print</span>(<span class="string">\"You found a treasure!\"</span>)\n    <span class="keyword">else</span>:\n        <span class="keyword">print</span>(<span class="string">\"A monster appears!\"</span>)\n\n<span class="function">start_game</span>()`,
+                'Guess the Number': `<span class="comment"># Guess the number game</span>\n<span class="keyword">import</span> <span class="function">random</span>\nnumber = <span class="function">random.randint</span>(1, 10)\nguess = <span class="keyword">int</span>(<span class="keyword">input</span>(<span class="string">\"Guess a number 1-10: \"</span>))\n<span class="keyword">if</span> guess == number:\n    <span class="keyword">print</span>(<span class="string">\"Correct!\"</span>)\n<span class="keyword">else</span>:\n    <span class="keyword">print</span>(<span class="string">f\"Wrong! The number was {number}\"</span>)`
+            },
+            app: {
+                'To-Do List': `<span class="comment"># Simple to-do list app (console)</span>\ntasks = []\n<span class="keyword">while</span> <span class="keyword">True</span>:\n    cmd = <span class="keyword">input</span>(<span class="string">\"Add/view/quit: \\n\"</span>).lower()\n    <span class="keyword">if</span> cmd == <span class="string">\"add\"</span>:\n        task = <span class="keyword">input</span>(<span class="string">\"Task: \\n\"</span>)\n        tasks.append(task)\n    <span class="keyword">elif</span> cmd == <span class="string">\"view\"</span>:\n        <span class="keyword">print</span>(<span class="string">\"Tasks:\"</span>, tasks)\n    <span class="keyword">elif</span> cmd == <span class="string">\"quit\"</span>:\n        <span class="keyword">break</span>`,
+                'Timer App': `<span class="comment"># Simple timer app</span>\n<span class="keyword">import</span> <span class="function">time</span>\n\ndef <span class="function">timer</span>(seconds):\n    <span class="keyword">print</span>(<span class="string">\"Timer started for\"</span>, seconds, <span class="string">\"seconds\"</span>)\n    <span class="function">time.sleep</span>(seconds)\n    <span class="keyword">print</span>(<span class="string">\"Time's up!\"</span>)\n\n<span class="function">timer</span>(5)`,
+                'Simple Calculator': `<span class="comment"># Simple calculator app</span>\n<span class="keyword">def</span> <span class="function">calc</span>(a, b, op):\n    <span class="keyword">if</span> op == <span class="string">'+'</span>:\n        <span class="keyword">return</span> a + b\n    <span class="keyword">elif</span> op == <span class="string">'-'</span>:\n        <span class="keyword">return</span> a - b\n    <span class="keyword">elif</span> op == <span class="string">'*'</span>:\n        <span class="keyword">return</span> a * b\n    <span class="keyword">elif</span> op == <span class="string">'/'</span>:\n        <span class="keyword">return</span> a / b\n    <span class="keyword">else</span>:\n        <span class="keyword">return</span> <span class="string">'Invalid op'</span>\n\n<span class="keyword">print</span>(<span class="function">calc</span>(5, 3, <span class="string">'+'</span>))`
+            },
+            data: {
+                'Pandas DataFrame': `<span class="comment"># Create and display a DataFrame</span>\n<span class="keyword">import</span> <span class="function">pandas</span> <span class="keyword">as</span> <span class="function">pd</span>\n\ndata = {<span class="string">\"Name\"</span>: [<span class="string">\"Alice\"</span>, <span class="string">\"Bob\"</span>], <span class="string">\"Age\"</span>: [25, 30]}\ndf = <span class="function">pd.DataFrame</span>(data)\n<span class="keyword">print</span>(df)`,
+                'Matplotlib Plot': `<span class="comment"># Simple matplotlib plot</span>\n<span class="keyword">import</span> <span class="function">matplotlib.pyplot</span> <span class="keyword">as</span> <span class="function">plt</span>\n\nx = [1, 2, 3, 4]\ny = [10, 20, 25, 30]\n<span class="function">plt.plot</span>(x, y)\n<span class="function">plt.xlabel</span>(<span class="string">\"X\"</span>)\n<span class="function">plt.ylabel</span>(<span class="string">\"Y\"</span>)\n<span class="function">plt.title</span>(<span class="string">\"Line Plot\"</span>)\n<span class="function">plt.show</span>()`,
+                'Numpy Array': `<span class="comment"># Create and print a numpy array</span>\n<span class="keyword">import</span> <span class="function">numpy</span> <span class="keyword">as</span> <span class="function">np</span>\narr = <span class="function">np.array</span>([1, 2, 3, 4])\n<span class="keyword">print</span>(arr)`
+            },
+            web: {
+                'Flask Web Server': `<span class="comment"># Simple Flask web server</span>\n<span class="keyword">from</span> <span class="function">flask</span> <span class="keyword">import</span> <span class="function">Flask</span>\n\napp = <span class="function">Flask</span>(__name__)\n\n@app.route(<span class="string">\"/\"</span>)\ndef <span class="function">home</span>():\n    <span class="keyword">return</span> <span class="string">\"<h1>Hello, Flask!</h1>\"</span>\n\n<span class="keyword">if</span> __name__ == <span class="string">\"__main__\"</span>:\n    <span class="function">app.run</span>(debug=<span class="keyword">True</span>)`,
+                'FastAPI Example': `<span class="comment"># Simple FastAPI app</span>\n<span class="keyword">from</span> <span class="function">fastapi</span> <span class="keyword">import</span> <span class="function">FastAPI</span>\n<span class="keyword">import</span> <span class="function">uvicorn</span>\n\napp = <span class="function">FastAPI</span>()\n\n@app.get(<span class="string">\"/\"</span>)\ndef <span class="function">read_root</span>():\n    <span class="keyword">return</span> {<span class="string">\"Hello\"</span>: <span class="string">\"World\"</span>}\n\n<span class="keyword">if</span> __name__ == <span class="string">\"__main__\"</span>:\n    <span class="function">uvicorn.run</span>(app, host=<span class="string">\"127.0.0.1\"</span>, port=8000)`,
+                'Bottle Web Server': `<span class="comment"># Simple Bottle web server</span>\n<span class="keyword">from</span> <span class="function">bottle</span> <span class="keyword">import</span> <span class="function">route</span>, <span class="function">run</span>\n\n@route(<span class="string">'/'</span>)\ndef <span class="function">home</span>():\n    <span class="keyword">return</span> <span class="string">'Hello, Bottle!'</span>\n\n<span class="function">run</span>(host=<span class="string">'localhost'</span>, port=8080)`
+            },
+            cli: {
+                'Argument Parser': `<span class="comment"># CLI tool with argparse</span>\n<span class="keyword">import</span> <span class="function">argparse</span>\n\nparser = <span class="function">argparse.ArgumentParser</span>(description=<span class="string">\"Greet someone\"</span>)\nparser.add_argument(<span class="string">\"name\"</span>, type=str, help=<span class="string">\"Your name\"</span>)\nargs = parser.parse_args()\n<span class="keyword">print</span>(<span class="string">f\"Hello, {args.name}!\"</span>)`,
+                'Simple CLI Echo': `<span class="comment"># Simple echo CLI tool</span>\n<span class="keyword">import</span> <span class="function">sys</span>\n\n<span class="keyword">if</span> <span class="function">len</span>(sys.argv) > 1:\n    <span class="keyword">print</span>(<span class="string">\"You said:\"</span>, sys.argv[1])\n<span class="keyword">else</span>:\n    <span class="keyword">print</span>(<span class="string">\"Usage: python script.py <message>\"</span>)`,
+                'Progress Bar': `<span class="comment"># CLI progress bar</span>\n<span class="keyword">import</span> <span class="function">time</span>\n<span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(1, 11):\n    <span class="keyword">print</span>(<span class="string">f\"Progress: {i*10}%\"</span>, end=<span class="string">'\r'</span>)\n    <span class="function">time.sleep</span>(0.3)\n<span class="keyword">print</span>(<span class="string">'Done!'</span>)`
+            },
+            script: {
+                'File Renamer': `<span class="comment"># Script to rename files in a folder</span>\n<span class="keyword">import</span> <span class="function">os</span>\nfolder = <span class="string">'./files'</span>\n<span class="keyword">for</span> i, filename <span class="keyword">in</span> <span class="function">enumerate</span>(<span class="function">os.listdir</span>(folder)):\n    src = <span class="function">os.path.join</span>(folder, filename)\n    dst = <span class="function">os.path.join</span>(folder, f"file_{i}.txt")\n    <span class="function">os.rename</span>(src, dst)`,
+                'CSV to JSON': `<span class="comment"># Convert CSV to JSON</span>\n<span class="keyword">import</span> <span class="function">csv</span>, <span class="function">json</span>\nwith <span class="function">open</span>(<span class="string">'data.csv'</span>) <span class="keyword">as</span> csvfile:\n    reader = <span class="function">csv.DictReader</span>(csvfile)\n    data = <span class="function">list</span>(reader)\nwith <span class="function">open</span>(<span class="string">'data.json'</span>, <span class="string">'w'</span>) <span class="keyword">as</span> jsonfile:\n    <span class="function">json.dump</span>(data, jsonfile, indent=2)`,
+                'Random Password Generator': `<span class="comment"># Generate a random password</span>\n<span class="keyword">import</span> <span class="function">random</span>, <span class="function">string</span>\nchars = <span class="function">string.ascii_letters</span> + <span class="function">string.digits</span>\npassword = <span class="string">''</span>.join(<span class="function">random.choice</span>(chars) <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="function">range</span>(12))\n<span class="keyword">print</span>(password)`
+            },
+            network: {
+                'HTTP GET Request': `<span class="comment"># Simple HTTP GET request</span>\n<span class="keyword">import</span> <span class="function">requests</span>\nresp = <span class="function">requests.get</span>(<span class="string">'https://api.github.com'</span>)\n<span class="keyword">print</span>(resp.status_code)\n<span class="keyword">print</span>(resp.json())`,
+                'Socket Server': `<span class="comment"># Simple socket server</span>\n<span class="keyword">import</span> <span class="function">socket</span>\ns = <span class="function">socket.socket</span>()\ns.bind((<span class="string">'localhost'</span>, 12345))\ns.listen(1)\nconn, addr = s.accept()\n<span class="keyword">print</span>(<span class="string">'Connected by'</span>, addr)\nconn.sendall(<span class="string">b'Hello!'</span>)\nconn.close()`,
+                'Ping Host': `<span class="comment"># Ping a host</span>\n<span class="keyword">import</span> <span class="function">os</span>\nhost = <span class="string">'google.com'</span>\n<span class="keyword">response</span> = <span class="function">os.system</span>(<span class="string">f'ping -c 1 {host}'</span>)\n<span class="keyword">if</span> response == 0:\n    <span class="keyword">print</span>(<span class="string">f'{host} is up!'</span>)\n<span class="keyword">else</span>:\n    <span class="keyword">print</span>(<span class="string">f'{host} is down!'</span>)`
+            }
+        };
+        // Populate sub-category options
+        const mainCategory = document.getElementById('main-category');
+        const subCategory = document.getElementById('sub-category');
+        function updateSubOptions() {
+            const val = mainCategory.value;
+            subCategory.innerHTML = '';
+            Object.keys(templates[val]).forEach(key => {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = key;
+                subCategory.appendChild(opt);
+            });
+        }
+        mainCategory.addEventListener('change', updateSubOptions);
+        updateSubOptions();
+        // Generate code
+        document.getElementById('generate-btn').addEventListener('click', function() {
+            const cat = mainCategory.value;
+            const sub = subCategory.value;
+            const code = templates[cat][sub];
+            document.getElementById('code-output').innerHTML = code;
+            document.getElementById('output-section').style.display = 'block';
+        });
+        // Copy code
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            text = text.trim();
+            // Remove any leading whitespace from each line while preserving relative indentation
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+        // Accent color on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'red';
+            applyAccentColor(savedColor);
+        });
+    </script>
+</body>
+</html>
