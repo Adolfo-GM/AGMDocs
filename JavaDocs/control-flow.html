@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Flow in Java</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #f89820;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+        .theme-orange { --accent-color: #f89820; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #f89820);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #f89820);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        h3 {
+            color: var(--accent-color, #f89820);
+            font-size: 20px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #cccccc;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #f89820);
+        }
+
+        .run-button {
+            background-color: rgba(var(--accent-color), 0.2);
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .run-button:hover {
+            background-color: rgba(var(--accent-color), 0.3);
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #f89820);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #f89820) !important;
+            border-color: var(--accent-color, #f89820) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius: 0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        .highlight {
+            color: var(--accent-color, #f89820);
+            font-weight: 600;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .class { color: #4ec9b0; }
+
+        .info-box {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #f89820);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: var(--accent-color, #f89820);
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Control Flow in Java</h1>
+    
+    <p>Control flow statements allow you to control the execution order of your program. Java provides several types of control structures including conditional statements and loops.</p>
+
+    <h2>1. If-Else Statements</h2>
+    <p>Conditional statements execute different code blocks based on boolean conditions:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'if-else')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">IfElseExample</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Simple if statement</span>
+        <span class="keyword">int</span> age = <span class="number">18</span>;
+        <span class="keyword">if</span> (age >= <span class="number">18</span>) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"You are an adult."</span>);
+        }
+        
+        <span class="comment">// If-else statement</span>
+        <span class="keyword">int</span> temperature = <span class="number">25</span>;
+        <span class="keyword">if</span> (temperature > <span class="number">30</span>) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"It's hot today!"</span>);
+        } <span class="keyword">else</span> {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"It's a nice day!"</span>);
+        }
+        
+        <span class="comment">// If-else if-else chain</span>
+        <span class="keyword">int</span> score = <span class="number">85</span>;
+        <span class="keyword">if</span> (score >= <span class="number">90</span>) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Grade: A"</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (score >= <span class="number">80</span>) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Grade: B"</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (score >= <span class="number">70</span>) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Grade: C"</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (score >= <span class="number">60</span>) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Grade: D"</span>);
+        } <span class="keyword">else</span> {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Grade: F"</span>);
+        }
+        
+        <span class="comment">// Nested if statements</span>
+        <span class="keyword">boolean</span> hasLicense = <span class="keyword">true</span>;
+        <span class="keyword">int</span> driverAge = <span class="number">20</span>;
+        
+        <span class="keyword">if</span> (driverAge >= <span class="number">16</span>) {
+            <span class="keyword">if</span> (hasLicense) {
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"You can drive!"</span>);
+            } <span class="keyword">else</span> {
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"You need a license to drive."</span>);
+            }
+        } <span class="keyword">else</span> {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"You're too young to drive."</span>);
+        }
+        
+        <span class="comment">// Complex conditions with logical operators</span>
+        <span class="keyword">int</span> hour = <span class="number">14</span>;
+        <span class="keyword">boolean</span> isWeekend = <span class="keyword">false</span>;
+        
+        <span class="keyword">if</span> (hour >= <span class="number">9</span> && hour <= <span class="number">17</span> && !isWeekend) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Office hours - Time to work!"</span>);
+        } <span class="keyword">else</span> <span class="keyword">if</span> (isWeekend || hour < <span class="number">9</span> || hour > <span class="number">17</span>) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Free time - Enjoy yourself!"</span>);
+        }
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-if-else">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-if-else">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>2. Switch Statements</h2>
+    <p>Switch statements provide a cleaner way to handle multiple conditions based on a single variable:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'switch')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">SwitchExample</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Basic switch statement with int</span>
+        <span class="keyword">int</span> dayOfWeek = <span class="number">3</span>;
+        
+        <span class="keyword">switch</span> (dayOfWeek) {
+            <span class="keyword">case</span> <span class="number">1</span>:
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Monday - Start of work week"</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="number">2</span>:
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Tuesday - Getting into the groove"</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="number">3</span>:
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Wednesday - Hump day!"</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="number">4</span>:
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Thursday - Almost there"</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="number">5</span>:
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Friday - TGIF!"</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="number">6</span>:
+            <span class="keyword">case</span> <span class="number">7</span>:
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Weekend - Time to relax!"</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Invalid day"</span>);
+        }
+        
+        <span class="comment">// Switch with String (Java 7+)</span>
+        <span class="class">String</span> grade = <span class="string">"B"</span>;
+        
+        <span class="keyword">switch</span> (grade) {
+            <span class="keyword">case</span> <span class="string">"A"</span>:
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Excellent! Score: 90-100"</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">"B"</span>:
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Good job! Score: 80-89"</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">"C"</span>:
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Average. Score: 70-79"</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">"D"</span>:
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Below average. Score: 60-69"</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">"F"</span>:
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Failed. Score: Below 60"</span>);
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Invalid grade"</span>);
+        }
+        
+        <span class="comment">// Switch with char</span>
+        <span class="keyword">char</span> operation = <span class="string">'+'</span>;
+        <span class="keyword">double</span> a = <span class="number">10</span>, b = <span class="number">5</span>, result = <span class="number">0</span>;
+        
+        <span class="keyword">switch</span> (operation) {
+            <span class="keyword">case</span> <span class="string">'+'</span>:
+                result = a + b;
+                <span class="class">System</span>.out.<span class="function">println</span>(a + <span class="string">" + "</span> + b + <span class="string">" = "</span> + result);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">'-'</span>:
+                result = a - b;
+                <span class="class">System</span>.out.<span class="function">println</span>(a + <span class="string">" - "</span> + b + <span class="string">" = "</span> + result);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">'*'</span>:
+                result = a * b;
+                <span class="class">System</span>.out.<span class="function">println</span>(a + <span class="string">" * "</span> + b + <span class="string">" = "</span> + result);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">'/'</span>:
+                <span class="keyword">if</span> (b != <span class="number">0</span>) {
+                    result = a / b;
+                    <span class="class">System</span>.out.<span class="function">println</span>(a + <span class="string">" / "</span> + b + <span class="string">" = "</span> + result);
+                } <span class="keyword">else</span> {
+                    <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Cannot divide by zero!"</span>);
+                }
+                <span class="keyword">break</span>;
+            <span class="keyword">default</span>:
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Invalid operation"</span>);
+        }
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-switch">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-switch">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>3. For Loops</h2>
+    <p>For loops are perfect for iterating a specific number of times or through collections:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'for-loops')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">ForLoopsExample</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Basic for loop</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"=== Basic For Loop ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i <= <span class="number">5</span>; i++) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Count: "</span> + i);
+        }
+        
+        <span class="comment">// For loop with different increments</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Even Numbers ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i <= <span class="number">10</span>; i += <span class="number">2</span>) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Even: "</span> + i);
+        }
+        
+        <span class="comment">// For loop counting backwards</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Countdown ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">5</span>; i >= <span class="number">1</span>; i--) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Countdown: "</span> + i);
+        }
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Blast off!"</span>);
+        
+        <span class="comment">// For loop with arrays</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Array Iteration ==="</span>);
+        <span class="keyword">int</span>[] numbers = {<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>};
+        
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < numbers.length; i++) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Index "</span> + i + <span class="string">": "</span> + numbers[i]);
+        }
+        
+        <span class="comment">// Enhanced for loop (for-each)</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Enhanced For Loop ==="</span>);
+        <span class="class">String</span>[] fruits = {<span class="string">"Apple"</span>, <span class="string">"Banana"</span>, <span class="string">"Orange"</span>, <span class="string">"Grape"</span>};
+        
+        <span class="keyword">for</span> (<span class="class">String</span> fruit : fruits) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Fruit: "</span> + fruit);
+        }
+        
+        <span class="comment">// Nested for loops</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Multiplication Table ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i <= <span class="number">3</span>; i++) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j <= <span class="number">3</span>; j++) {
+                <span class="class">System</span>.out.<span class="function">print</span>(i + <span class="string">" x "</span> + j + <span class="string">" = "</span> + (i * j) + <span class="string">"  "</span>);
+            }
+            <span class="class">System</span>.out.<span class="function">println</span>(); <span class="comment">// New line after each row</span>
+        }
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-for-loops">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-for-loops">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>4. While and Do-While Loops</h2>
+    <p>While loops continue executing as long as a condition remains true:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'while-loops')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">WhileLoopsExample</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Basic while loop</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"=== Basic While Loop ==="</span>);
+        <span class="keyword">int</span> count = <span class="number">1</span>;
+        <span class="keyword">while</span> (count <= <span class="number">5</span>) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Count: "</span> + count);
+            count++;
+        }
+        
+        <span class="comment">// While loop with condition</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Number Doubling ==="</span>);
+        <span class="keyword">int</span> number = <span class="number">1</span>;
+        <span class="keyword">while</span> (number < <span class="number">100</span>) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Number: "</span> + number);
+            number *= <span class="number">2</span>;
+        }
+        
+        <span class="comment">// Do-while loop (executes at least once)</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Do-While Loop ==="</span>);
+        <span class="keyword">int</span> value = <span class="number">10</span>;
+        <span class="keyword">do</span> {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Value: "</span> + value);
+            value--;
+        } <span class="keyword">while</span> (value > <span class="number">7</span>);
+        
+        <span class="comment">// Do-while example that runs even when condition is false</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Do-While (Condition Initially False) ==="</span>);
+        <span class="keyword">int</span> x = <span class="number">15</span>;
+        <span class="keyword">do</span> {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"This will execute once, x = "</span> + x);
+        } <span class="keyword">while</span> (x < <span class="number">10</span>); <span class="comment">// False from the start</span>
+        
+        <span class="comment">// While loop for input validation simulation</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Simulated Input Validation ==="</span>);
+        <span class="keyword">int</span> attempts = <span class="number">0</span>;
+        <span class="keyword">int</span> maxAttempts = <span class="number">3</span>;
+        <span class="keyword">boolean</span> success = <span class="keyword">false</span>;
+        
+        <span class="keyword">while</span> (attempts < maxAttempts && !success) {
+            attempts++;
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Attempt "</span> + attempts + <span class="string">": Trying to connect..."</span>);
+            
+            <span class="comment">// Simulate success on 2nd attempt</span>
+            <span class="keyword">if</span> (attempts == <span class="number">2</span>) {
+                success = <span class="keyword">true</span>;
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Connection successful!"</span>);
+            } <span class="keyword">else</span> {
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Connection failed. Retrying..."</span>);
+            }
+        }
+        
+        <span class="keyword">if</span> (!success) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Max attempts reached. Connection failed."</span>);
+        }
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-while-loops">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-while-loops">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>5. Break and Continue</h2>
+    <p>Break and continue statements control loop execution flow:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'break-continue')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">BreakContinueExample</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Break statement - exits the loop</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"=== Break Example ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i <= <span class="number">10</span>; i++) {
+            <span class="keyword">if</span> (i == <span class="number">6</span>) {
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Breaking at "</span> + i);
+                <span class="keyword">break</span>; <span class="comment">// Exit the loop when i equals 6</span>
+            }
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Number: "</span> + i);
+        }
+        
+        <span class="comment">// Continue statement - skips current iteration</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Continue Example ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i <= <span class="number">10</span>; i++) {
+            <span class="keyword">if</span> (i % <span class="number">2</span> == <span class="number">0</span>) {
+                <span class="keyword">continue</span>; <span class="comment">// Skip even numbers</span>
+            }
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Odd number: "</span> + i);
+        }
+        
+        <span class="comment">// Break in while loop</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Break in While Loop ==="</span>);
+        <span class="keyword">int</span> count = <span class="number">0</span>;
+        <span class="keyword">while</span> (<span class="keyword">true</span>) { <span class="comment">// Infinite loop</span>
+            count++;
+            <span class="keyword">if</span> (count > <span class="number">5</span>) {
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Reached limit, breaking..."</span>);
+                <span class="keyword">break</span>;
+            }
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Count: "</span> + count);
+        }
+        
+        <span class="comment">// Break and continue in nested loops</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Nested Loops with Break/Continue ==="</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i <= <span class="number">3</span>; i++) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Outer loop: "</span> + i);
+            
+            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j <= <span class="number">5</span>; j++) {
+                <span class="keyword">if</span> (j == <span class="number">3</span>) {
+                    <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"  Skipping j = "</span> + j);
+                    <span class="keyword">continue</span>; <span class="comment">// Skip j = 3</span>
+                }
+                <span class="keyword">if</span> (j == <span class="number">4</span>) {
+                    <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"  Breaking inner loop at j = "</span> + j);
+                    <span class="keyword">break</span>; <span class="comment">// Exit inner loop when j = 4</span>
+                }
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"  Inner loop: "</span> + j);
+            }
+        }
+        
+        <span class="comment">// Practical example: Finding first even number in array</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Finding First Even Number ==="</span>);
+        <span class="keyword">int</span>[] numbers = {<span class="number">1</span>, <span class="number">3</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">12</span>, <span class="number">15</span>};
+        
+        <span class="keyword">for</span> (<span class="keyword">int</span> num : numbers) {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Checking: "</span> + num);
+            <span class="keyword">if</span> (num % <span class="number">2</span> == <span class="number">0</span>) {
+                <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Found first even number: "</span> + num);
+                <span class="keyword">break</span>;
+            }
+        }
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-break-continue">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-break-continue">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <div class="info-title">Control Flow Summary:</div>
+        <ul>
+            <li><strong>if-else:</strong> Execute code based on conditions</li>
+            <li><strong>switch:</strong> Multiple conditions based on one variable</li>
+            <li><strong>for loop:</strong> Iterate a specific number of times</li>
+            <li><strong>while loop:</strong> Continue while condition is true</li>
+            <li><strong>do-while:</strong> Execute at least once, then check condition</li>
+            <li><strong>break:</strong> Exit loop immediately</li>
+            <li><strong>continue:</strong> Skip current iteration, continue with next</li>
+        </ul>
+    </div>
+
+    <h2>6. Best Practices</h2>
+    <ul>
+        <li>Use meaningful variable names in loop conditions</li>
+        <li>Avoid infinite loops by ensuring loop conditions will eventually become false</li>
+        <li>Use enhanced for loops when you don't need the index</li>
+        <li>Consider using switch statements for multiple conditions on the same variable</li>
+        <li>Always include break statements in switch cases (unless fall-through is intended)</li>
+        <li>Use continue sparingly - sometimes restructuring with if statements is clearer</li>
+        <li>Keep nested loops to a minimum for better readability</li>
+    </ul>
+    
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'orange';
+            updateAccentColor(savedColor);
+            normalizeCodeBlocks();
+        });
+
+        function updateAccentColor(color) {
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink', 'theme-orange');
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            
+            text = text.trim();
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const terminalSection = document.getElementById(`terminal-${codeType}`);
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 800;
+            
+            switch(codeType) {
+                case 'if-else':
+                    output = `You are an adult.
+It's a nice day!
+Grade: B
+You can drive!
+Office hours - Time to work!`;
+                    delay = 700;
+                    break;
+                    
+                case 'switch':
+                    output = `Wednesday - Hump day!
+Good job! Score: 80-89
+10.0 + 5.0 = 15.0`;
+                    delay = 600;
+                    break;
+                    
+                case 'for-loops':
+                    output = `=== Basic For Loop ===
+Count: 1
+Count: 2
+Count: 3
+Count: 4
+Count: 5
+
+=== Even Numbers ===
+Even: 2
+Even: 4
+Even: 6
+Even: 8
+Even: 10
+
+=== Countdown ===
+Countdown: 5
+Countdown: 4
+Countdown: 3
+Countdown: 2
+Countdown: 1
+Blast off!
+
+=== Array Iteration ===
+Index 0: 10
+Index 1: 20
+Index 2: 30
+Index 3: 40
+Index 4: 50
+
+=== Enhanced For Loop ===
+Fruit: Apple
+Fruit: Banana
+Fruit: Orange
+Fruit: Grape
+
+=== Multiplication Table ===
+1 x 1 = 1  1 x 2 = 2  1 x 3 = 3  
+2 x 1 = 2  2 x 2 = 4  2 x 3 = 6  
+3 x 1 = 3  3 x 2 = 6  3 x 3 = 9  `;
+                    delay = 1200;
+                    break;
+                    
+                case 'while-loops':
+                    output = `=== Basic While Loop ===
+Count: 1
+Count: 2
+Count: 3
+Count: 4
+Count: 5
+
+=== Number Doubling ===
+Number: 1
+Number: 2
+Number: 4
+Number: 8
+Number: 16
+Number: 32
+Number: 64
+
+=== Do-While Loop ===
+Value: 10
+Value: 9
+Value: 8
+
+=== Do-While (Condition Initially False) ===
+This will execute once, x = 15
+
+=== Simulated Input Validation ===
+Attempt 1: Trying to connect...
+Connection failed. Retrying...
+Attempt 2: Trying to connect...
+Connection successful!`;
+                    delay = 1000;
+                    break;
+                    
+                case 'break-continue':
+                    output = `=== Break Example ===
+Number: 1
+Number: 2
+Number: 3
+Number: 4
+Number: 5
+Breaking at 6
+
+=== Continue Example ===
+Odd number: 1
+Odd number: 3
+Odd number: 5
+Odd number: 7
+Odd number: 9
+
+=== Break in While Loop ===
+Count: 1
+Count: 2
+Count: 3
+Count: 4
+Count: 5
+Reached limit, breaking...
+
+=== Nested Loops with Break/Continue ===
+Outer loop: 1
+  Inner loop: 1
+  Inner loop: 2
+  Skipping j = 3
+  Breaking inner loop at j = 4
+Outer loop: 2
+  Inner loop: 1
+  Inner loop: 2
+  Skipping j = 3
+  Breaking inner loop at j = 4
+Outer loop: 3
+  Inner loop: 1
+  Inner loop: 2
+  Skipping j = 3
+  Breaking inner loop at j = 4
+
+=== Finding First Even Number ===
+Checking: 1
+Checking: 3
+Checking: 7
+Checking: 8
+Found first even number: 8`;
+                    delay = 1400;
+                    break;
+                    
+                default:
+                    output = 'Code executed successfully.';
+                    delay = 500;
+            }
+            
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 20;
+            
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            typeChar();
+        }
+
+        function normalizeCodeBlocks() {
+            document.querySelectorAll('.code-block code').forEach(el => {
+                let html = el.innerHTML;
+                html = html.replace(/^\n+|\n+$/g, '');
+                html = html.replace(/\n{2,}/g, '\n');
+                el.innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

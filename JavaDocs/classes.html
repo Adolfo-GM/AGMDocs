@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classes and Objects in Java</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #f89820;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+        .theme-orange { --accent-color: #f89820; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #f89820);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #f89820);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        h3 {
+            color: var(--accent-color, #f89820);
+            font-size: 20px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #cccccc;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #f89820);
+        }
+
+        .run-button {
+            background-color: rgba(var(--accent-color), 0.2);
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .run-button:hover {
+            background-color: rgba(var(--accent-color), 0.3);
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #f89820);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #f89820) !important;
+            border-color: var(--accent-color, #f89820) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius: 0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        .highlight {
+            color: var(--accent-color, #f89820);
+            font-weight: 600;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .class { color: #4ec9b0; }
+
+        .info-box {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #f89820);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: var(--accent-color, #f89820);
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Classes and Objects in Java</h1>
+    
+    <p>Object-Oriented Programming (OOP) is a fundamental concept in Java. Classes are blueprints for creating objects, and objects are instances of classes that contain data (attributes) and methods (behaviors).</p>
+
+    <h2>1. Creating a Basic Class</h2>
+    <p>A class defines the structure and behavior that objects of that type will have:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'basic-class')">Run</button>
+                </div>
+                <code><span class="comment">// Define a simple class</span>
+<span class="keyword">class</span> <span class="class">Person</span> {
+    <span class="comment">// Instance variables (attributes)</span>
+    <span class="class">String</span> name;
+    <span class="keyword">int</span> age;
+    <span class="class">String</span> city;
+    
+    <span class="comment">// Method to display person information</span>
+    <span class="keyword">void</span> <span class="function">displayInfo</span>() {
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Name: "</span> + name);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Age: "</span> + age);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"City: "</span> + city);
+    }
+    
+    <span class="comment">// Method to greet</span>
+    <span class="keyword">void</span> <span class="function">greet</span>() {
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Hello, I'm "</span> + name + <span class="string">"!"</span>);
+    }
+}
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="class">ClassExample</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Create objects (instances) of the Person class</span>
+        <span class="class">Person</span> person1 = <span class="keyword">new</span> <span class="class">Person</span>();
+        <span class="class">Person</span> person2 = <span class="keyword">new</span> <span class="class">Person</span>();
+        
+        <span class="comment">// Set values for person1</span>
+        person1.name = <span class="string">"Alice"</span>;
+        person1.age = <span class="number">28</span>;
+        person1.city = <span class="string">"New York"</span>;
+        
+        <span class="comment">// Set values for person2</span>
+        person2.name = <span class="string">"Bob"</span>;
+        person2.age = <span class="number">35</span>;
+        person2.city = <span class="string">"Los Angeles"</span>;
+        
+        <span class="comment">// Call methods on objects</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"=== Person 1 ==="</span>);
+        person1.<span class="function">greet</span>();
+        person1.<span class="function">displayInfo</span>();
+        
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Person 2 ==="</span>);
+        person2.<span class="function">greet</span>();
+        person2.<span class="function">displayInfo</span>();
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-basic-class">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-basic-class">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>2. Constructor Methods</h2>
+    <p>Constructors are special methods that initialize objects when they are created:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'constructors')">Run</button>
+                </div>
+                <code><span class="keyword">class</span> <span class="class">Car</span> {
+    <span class="comment">// Instance variables</span>
+    <span class="class">String</span> brand;
+    <span class="class">String</span> model;
+    <span class="keyword">int</span> year;
+    <span class="class">String</span> color;
+    
+    <span class="comment">// Default constructor</span>
+    <span class="keyword">public</span> <span class="function">Car</span>() {
+        brand = <span class="string">"Unknown"</span>;
+        model = <span class="string">"Unknown"</span>;
+        year = <span class="number">2000</span>;
+        color = <span class="string">"White"</span>;
+    }
+    
+    <span class="comment">// Parameterized constructor</span>
+    <span class="keyword">public</span> <span class="function">Car</span>(<span class="class">String</span> carBrand, <span class="class">String</span> carModel, <span class="keyword">int</span> carYear) {
+        brand = carBrand;
+        model = carModel;
+        year = carYear;
+        color = <span class="string">"Black"</span>; <span class="comment">// Default color</span>
+    }
+    
+    <span class="comment">// Constructor with all parameters</span>
+    <span class="keyword">public</span> <span class="function">Car</span>(<span class="class">String</span> carBrand, <span class="class">String</span> carModel, <span class="keyword">int</span> carYear, <span class="class">String</span> carColor) {
+        brand = carBrand;
+        model = carModel;
+        year = carYear;
+        color = carColor;
+    }
+    
+    <span class="comment">// Method to display car information</span>
+    <span class="keyword">void</span> <span class="function">displayDetails</span>() {
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Car: "</span> + year + <span class="string">" "</span> + color + <span class="string">" "</span> + brand + <span class="string">" "</span> + model);
+    }
+    
+    <span class="comment">// Method to start the car</span>
+    <span class="keyword">void</span> <span class="function">start</span>() {
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"The "</span> + brand + <span class="string">" "</span> + model + <span class="string">" is starting..."</span>);
+    }
+}
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="class">ConstructorExample</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Using default constructor</span>
+        <span class="class">Car</span> car1 = <span class="keyword">new</span> <span class="class">Car</span>();
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Car 1 (Default constructor):"</span>);
+        car1.<span class="function">displayDetails</span>();
+        
+        <span class="comment">// Using parameterized constructor</span>
+        <span class="class">Car</span> car2 = <span class="keyword">new</span> <span class="class">Car</span>(<span class="string">"Toyota"</span>, <span class="string">"Camry"</span>, <span class="number">2022</span>);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\nCar 2 (3 parameters):"</span>);
+        car2.<span class="function">displayDetails</span>();
+        car2.<span class="function">start</span>();
+        
+        <span class="comment">// Using constructor with all parameters</span>
+        <span class="class">Car</span> car3 = <span class="keyword">new</span> <span class="class">Car</span>(<span class="string">"Honda"</span>, <span class="string">"Civic"</span>, <span class="number">2023</span>, <span class="string">"Blue"</span>);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\nCar 3 (All parameters):"</span>);
+        car3.<span class="function">displayDetails</span>();
+        car3.<span class="function">start</span>();
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-constructors">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-constructors">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>3. Encapsulation with Getters and Setters</h2>
+    <p>Encapsulation hides internal details and provides controlled access through getter and setter methods:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'encapsulation')">Run</button>
+                </div>
+                <code><span class="keyword">class</span> <span class="class">BankAccount</span> {
+    <span class="comment">// Private instance variables (encapsulated)</span>
+    <span class="keyword">private</span> <span class="class">String</span> accountNumber;
+    <span class="keyword">private</span> <span class="class">String</span> accountHolder;
+    <span class="keyword">private</span> <span class="keyword">double</span> balance;
+    
+    <span class="comment">// Constructor</span>
+    <span class="keyword">public</span> <span class="function">BankAccount</span>(<span class="class">String</span> accNumber, <span class="class">String</span> holder, <span class="keyword">double</span> initialBalance) {
+        accountNumber = accNumber;
+        accountHolder = holder;
+        balance = initialBalance;
+    }
+    
+    <span class="comment">// Getter methods</span>
+    <span class="keyword">public</span> <span class="class">String</span> <span class="function">getAccountNumber</span>() {
+        <span class="keyword">return</span> accountNumber;
+    }
+    
+    <span class="keyword">public</span> <span class="class">String</span> <span class="function">getAccountHolder</span>() {
+        <span class="keyword">return</span> accountHolder;
+    }
+    
+    <span class="keyword">public</span> <span class="keyword">double</span> <span class="function">getBalance</span>() {
+        <span class="keyword">return</span> balance;
+    }
+    
+    <span class="comment">// Setter methods with validation</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="function">setAccountHolder</span>(<span class="class">String</span> holder) {
+        <span class="keyword">if</span> (holder != <span class="keyword">null</span> && !holder.<span class="function">trim</span>().<span class="function">isEmpty</span>()) {
+            accountHolder = holder;
+        } <span class="keyword">else</span> {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Invalid account holder name!"</span>);
+        }
+    }
+    
+    <span class="comment">// Method to deposit money</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="function">deposit</span>(<span class="keyword">double</span> amount) {
+        <span class="keyword">if</span> (amount > <span class="number">0</span>) {
+            balance += amount;
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Deposited $"</span> + amount + <span class="string">". New balance: $"</span> + balance);
+        } <span class="keyword">else</span> {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Invalid deposit amount!"</span>);
+        }
+    }
+    
+    <span class="comment">// Method to withdraw money</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="function">withdraw</span>(<span class="keyword">double</span> amount) {
+        <span class="keyword">if</span> (amount > <span class="number">0</span> && amount <= balance) {
+            balance -= amount;
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Withdrew $"</span> + amount + <span class="string">". New balance: $"</span> + balance);
+        } <span class="keyword">else</span> {
+            <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Invalid withdrawal amount or insufficient funds!"</span>);
+        }
+    }
+    
+    <span class="comment">// Method to display account info</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="function">displayAccountInfo</span>() {
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Account Number: "</span> + accountNumber);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Account Holder: "</span> + accountHolder);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Current Balance: $"</span> + balance);
+    }
+}
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="class">EncapsulationExample</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Create a bank account</span>
+        <span class="class">BankAccount</span> account = <span class="keyword">new</span> <span class="class">BankAccount</span>(<span class="string">"12345"</span>, <span class="string">"John Doe"</span>, <span class="number">1000.0</span>);
+        
+        <span class="comment">// Display initial account info</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"=== Initial Account Information ==="</span>);
+        account.<span class="function">displayAccountInfo</span>();
+        
+        <span class="comment">// Perform some transactions</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Transactions ==="</span>);
+        account.<span class="function">deposit</span>(<span class="number">500.0</span>);
+        account.<span class="function">withdraw</span>(<span class="number">300.0</span>);
+        account.<span class="function">withdraw</span>(<span class="number">2000.0</span>); <span class="comment">// This should fail</span>
+        
+        <span class="comment">// Update account holder name</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Update Account Holder ==="</span>);
+        account.<span class="function">setAccountHolder</span>(<span class="string">"Jane Smith"</span>);
+        
+        <span class="comment">// Display final account info</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Final Account Information ==="</span>);
+        account.<span class="function">displayAccountInfo</span>();
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-encapsulation">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-encapsulation">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>4. Static Members</h2>
+    <p>Static variables and methods belong to the class rather than instances. They can be accessed without creating objects:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'static-members')">Run</button>
+                </div>
+                <code><span class="keyword">class</span> <span class="class">Student</span> {
+    <span class="comment">// Static variable - shared by all instances</span>
+    <span class="keyword">static</span> <span class="keyword">int</span> totalStudents = <span class="number">0</span>;
+    <span class="keyword">static</span> <span class="class">String</span> schoolName = <span class="string">"Java High School"</span>;
+    
+    <span class="comment">// Instance variables</span>
+    <span class="keyword">private</span> <span class="class">String</span> name;
+    <span class="keyword">private</span> <span class="keyword">int</span> studentId;
+    <span class="keyword">private</span> <span class="keyword">double</span> gpa;
+    
+    <span class="comment">// Constructor</span>
+    <span class="keyword">public</span> <span class="function">Student</span>(<span class="class">String</span> name, <span class="keyword">int</span> studentId, <span class="keyword">double</span> gpa) {
+        <span class="keyword">this</span>.name = name;
+        <span class="keyword">this</span>.studentId = studentId;
+        <span class="keyword">this</span>.gpa = gpa;
+        totalStudents++; <span class="comment">// Increment static variable</span>
+    }
+    
+    <span class="comment">// Static method to get total students</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="function">getTotalStudents</span>() {
+        <span class="keyword">return</span> totalStudents;
+    }
+    
+    <span class="comment">// Static method to get school name</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class">String</span> <span class="function">getSchoolName</span>() {
+        <span class="keyword">return</span> schoolName;
+    }
+    
+    <span class="comment">// Static method to change school name</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">setSchoolName</span>(<span class="class">String</span> newName) {
+        schoolName = newName;
+    }
+    
+    <span class="comment">// Instance method</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="function">displayInfo</span>() {
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Student: "</span> + name + <span class="string">" (ID: "</span> + studentId + <span class="string">", GPA: "</span> + gpa + <span class="string">")"</span>);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"School: "</span> + schoolName);
+    }
+    
+    <span class="comment">// Getter methods</span>
+    <span class="keyword">public</span> <span class="class">String</span> <span class="function">getName</span>() { <span class="keyword">return</span> name; }
+    <span class="keyword">public</span> <span class="keyword">int</span> <span class="function">getStudentId</span>() { <span class="keyword">return</span> studentId; }
+    <span class="keyword">public</span> <span class="keyword">double</span> <span class="function">getGpa</span>() { <span class="keyword">return</span> gpa; }
+}
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="class">StaticExample</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Access static members without creating objects</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"School: "</span> + <span class="class">Student</span>.<span class="function">getSchoolName</span>());
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Total students: "</span> + <span class="class">Student</span>.<span class="function">getTotalStudents</span>());
+        
+        <span class="comment">// Create student objects</span>
+        <span class="class">Student</span> student1 = <span class="keyword">new</span> <span class="class">Student</span>(<span class="string">"Alice"</span>, <span class="number">101</span>, <span class="number">3.8</span>);
+        <span class="class">Student</span> student2 = <span class="keyword">new</span> <span class="class">Student</span>(<span class="string">"Bob"</span>, <span class="number">102</span>, <span class="number">3.5</span>);
+        <span class="class">Student</span> student3 = <span class="keyword">new</span> <span class="class">Student</span>(<span class="string">"Charlie"</span>, <span class="number">103</span>, <span class="number">3.9</span>);
+        
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== After creating students ==="</span>);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Total students: "</span> + <span class="class">Student</span>.<span class="function">getTotalStudents</span>());
+        
+        <span class="comment">// Display student information</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Student Information ==="</span>);
+        student1.<span class="function">displayInfo</span>();
+        <span class="class">System</span>.out.<span class="function">println</span>();
+        student2.<span class="function">displayInfo</span>();
+        <span class="class">System</span>.out.<span class="function">println</span>();
+        student3.<span class="function">displayInfo</span>();
+        
+        <span class="comment">// Change school name using static method</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Changing School Name ==="</span>);
+        <span class="class">Student</span>.<span class="function">setSchoolName</span>(<span class="string">"Advanced Java Academy"</span>);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"New school name: "</span> + <span class="class">Student</span>.<span class="function">getSchoolName</span>());
+        
+        <span class="comment">// All students now show the new school name</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n=== Updated Student Info ==="</span>);
+        student1.<span class="function">displayInfo</span>();
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-static-members">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-static-members">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <div class="info-title">Key OOP Concepts:</div>
+        <ul>
+            <li><strong>Class:</strong> A blueprint or template for creating objects</li>
+            <li><strong>Object:</strong> An instance of a class with specific values</li>
+            <li><strong>Constructor:</strong> Special method that initializes objects</li>
+            <li><strong>Encapsulation:</strong> Hiding internal details using private variables</li>
+            <li><strong>Static Members:</strong> Variables and methods that belong to the class</li>
+            <li><strong>Instance Members:</strong> Variables and methods that belong to objects</li>
+        </ul>
+    </div>
+
+    <h2>5. Best Practices</h2>
+    <ul>
+        <li>Use meaningful class and variable names</li>
+        <li>Make instance variables private and use getters/setters</li>
+        <li>Initialize variables in constructors</li>
+        <li>Use static members for class-level data and utility methods</li>
+        <li>Keep classes focused on a single responsibility</li>
+        <li>Add validation in setter methods and constructors</li>
+        <li>Use <span class="highlight">this</span> keyword when parameter names match instance variables</li>
+    </ul>
+    
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'orange';
+            updateAccentColor(savedColor);
+            normalizeCodeBlocks();
+        });
+
+        function updateAccentColor(color) {
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink', 'theme-orange');
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            
+            text = text.trim();
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const terminalSection = document.getElementById(`terminal-${codeType}`);
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 800;
+            
+            switch(codeType) {
+                case 'basic-class':
+                    output = `=== Person 1 ===
+Hello, I'm Alice!
+Name: Alice
+Age: 28
+City: New York
+
+=== Person 2 ===
+Hello, I'm Bob!
+Name: Bob
+Age: 35
+City: Los Angeles`;
+                    delay = 900;
+                    break;
+                    
+                case 'constructors':
+                    output = `Car 1 (Default constructor):
+Car: 2000 White Unknown Unknown
+
+Car 2 (3 parameters):
+Car: 2022 Black Toyota Camry
+The Toyota Camry is starting...
+
+Car 3 (All parameters):
+Car: 2023 Blue Honda Civic
+The Honda Civic is starting...`;
+                    delay = 1000;
+                    break;
+                    
+                case 'encapsulation':
+                    output = `=== Initial Account Information ===
+Account Number: 12345
+Account Holder: John Doe
+Current Balance: $1000.0
+
+=== Transactions ===
+Deposited $500.0. New balance: $1500.0
+Withdrew $300.0. New balance: $1200.0
+Invalid withdrawal amount or insufficient funds!
+
+=== Update Account Holder ===
+
+=== Final Account Information ===
+Account Number: 12345
+Account Holder: Jane Smith
+Current Balance: $1200.0`;
+                    delay = 1200;
+                    break;
+                    
+                case 'static-members':
+                    output = `School: Java High School
+Total students: 0
+
+=== After creating students ===
+Total students: 3
+
+=== Student Information ===
+Student: Alice (ID: 101, GPA: 3.8)
+School: Java High School
+
+Student: Bob (ID: 102, GPA: 3.5)
+School: Java High School
+
+Student: Charlie (ID: 103, GPA: 3.9)
+School: Java High School
+
+=== Changing School Name ===
+New school name: Advanced Java Academy
+
+=== Updated Student Info ===
+Student: Alice (ID: 101, GPA: 3.8)
+School: Advanced Java Academy`;
+                    delay = 1400;
+                    break;
+                    
+                default:
+                    output = 'Code executed successfully.';
+                    delay = 500;
+            }
+            
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 25;
+            
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            typeChar();
+        }
+
+        function normalizeCodeBlocks() {
+            document.querySelectorAll('.code-block code').forEach(el => {
+                let html = el.innerHTML;
+                html = html.replace(/^\n+|\n+$/g, '');
+                html = html.replace(/\n{2,}/g, '\n');
+                el.innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

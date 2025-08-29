@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Methods in Java</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #f89820;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+        .theme-orange { --accent-color: #f89820; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #f89820);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #f89820);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        h3 {
+            color: var(--accent-color, #f89820);
+            font-size: 20px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #cccccc;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #f89820);
+        }
+
+        .run-button {
+            background-color: rgba(var(--accent-color), 0.2);
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .run-button:hover {
+            background-color: rgba(var(--accent-color), 0.3);
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #f89820);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #f89820) !important;
+            border-color: var(--accent-color, #f89820) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius: 0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        .highlight {
+            color: var(--accent-color, #f89820);
+            font-weight: 600;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .class { color: #4ec9b0; }
+
+        .info-box {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #f89820);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: var(--accent-color, #f89820);
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Methods in Java</h1>
+    
+    <p>Methods are blocks of code that perform specific tasks. They help organize code, promote reusability, and make programs more modular and easier to maintain.</p>
+
+    <h2>1. Basic Method Structure</h2>
+    <p>A method in Java has the following structure:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'basic-method')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">MethodExample</span> {
+    <span class="comment">// Method without parameters and return value</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">sayHello</span>() {
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Hello, World!"</span>);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Welcome to Java methods!"</span>);
+    }
+    
+    <span class="comment">// Main method</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Calling the sayHello method:"</span>);
+        <span class="function">sayHello</span>(); <span class="comment">// Method call</span>
+        <span class="function">sayHello</span>(); <span class="comment">// Can call multiple times</span>
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-basic-method">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-basic-method">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>2. Methods with Parameters</h2>
+    <p>Methods can accept parameters (inputs) to work with different data:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'parameters')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">MethodParameters</span> {
+    <span class="comment">// Method with one parameter</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">greetPerson</span>(<span class="class">String</span> name) {
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Hello, "</span> + name + <span class="string">"!"</span>);
+    }
+    
+    <span class="comment">// Method with multiple parameters</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">introduce</span>(<span class="class">String</span> name, <span class="keyword">int</span> age, <span class="class">String</span> city) {
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"My name is "</span> + name);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"I am "</span> + age + <span class="string">" years old"</span>);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"I live in "</span> + city);
+    }
+    
+    <span class="comment">// Method with different data types</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">displayInfo</span>(<span class="keyword">int</span> number, <span class="keyword">double</span> price, <span class="keyword">boolean</span> available) {
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Product ID: "</span> + number);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Price: $"</span> + price);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Available: "</span> + available);
+    }
+    
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="function">greetPerson</span>(<span class="string">"Alice"</span>);
+        <span class="function">greetPerson</span>(<span class="string">"Bob"</span>);
+        
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n--- Introduction ---"</span>);
+        <span class="function">introduce</span>(<span class="string">"Charlie"</span>, <span class="number">25</span>, <span class="string">"New York"</span>);
+        
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"\n--- Product Info ---"</span>);
+        <span class="function">displayInfo</span>(<span class="number">101</span>, <span class="number">29.99</span>, <span class="keyword">true</span>);
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-parameters">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-parameters">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>3. Methods with Return Values</h2>
+    <p>Methods can return values to the calling code using the <span class="highlight">return</span> statement:</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'return-values')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">ReturnMethods</span> {
+    <span class="comment">// Method that returns an integer</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="function">add</span>(<span class="keyword">int</span> a, <span class="keyword">int</span> b) {
+        <span class="keyword">return</span> a + b;
+    }
+    
+    <span class="comment">// Method that returns a double</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span> <span class="function">calculateArea</span>(<span class="keyword">double</span> length, <span class="keyword">double</span> width) {
+        <span class="keyword">return</span> length * width;
+    }
+    
+    <span class="comment">// Method that returns a String</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class">String</span> <span class="function">getFullName</span>(<span class="class">String</span> firstName, <span class="class">String</span> lastName) {
+        <span class="keyword">return</span> firstName + <span class="string">" "</span> + lastName;
+    }
+    
+    <span class="comment">// Method that returns a boolean</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="function">isEven</span>(<span class="keyword">int</span> number) {
+        <span class="keyword">return</span> number % <span class="number">2</span> == <span class="number">0</span>;
+    }
+    
+    <span class="comment">// Method with conditional return</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class">String</span> <span class="function">getGrade</span>(<span class="keyword">int</span> score) {
+        <span class="keyword">if</span> (score >= <span class="number">90</span>) {
+            <span class="keyword">return</span> <span class="string">"A"</span>;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (score >= <span class="number">80</span>) {
+            <span class="keyword">return</span> <span class="string">"B"</span>;
+        } <span class="keyword">else</span> <span class="keyword">if</span> (score >= <span class="number">70</span>) {
+            <span class="keyword">return</span> <span class="string">"C"</span>;
+        } <span class="keyword">else</span> {
+            <span class="keyword">return</span> <span class="string">"F"</span>;
+        }
+    }
+    
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Using methods with return values</span>
+        <span class="keyword">int</span> sum = <span class="function">add</span>(<span class="number">15</span>, <span class="number">25</span>);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Sum: "</span> + sum);
+        
+        <span class="keyword">double</span> area = <span class="function">calculateArea</span>(<span class="number">5.5</span>, <span class="number">3.2</span>);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Area: "</span> + area);
+        
+        <span class="class">String</span> fullName = <span class="function">getFullName</span>(<span class="string">"John"</span>, <span class="string">"Doe"</span>);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Full name: "</span> + fullName);
+        
+        <span class="keyword">boolean</span> evenCheck = <span class="function">isEven</span>(<span class="number">42</span>);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Is 42 even? "</span> + evenCheck);
+        
+        <span class="class">String</span> grade = <span class="function">getGrade</span>(<span class="number">85</span>);
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Grade for 85: "</span> + grade);
+        
+        <span class="comment">// Using return values in expressions</span>
+        <span class="keyword">int</span> result = <span class="function">add</span>(<span class="number">10</span>, <span class="number">20</span>) * <span class="number">2</span>;
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Result: "</span> + result);
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-return-values">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-return-values">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>4. Method Overloading</h2>
+    <p>Java allows multiple methods with the same name but different parameters (overloading):</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'overloading')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">MethodOverloading</span> {
+    <span class="comment">// Overloaded methods with different number of parameters</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="function">multiply</span>(<span class="keyword">int</span> a, <span class="keyword">int</span> b) {
+        <span class="keyword">return</span> a * b;
+    }
+    
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="function">multiply</span>(<span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">int</span> c) {
+        <span class="keyword">return</span> a * b * c;
+    }
+    
+    <span class="comment">// Overloaded methods with different parameter types</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span> <span class="function">multiply</span>(<span class="keyword">double</span> a, <span class="keyword">double</span> b) {
+        <span class="keyword">return</span> a * b;
+    }
+    
+    <span class="comment">// Overloaded display methods</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">display</span>(<span class="keyword">int</span> num) {
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Integer: "</span> + num);
+    }
+    
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">display</span>(<span class="class">String</span> text) {
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"String: "</span> + text);
+    }
+    
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">display</span>(<span class="keyword">boolean</span> flag) {
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"Boolean: "</span> + flag);
+    }
+    
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="comment">// Call different overloaded multiply methods</span>
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"2 * 3 = "</span> + <span class="function">multiply</span>(<span class="number">2</span>, <span class="number">3</span>));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"2 * 3 * 4 = "</span> + <span class="function">multiply</span>(<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"2.5 * 3.2 = "</span> + <span class="function">multiply</span>(<span class="number">2.5</span>, <span class="number">3.2</span>));
+        
+        <span class="comment">// Call different overloaded display methods</span>
+        <span class="function">display</span>(<span class="number">42</span>);
+        <span class="function">display</span>(<span class="string">"Hello Java"</span>);
+        <span class="function">display</span>(<span class="keyword">true</span>);
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-overloading">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-overloading">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <div class="info-title">Method Components:</div>
+        <ul>
+            <li><strong>Access Modifier:</strong> public, private, protected, or default</li>
+            <li><strong>Static Keyword:</strong> Makes method belong to class rather than instance</li>
+            <li><strong>Return Type:</strong> void (no return) or specific data type</li>
+            <li><strong>Method Name:</strong> Should be descriptive and follow camelCase</li>
+            <li><strong>Parameters:</strong> Input values in parentheses</li>
+            <li><strong>Method Body:</strong> Code block enclosed in curly braces</li>
+        </ul>
+    </div>
+
+    <h2>5. Best Practices</h2>
+    <ul>
+        <li>Use descriptive method names that indicate what the method does</li>
+        <li>Keep methods focused on a single task (single responsibility)</li>
+        <li>Limit the number of parameters (typically no more than 3-4)</li>
+        <li>Always return a consistent data type</li>
+        <li>Use method overloading when methods perform similar operations</li>
+        <li>Add comments to explain complex methods</li>
+    </ul>
+    
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'orange';
+            updateAccentColor(savedColor);
+            normalizeCodeBlocks();
+        });
+
+        function updateAccentColor(color) {
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink', 'theme-orange');
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            
+            text = text.trim();
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const terminalSection = document.getElementById(`terminal-${codeType}`);
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 800;
+            
+            switch(codeType) {
+                case 'basic-method':
+                    output = `Calling the sayHello method:
+Hello, World!
+Welcome to Java methods!
+Hello, World!
+Welcome to Java methods!`;
+                    delay = 700;
+                    break;
+                    
+                case 'parameters':
+                    output = `Hello, Alice!
+Hello, Bob!
+
+--- Introduction ---
+My name is Charlie
+I am 25 years old
+I live in New York
+
+--- Product Info ---
+Product ID: 101
+Price: $29.99
+Available: true`;
+                    delay = 900;
+                    break;
+                    
+                case 'return-values':
+                    output = `Sum: 40
+Area: 17.6
+Full name: John Doe
+Is 42 even? true
+Grade for 85: B
+Result: 60`;
+                    delay = 800;
+                    break;
+                    
+                case 'overloading':
+                    output = `2 * 3 = 6
+2 * 3 * 4 = 24
+2.5 * 3.2 = 8.0
+Integer: 42
+String: Hello Java
+Boolean: true`;
+                    delay = 700;
+                    break;
+                    
+                default:
+                    output = 'Code executed successfully.';
+                    delay = 500;
+            }
+            
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 30;
+            
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            typeChar();
+        }
+
+        function normalizeCodeBlocks() {
+            document.querySelectorAll('.code-block code').forEach(el => {
+                let html = el.innerHTML;
+                html = html.replace(/^\n+|\n+$/g, '');
+                html = html.replace(/\n{2,}/g, '\n');
+                el.innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>
