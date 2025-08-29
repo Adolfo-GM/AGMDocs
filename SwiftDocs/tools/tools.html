@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGM Swift Docs</title>
+    <title>AGM Swift Tools</title>
     <style>
         * {
             margin: 0;
@@ -41,25 +41,7 @@
             margin: 0;
         }
 
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .accent-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .accent-label {
-            color: #cccccc;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        
-        .tools-button {
+        .back-button {
             display: inline-block;
             background-color: var(--accent-color, #f05138);
             color: white;
@@ -71,32 +53,9 @@
             transition: all 0.2s ease;
         }
         
-        .tools-button:hover {
+        .back-button:hover {
             background-color: color-mix(in srgb, var(--accent-color, #f05138) 80%, white);
             transform: translateY(-1px);
-        }
-
-        .accent-dropdown {
-            background-color: #2d2d30;
-            color: #cccccc;
-            border: 1px solid #3e3e42;
-            border-radius: 4px;
-            padding: 6px 12px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: inherit;
-        }
-
-        .accent-dropdown:hover {
-            background-color: #404040;
-            border-color: var(--accent-color, #f05138);
-        }
-
-        .accent-dropdown:focus {
-            outline: none;
-            border-color: var(--accent-color, #f05138);
-            box-shadow: 0 0 0 2px rgba(240, 81, 56, 0.2);
         }
 
         /* CSS Variables for accent colors */
@@ -155,19 +114,6 @@
             border-left-color: var(--accent-color, #f05138);
         }
 
-        .content {
-            flex: 1;
-            background-color: #1e1e1e;
-            overflow: hidden;
-        }
-
-        .content iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background-color: #1e1e1e;
-        }
-
         .sidebar-section {
             margin-bottom: 20px;
         }
@@ -182,82 +128,126 @@
             margin-bottom: 5px;
             border-bottom: 1px solid #3e3e42;
         }
+
+        .content {
+            flex: 1;
+            background-color: #1e1e1e;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            overflow: hidden;
+            max-height: 100%;
+        }
+
+        .tool-container {
+            height: 100%;
+            display: none;
+        }
+
+        .tool-container.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>AGM Swift Docs</h1>
-        <div class="header-controls">
-            <a href="tools/tools.html" target="_blank" class="tools-button">Tools</a>
-            <a href="../index.html" class="tools-button">Home</a>
-            <div class="accent-controls">
-                <span class="accent-label">Accent Color:</span>
-                <select class="accent-dropdown" id="accentSelector" onchange="changeAccentColor(this.value)">
-                    <option value="orange" selected>Orange</option>
-                    <option value="blue">Blue</option>
-                    <option value="red">Red</option>
-                    <option value="green">Green</option>
-                    <option value="yellow">Yellow</option>
-                    <option value="purple">Purple</option>
-                    <option value="pink">Pink</option>
-                </select>
-            </div>
-        </div>
+        <h1>AGM Swift Tools</h1>
+        <a href="../index.html" class="back-button">Back to Docs</a>
     </div>
 
     <div class="container">
         <nav class="sidebar">
             <div class="sidebar-section">
+                <h3>Code Utilities</h3>
                 <ul>
-                    <li><a href="#" onclick="loadPage('get-started.html')" class="active" id="get-started-link">Get Started</a></li>
-                    <li><a href="#" onclick="loadPage('variables.html')" id="variables-link">Variables & Constants</a></li>
-                    <li><a href="#" onclick="loadPage('functions.html')" id="functions-link">Functions</a></li>
-                    <li><a href="#" onclick="loadPage('objects.html')" id="objects-link">Structs & Classes</a></li>
-                    <li><a href="#" onclick="loadPage('swiftui.html')" id="swiftui-link">SwiftUI Basics</a></li>
+                    <li><a href="#" onclick="showTool('comment-remover')" class="active" id="comment-remover-link">Comment Remover</a></li>
+                    <li><a href="#" onclick="showTool('comment-adder')" id="comment-adder-link">Comment Adder</a></li>
+                </ul>
+                <h3>Code Generation</h3>
+                <ul>
+                    <li><a href="#" onclick="showTool('code-generator')" id="code-generator-link">Code Generator</a></li>
                 </ul>
             </div>
         </nav>
 
         <main class="content">
-            <iframe id="content-frame" src="get-started.html"></iframe>
+            <div id="comment-remover" class="tool-container active">
+                <iframe src="swift-comment-remover.html" frameborder="0"></iframe>
+            </div>
+
+            <div id="comment-adder" class="tool-container">
+                <iframe src="swift-comment-adder.html" frameborder="0"></iframe>
+            </div>
+
+            <div id="code-generator" class="tool-container">
+                <iframe src="swift-code-generation.html" frameborder="0"></iframe>
+            </div>
         </main>
     </div>
 
     <script>
+        // Load saved accent color from localStorage
         document.addEventListener('DOMContentLoaded', function() {
-            const savedColor = localStorage.getItem('swiftAccentColor') || 'orange';
-            changeAccentColor(savedColor);
-            document.getElementById('accentSelector').value = savedColor;
+            const savedColor = localStorage.getItem('accentColor') || 'orange';
+            applyAccentColor(savedColor);
+            
+            // Listen for messages from parent window (if embedded in iframe)
+            window.addEventListener('message', function(event) {
+                if (event.data && event.data.type === 'updateAccentColor') {
+                    applyAccentColor(event.data.color);
+                }
+            });
         });
 
-        function changeAccentColor(color) {
+        function applyAccentColor(color) {
+            // Remove all theme classes
             document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink', 'theme-orange');
-            document.body.classList.add(`theme-${color}`);
-            localStorage.setItem('swiftAccentColor', color);
             
-            const iframe = document.getElementById('content-frame');
-            if (iframe && iframe.contentWindow) {
-                iframe.contentWindow.postMessage({type: 'updateAccentColor', color: color}, '*');
-            }
+            // Add the selected theme class
+            document.body.classList.add(`theme-${color}`);
+            
+            // Update all iframes with the new accent color
+            document.querySelectorAll('iframe').forEach(iframe => {
+                if (iframe.contentWindow) {
+                    setTimeout(() => {
+                        iframe.contentWindow.postMessage({type: 'updateAccentColor', color: color}, '*');
+                    }, 100);
+                }
+            });
         }
 
-        function loadPage(page) {
-            document.getElementById('content-frame').src = page;
+        function showTool(toolId) {
+            // Hide all tool containers
+            document.querySelectorAll('.tool-container').forEach(container => {
+                container.classList.remove('active');
+            });
             
+            // Show the selected tool container
+            document.getElementById(toolId).classList.add('active');
+            
+            // Update active link in sidebar
             document.querySelectorAll('.sidebar a').forEach(link => {
                 link.classList.remove('active');
             });
             
-            const linkId = page.replace('.html', '-link');
-            document.getElementById(linkId).classList.add('active');
-
-            setTimeout(() => {
-                const savedColor = localStorage.getItem('swiftAccentColor') || 'orange';
-                const iframe = document.getElementById('content-frame');
-                if (iframe && iframe.contentWindow) {
+            document.getElementById(toolId + '-link').classList.add('active');
+            
+            // Update the iframe with the current accent color
+            const savedColor = localStorage.getItem('accentColor') || 'orange';
+            const activeContainer = document.getElementById(toolId);
+            const iframe = activeContainer.querySelector('iframe');
+            
+            if (iframe && iframe.contentWindow) {
+                setTimeout(() => {
                     iframe.contentWindow.postMessage({type: 'updateAccentColor', color: savedColor}, '*');
-                }
-            }, 100);
+                }, 100);
+            }
         }
     </script>
 </body>

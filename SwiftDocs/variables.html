@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variables & Types - Swift</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #f05138;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+        .theme-orange { --accent-color: #f05138; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #f05138);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #f05138);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #cccccc;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #f05138);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #f05138);
+        }
+
+        .run-button {
+            background-color: rgba(var(--accent-color-rgb), 0.2);
+            border-color: var(--accent-color, #f05138);
+        }
+
+        .run-button:hover {
+            background-color: rgba(var(--accent-color-rgb), 0.3);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #f05138) !important;
+            border-color: var(--accent-color, #f05138) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius: 0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        .highlight {
+            color: var(--accent-color, #f05138);
+            font-weight: 600;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #d55fde; }
+        .string { color: #ff8170; }
+        .function { color: #7ee787; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .type { color: #4ec9b0; }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+        }
+
+        .info-table th, .info-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #3e3e42;
+        }
+
+        .info-table th {
+            background-color: var(--accent-color, #f05138);
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .info-table tr:hover {
+            background-color: #2d2d30;
+        }
+
+        .info-box {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #f05138);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: var(--accent-color, #f05138);
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Variables & Constants</h1>
+    
+    <p>In Swift, you use variables and constants to store and refer to values. The main difference is that a <span class="highlight">constant</span> cannot be changed after it's set, while a <span class="highlight">variable</span> can be.</p>
+
+    <h2>1. Declaration: `let` and `var`</h2>
+    <p>You declare constants with the <code class="keyword">let</code> keyword and variables with the <code class="keyword">var</code> keyword.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'declaration')">Run</button>
+                </div>
+                <code><span class="comment">// A constant for the maximum number of login attempts.</span>
+<span class="keyword">let</span> maximumLoginAttempts = <span class="number">3</span>
+
+<span class="comment">// A variable to track the current number of attempts.</span>
+<span class="keyword">var</span> currentLoginAttempt = <span class="number">0</span>
+
+<span class="comment">// You can change a variable's value.</span>
+currentLoginAttempt += <span class="number">1</span>
+
+<span class="function">print</span>(<span class="string">"Attempt #\(currentLoginAttempt) of \(maximumLoginAttempts)"</span>)
+
+<span class="comment">// This line would cause an error because 'let' is a constant:</span>
+<span class="comment">// maximumLoginAttempts = 4</span></code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-declaration">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-declaration">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>2. Type Annotations and Inference</h2>
+    <p>Swift is a <span class="highlight">type-safe</span> language. It can usually infer the type of a variable or constant from the value you assign. This is called <span class="highlight">type inference</span>. You can also be explicit by providing a <span class="highlight">type annotation</span>.</p>
+
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'types')">Run</button>
+                </div>
+                <code><span class="comment">// Type inference: Swift knows this is a String.</span>
+<span class="keyword">let</span> inferredString = <span class="string">"Hello, Swift!"</span>
+
+<span class="comment">// Type annotation: Explicitly declare the type.</span>
+<span class="keyword">var</span> explicitDouble: <span class="type">Double</span> = <span class="number">70.0</span>
+
+<span class="comment">// It's useful when you don't initialize at declaration.</span>
+<span class="keyword">let</span> city: <span class="type">String</span>
+city = <span class="string">"Cupertino"</span>
+
+<span class="function">print</span>(inferredString)
+<span class="function">print</span>(<span class="string">"The temperature is \(explicitDouble)°F"</span>)
+<span class="function">print</span>(<span class="string">"Welcome to \(city)!"</span>)</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-types">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-types">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>3. Common Data Types</h2>
+    <p>Here are some of the most common data types you'll use in Swift.</p>
+
+    <table class="info-table">
+        <thead>
+            <tr>
+                <th>Data Type</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="highlight">String</span></td>
+                <td>A sequence of characters, like "hello".</td>
+                <td><code class="keyword">let</code> name = <code class="string">"Taylor"</code></td>
+            </tr>
+            <tr>
+                <td><span class="highlight">Int</span></td>
+                <td>Integers (whole numbers), like 5 or -23.</td>
+                <td><code class="keyword">var</code> age = <code class="number">33</code></td>
+            </tr>
+            <tr>
+                <td><span class="highlight">Double</span></td>
+                <td>Floating-point numbers with high precision.</td>
+                <td><code class="keyword">let</code> pi = <code class="number">3.14159</code></td>
+            </tr>
+            <tr>
+                <td><span class="highlight">Float</span></td>
+                <td>Floating-point numbers with lower precision.</td>
+                <td><code class="keyword">let</code> price: <code class="type">Float</code> = <code class="number">19.99</code></td>
+            </tr>
+            <tr>
+                <td><span class="highlight">Bool</span></td>
+                <td>A boolean value, either <code class="keyword">true</code> or <code class="keyword">false</code>.</td>
+                <td><code class="keyword">var</code> isLoggedIn = <code class="keyword">true</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>4. String Interpolation</h2>
+    <p>You can easily include the values of constants and variables inside a string using string interpolation: <code class="string">"\(yourVariable)"</code>.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'interpolation')">Run</button>
+                </div>
+                <code><span class="keyword">let</span> language = <span class="string">"Swift"</span>
+<span class="keyword">var</span> version = <span class="number">5.9</span>
+<span class="keyword">let</span> year = <span class="number">2023</span>
+
+<span class="keyword">let</span> message = <span class="string">"Welcome to \(language) version \(version), released in \(year)!"</span>
+
+<span class="function">print</span>(message)</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-interpolation">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-interpolation">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>5. Type Casting & Conversion</h2>
+    <p>Swift doesn't allow you to mix types in operations. You must explicitly convert them.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'casting')">Run</button>
+                </div>
+                <code><span class="keyword">let</span> label = <span class="string">"The width is "</span>
+<span class="keyword">let</span> width = <span class="number">94</span>
+<span class="keyword">let</span> labelAndWidth = label + <span class="type">String</span>(width) <span class="comment">// Convert Int to String</span>
+
+<span class="function">print</span>(labelAndWidth)
+
+<span class="keyword">let</span> pi = <span class="number">3.14159</span>
+<span class="keyword">let</span> integerPi = <span class="type">Int</span>(pi) <span class="comment">// Convert Double to Int (truncates)</span>
+
+<span class="function">print</span>(<span class="string">"Pi as a Double: \(pi)"</span>)
+<span class="function">print</span>(<span class="string">"Pi as an Int: \(integerPi)"</span>)</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-casting">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-casting">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <div class="info-title">Best Practices</div>
+        <ul>
+            <li>Prefer <code class="keyword">let</code> over <code class="keyword">var</code>. Use constants by default and only change to a variable if you know the value needs to change. This makes your code safer.</li>
+            <li>Use descriptive names for your variables and constants (e.g., <code class="keyword">var</code> <code class="type">userScore</code> instead of <code class="keyword">var</code> <code class="type">s</code>).</li>
+            <li>Rely on type inference for clean code, but use type annotations when the type isn't obvious or when you need a specific type (like <code class="type">Float</code> instead of <code class="type">Double</code>).</li>
+        </ul>
+    </div>
+    
+    <div style="height: 200px;"></div>
+
+    <script>
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'orange';
+            updateAccentColor(savedColor);
+        });
+
+        function updateAccentColor(color) {
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink', 'theme-orange');
+            document.body.classList.add(`theme-${color}`);
+            const accentColor = getComputedStyle(document.body).getPropertyValue('--accent-color').trim();
+            const rgb = accentColor.startsWith('#') ? hexToRgb(accentColor) : '240, 81, 56';
+            document.documentElement.style.setProperty('--accent-color-rgb', rgb);
+        }
+        
+        function hexToRgb(hex) {
+            let r = 0, g = 0, b = 0;
+            if (hex.length == 4) {
+                r = "0x" + hex[1] + hex[1];
+                g = "0x" + hex[2] + hex[2];
+                b = "0x" + hex[3] + hex[3];
+            } else if (hex.length == 7) {
+                r = "0x" + hex[1] + hex[2];
+                g = "0x" + hex[3] + hex[4];
+                b = "0x" + hex[5] + hex[6];
+            }
+            return `${+r}, ${+g}, ${+b}`;
+        }
+
+        function copyCode(button) {
+            const code = button.closest('.code-block').querySelector('code').textContent.trim();
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 600;
+            
+            switch(codeType) {
+                case 'declaration':
+                    output = `Attempt #1 of 3`;
+                    break;
+                case 'types':
+                    output = `Hello, Swift!\nThe temperature is 70.0°F\nWelcome to Cupertino!`;
+                    break;
+                case 'interpolation':
+                    output = `Welcome to Swift version 5.9, released in 2023!`;
+                    break;
+                case 'casting':
+                    output = `The width is 94\nPi as a Double: 3.14159\nPi as an Int: 3`;
+                    break;
+                default:
+                    output = 'Execution complete.';
+            }
+            
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 20;
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            typeChar();
+        }
+    </script>
+</body>
+</html>

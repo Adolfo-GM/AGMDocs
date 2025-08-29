@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started with Swift</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #f05138;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+        .theme-orange { --accent-color: #f05138; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #f05138);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #f05138);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        h3 {
+            color: var(--accent-color, #f05138);
+            font-size: 20px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ol, ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #cccccc;
+        }
+
+        .step {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #f05138);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .step-number {
+            color: var(--accent-color, #f05138);
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 15px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #f05138);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #f05138);
+        }
+
+        .run-button {
+            background-color: var(--accent-color, rgba(240, 81, 56, 0.2));
+            border-color: var(--accent-color, #f05138);
+        }
+
+        .run-button:hover {
+            background-color: var(--accent-color, rgba(240, 81, 56, 0.4));
+            border-color: var(--accent-color, #f05138);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #f05138);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color, #4caf50) !important;
+            border-color: var(--accent-color, #4caf50) !important;
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #f05138) !important;
+            border-color: var(--accent-color, #f05138) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius:0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #d55fde; }
+        .string { color: #ff8170; }
+        .function { color: #7ee787; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .type { color: #4ec9b0; }
+
+        .warning {
+            background-color: #2d2d1a;
+            border-left: 4px solid #ffcc02;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning-title {
+            color: #ffcc02;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .download-link {
+            color: var(--accent-color, #f05138);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+
+        .download-link:hover {
+            border-bottom-color: var(--accent-color, #f05138);
+        }
+
+        .os-tabs {
+            display: flex;
+            margin: 20px 0;
+            border-bottom: 1px solid #3e3e42;
+        }
+
+        .os-tab {
+            padding: 10px 20px;
+            background-color: #2d2d30;
+            color: #cccccc;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            font-size: 14px;
+            margin-right: 2px;
+            transition: all 0.2s ease;
+        }
+
+        .os-tab.active {
+            background-color: var(--accent-color, #f05138);
+            color: #ffffff;
+        }
+
+        .os-content {
+            display: none;
+            padding: 20px 0;
+        }
+
+        .os-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Get Started</h1>
+    
+    <p>Welcome to the Swift setup guide! Follow these step-by-step instructions to install Swift and configure your development environment.</p>
+
+    <div class="step">
+        <div class="step-number">Step 1: Install Development Tools</div>
+        <p>Swift development typically happens on Apple platforms. The easiest way to get started is by installing Xcode.</p>
+        
+        <div class="os-tabs">
+            <button class="os-tab active" onclick="showOS('mac')">macOS</button>
+            <button class="os-tab" onclick="showOS('linux')">Linux</button>
+            <button class="os-tab" onclick="showOS('windows')">Windows</button>
+        </div>
+
+        <div id="mac" class="os-content active">
+            <h3>For macOS (Recommended):</h3>
+            <ol>
+                <li>Open the <strong>App Store</strong> on your Mac.</li>
+                <li>Search for "Xcode" and click "Get" or "Install".</li>
+                <li>Xcode is a large download, so it may take some time.</li>
+                <li>Once installed, open Xcode to accept the license agreement and install additional components.</li>
+            </ol>
+            <p>Xcode includes the Swift compiler, SDKs for iOS, macOS, and other Apple platforms, and a powerful IDE.</p>
+        </div>
+
+        <div id="linux" class="os-content">
+            <h3>For Linux (Ubuntu):</h3>
+            <p>You can install the latest official Swift toolchain from Swift.org.</p>
+            <ol>
+                <li>First, install required dependencies:</li>
+            </ol>
+            <div class="code-container">
+                <div class="code-section">
+                    <div class="code-block">
+                        <code><span class="keyword">sudo</span> apt-get install clang libicu-dev</span></code>
+                    </div>
+                </div>
+            </div>
+            <ol start="2">
+                <li>Go to the official Swift website: <a href="https://www.swift.org/download/" class="download-link" target="_blank">swift.org/download</a></li>
+                <li>Download the toolchain for your version of Ubuntu.</li>
+                <li>Follow the installation instructions on the website to extract and add Swift to your PATH.</li>
+            </ol>
+        </div>
+
+        <div id="windows" class="os-content">
+            <h3>For Windows:</h3>
+            <p>The official Swift compiler is also available for Windows.</p>
+             <ol>
+                <li>Go to the official Swift website: <a href="https://www.swift.org/download/" class="download-link" target="_blank">swift.org/download</a></li>
+                <li>Download the Swift toolchain for Windows.</li>
+                <li>Follow the installation instructions to set up the compiler and its dependencies.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Step 2: Verify Swift Installation</div>
+        <p>Let's make sure the Swift compiler is ready to go.</p>
+        
+        <ol>
+            <li>Open <strong>Terminal</strong> (on macOS or Linux) or your command prompt on Windows.</li>
+            <li>Type the following command and press Enter:</li>
+        </ol>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'swift-version')">Run</button>
+                    </div>
+                    <code><span class="keyword">swift</span> --version</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-swift-version">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-swift-version">Click "Run" to see output...</div>
+            </div>
+        </div>
+        
+        <p>You should see something like "swift-driver version..." or "Apple Swift version...".</p>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Step 3: Choose Your Editor</div>
+        <p>You have several options for writing Swift code.</p>
+        
+        <h3>Xcode (macOS)</h3>
+        <p>The standard for app development on Apple platforms. It provides a full suite of tools for building and debugging.</p>
+
+        <h3>VS Code (Cross-Platform)</h3>
+        <p>A great lightweight editor for Swift, especially for server-side projects or cross-platform development.</p>
+        <ol>
+            <li>Install VS Code from <a href="https://code.visualstudio.com" class="download-link" target="_blank">code.visualstudio.com</a>.</li>
+            <li>Open VS Code and go to the Extensions view (Ctrl+Shift+X).</li>
+            <li>Search for and install the <strong>Swift</strong> extension (from the Swift Server Work Group).</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <div class="step-number">Step 4: Test Your Setup</div>
+        <p>Let's create your first Swift program to make sure everything works!</p>
+        
+        <ol>
+            <li>Create a new file and save it as "hello.swift".</li>
+            <li>Type the following code into the file:</li>
+        </ol>
+        
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <code><span class="function">print</span>(<span class="string">"Hello, World!"</span>) 
+
+<span class="keyword">let</span> message = <span class="string">"Swift is working!"</span>
+<span class="function">print</span>(message)</code>
+                </div>
+            </div>
+        </div>
+        
+        <ol start="3">
+            <li>Save the file.</li>
+            <li>In your terminal, navigate to the directory where you saved the file.</li>
+            <li>Compile and run the file with the following command:</li>
+        </ol>
+
+        <div class="code-container">
+            <div class="code-section">
+                <div class="code-block">
+                    <div class="code-actions">
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                        <button class="run-button" onclick="runCode(this, 'hello-world')">Run</button>
+                    </div>
+                    <code><span class="keyword">swift</span> hello.swift</code>
+                </div>
+            </div>
+            <div class="terminal-section" id="terminal-hello-world">
+                <div class="terminal-header">Terminal Output</div>
+                <div class="terminal-output" id="output-hello-world">Click "Run" to see output...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="warning">
+        <div class="warning-title">Troubleshooting</div>
+        <p>If you encounter any issues:</p>
+        <ul>
+            <li>On macOS, make sure you have run Xcode at least once.</li>
+            <li>Ensure the Swift toolchain is correctly added to your system's PATH.</li>
+            <li>On Linux/Windows, ensure all dependencies listed on the Swift.org download page are installed.</li>
+        </ul>
+    </div>
+
+    <h2>Next Steps</h2>
+    <p>Congratulations! You now have a working Swift environment. You're ready to start building amazing things.</p>
+    
+    <!-- Extra spacing for proper scrolling in iframe -->
+    <div style="height: 200px;"></div>
+
+    <script>
+        // Listen for accent color changes from parent frame
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        // Load saved accent color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'orange';
+            updateAccentColor(savedColor);
+        });
+
+        function updateAccentColor(color) {
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink', 'theme-orange');
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent.trim();
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 1000;
+            
+            switch(codeType) {
+                case 'swift-version':
+                    output = `swift-driver version: 1.87.1 Apple Swift version 5.9 (swiftlang-5.9.0.128.108 clang-1500.0.40.1)
+Target: arm64-apple-macosx13.0`;
+                    delay = 500;
+                    break;
+                case 'hello-world':
+                    output = `Hello, World!
+Swift is working!`;
+                    delay = 800;
+                    break;
+                default:
+                    output = 'Command executed successfully.';
+                    delay = 500;
+            }
+            
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 20;
+            
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            typeChar();
+        }
+
+        function showOS(os) {
+            document.querySelectorAll('.os-content').forEach(content => content.classList.remove('active'));
+            document.querySelectorAll('.os-tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(os).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

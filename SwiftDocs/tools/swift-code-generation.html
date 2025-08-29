@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Generator - AGM Swift Tools</title>
+    <style>
+        :root {
+            --accent-color: #f05138;
+        }
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+        .theme-orange { --accent-color: #f05138; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+        .top-bar {
+            background: #252526;
+            border-bottom: 1px solid #3e3e42;
+            padding: 15px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .tool-title {
+            color: var(--accent-color, #f05138);
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .tool-subtitle {
+            color: #cccccc;
+            font-size: 13px;
+            margin-left: 12px;
+            opacity: 0.7;
+        }
+        .main-content {
+            padding: 32px 24px 24px 24px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .section {
+            margin-bottom: 32px;
+        }
+        label {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--accent-color, #f05138);
+            margin-bottom: 8px;
+            display: block;
+        }
+        select, button {
+            font-size: 15px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #3e3e42;
+            background: #252526;
+            color: #d4d4d4;
+            margin-bottom: 16px;
+            margin-right: 10px;
+        }
+        select:focus, button:focus {
+            outline: 2px solid var(--accent-color, #f05138);
+        }
+        button {
+            background: var(--accent-color, #f05138);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: color-mix(in srgb, var(--accent-color, #f05138) 80%, white);
+        }
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+        .copy-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .copy-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #f05138);
+        }
+        .copy-button:active {
+            background-color: var(--accent-color, #f05138);
+        }
+        .copy-success {
+            background-color: var(--accent-color, #4caf50) !important;
+            border-color: var(--accent-color, #4caf50) !important;
+        }
+        /* Syntax highlighting */
+        .keyword { color: #d55fde; }
+        .string { color: #ff8170; }
+        .function { color: #7ee787; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .type { color: #4ec9b0; }
+        .property { color: #79c0ff; }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            .main-content { padding: 16px 4vw; }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div>
+            <span class="tool-title">Code Generator</span>
+            <span class="tool-subtitle">Generate Swift code for common project types</span>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="section">
+            <label for="main-category">Select a project type:</label>
+            <select id="main-category">
+                    <option value="ui">UI</option>
+                    <option value="data">Data</option>
+                    <option value="network">Network</option>
+                    <option value="script">Script</option>
+            </select>
+            <label for="sub-category">Select a template:</label>
+            <select id="sub-category"></select>
+            <button id="generate-btn">Generate Code</button>
+        </div>
+        <div class="section" id="output-section" style="display:none;">
+            <div class="code-block"><div class="code-actions"><button class="copy-button" onclick="copyCode(this)">Copy</button></div><code id="code-output"></code></div>
+        </div>
+    </div>
+    <script>
+        // Theme management
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'updateAccentColor') {
+                applyAccentColor(event.data.color);
+            }
+        });
+        function applyAccentColor(color) {
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink', 'theme-orange');
+            document.body.classList.add(`theme-${color}`);
+        }
+        // Code templates
+        const templates = {
+            ui: {
+                'SwiftUI View': `<span class="comment">// Simple SwiftUI View</span>\n<span class="keyword">import</span> <span class="type">SwiftUI</span>\n\n<span class="keyword">struct</span> <span class="type">ContentView</span>: <span class="type">View</span> {\n    <span class="keyword">var</span> body: <span class="type">some</span> <span class="type">View</span> {\n        <span class="type">VStack</span> {\n            <span class="type">Image</span>(systemName: <span class="string">"globe"</span>)\n                .imageScale(.large)\n                .foregroundStyle(.tint)\n            <span class="type">Text</span>(<span class="string">"Hello, world!"</span>)\n        }\n        .padding()\n    }\n}`,
+                'UIKit ViewController': `<span class="comment">// Simple UIKit ViewController</span>\n<span class="keyword">import</span> <span class="type">UIKit</span>\n\n<span class="keyword">class</span> <span class="type">ViewController</span>: <span class="type">UIViewController</span> {\n    <span class="keyword">override</span> <span class="keyword">func</span> <span class="function">viewDidLoad</span>() {\n        <span class="keyword">super</span>.viewDidLoad()\n        \n        <span class="keyword">let</span> label = <span class="type">UILabel</span>()\n        label.text = <span class="string">"Hello, UIKit!"</span>\n        label.textAlignment = .center\n        view.addSubview(label)\n        \n        label.translatesAutoresizingMaskIntoConstraints = <span class="keyword">false</span>\n        <span class="type">NSLayoutConstraint</span>.activate([\n            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),\n            label.centerYAnchor.constraint(equalTo: view.centerYAnchor)\n        ])\n    }\n}`
+            },
+            data: {
+                'Codable Struct': `<span class="comment">// Struct conforming to Codable for JSON serialization</span>\n<span class="keyword">struct</span> <span class="type">User</span>: <span class="type">Codable</span> {\n    <span class="keyword">let</span> id: <span class="type">Int</span>\n    <span class="keyword">var</span> name: <span class="type">String</span>\n    <span class="keyword">var</span> email: <span class="type">String</span>\n}`,
+                'File I/O': `<span class="comment">// Read from and write to a file</span>\n<span class="keyword">import</span> <span class="type">Foundation</span>\n\n<span class="keyword">let</span> fileManager = <span class="type">FileManager</span>.default\n<span class="keyword">guard</span> <span class="keyword">let</span> documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first <span class="keyword">else</span> {\n    <span class="keyword">fatalError</span>(<span class="string">"Could not access documents directory"</span>)\n}\n\n<span class="keyword">let</span> fileURL = documentsURL.appendingPathComponent(<span class="string">"data.txt"</span>)\n<span class="keyword">let</span> content = <span class="string">"Hello, File!"</span>\n\n<span class="keyword">do</span> {\n    <span class="keyword">try</span> content.write(to: fileURL, atomically: <span class="keyword">true</span>, encoding: .utf8)\n    <span class="keyword">let</span> readContent = <span class="keyword">try</span> <span class="type">String</span>(contentsOf: fileURL, encoding: .utf8)\n    <span class="function">print</span>(readContent)\n} <span class="keyword">catch</span> {\n    <span class="function">print</span>(<span class="string">"Error: \\(error)"</span>)\n}`
+            },
+            network: {
+                'URLSession GET Request': `<span class="comment">// Simple URLSession GET request with async/await</span>\n<span class="keyword">import</span> <span class="type">Foundation</span>\n\n<span class="keyword">guard</span> <span class="keyword">let</span> url = <span class="type">URL</span>(string: <span class="string">"https://api.github.com"</span>) <span class="keyword">else</span> { <span class="keyword">return</span> }\n\n<span class="keyword">do</span> {\n    <span class="keyword">let</span> (data, response) = <span class="keyword">try</span> <span class="keyword">await</span> <span class="type">URLSession</span>.shared.data(from: url)\n    \n    <span class="keyword">guard</span> <span class="keyword">let</span> httpResponse = response <span class="keyword">as?</span> <span class="type">HTTPURLResponse</span>, httpResponse.statusCode == <span class="number">200</span> <span class="keyword">else</span> {\n        <span class="function">print</span>(<span class="string">"Invalid response"</span>)\n        <span class="keyword">return</span>\n    }\n    \n    <span class="function">print</span>(<span class="string">"Success! Got \\(data.count) bytes."</span>)\n} <span class="keyword">catch</span> {\n    <span class="function">print</span>(<span class="string">"Request failed: \\(error)"</span>)\n}`,
+                'Simple Actor': `<span class="comment">// Actor for safe concurrent access</span>\n<span class="keyword">actor</span> <span class="type">TemperatureLogger</span> {\n    <span class="keyword">private</span>(<span class="keyword">set</span>) <span class="keyword">var</span> measurements: [<span class="type">Double</span>] = []\n\n    <span class="keyword">func</span> <span class="function">add</span>(_ measurement: <span class="type">Double</span>) {\n        measurements.append(measurement)\n    }\n\n    <span class="keyword">var</span> max: <span class="type">Double</span>? {\n        measurements.max()\n    }\n}`
+            },
+            script: {
+                'Hello World': `<span class="comment">// Classic Hello World</span>\n<span class="function">print</span>(<span class="string">"Hello, World!"</span>)`,
+                'Array Example': `<span class="comment">// Example of using an array</span>\n<span class="keyword">var</span> fruits = [<span class="string">"Apple"</span>, <span class="string">"Banana"</span>, <span class="string">"Orange"</span>]\n\n<span class="keyword">for</span> fruit <span class="keyword">in</span> fruits {\n    <span class="function">print</span>(<span class="string">"I like \\(fruit)s"</span>)\n}\n\nfruits.append(<span class="string">"Grape"</span>)\n<span class="function">print</span>(fruits)`
+            }
+        };
+        // Populate sub-category options
+        const mainCategory = document.getElementById('main-category');
+        const subCategory = document.getElementById('sub-category');
+        function updateSubOptions() {
+            const val = mainCategory.value;
+            subCategory.innerHTML = '';
+            Object.keys(templates[val]).forEach(key => {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = key;
+                subCategory.appendChild(opt);
+            });
+        }
+        mainCategory.addEventListener('change', updateSubOptions);
+        updateSubOptions();
+        // Generate code
+        document.getElementById('generate-btn').addEventListener('click', function() {
+            const cat = mainCategory.value;
+            const sub = subCategory.value;
+            const code = templates[cat][sub];
+            document.getElementById('code-output').innerHTML = code;
+            document.getElementById('output-section').style.display = 'block';
+        });
+        // Copy code
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            let text = code.textContent;
+            text = text.trim();
+            // Remove any leading whitespace from each line while preserving relative indentation
+            const lines = text.split('\n');
+            const nonEmptyLines = lines.filter(line => line.trim() !== '');
+            if (nonEmptyLines.length > 0) {
+                const minIndent = Math.min(...nonEmptyLines.map(line => line.match(/^\s*/)[0].length));
+                const cleanedLines = lines.map(line => line.slice(minIndent));
+                text = cleanedLines.join('\n').trim();
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            }).catch(err => {
+                button.textContent = 'Error';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+        // Accent color on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'orange';
+            applyAccentColor(savedColor);
+        });
+    </script>
+</body>
+</html>
