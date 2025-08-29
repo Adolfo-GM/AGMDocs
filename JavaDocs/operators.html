@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Operators</title>
+    <style>
+        /* CSS Variables for accent colors */
+        :root {
+            --accent-color: #f89820;
+        }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+        .theme-orange { --accent-color: #f89820; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: var(--accent-color, #f89820);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #f89820);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        h3 {
+            color: var(--accent-color, #f89820);
+            font-size: 20px;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #cccccc;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #f89820);
+        }
+
+        .run-button {
+            background-color: rgba(var(--accent-color), 0.2);
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .run-button:hover {
+            background-color: rgba(var(--accent-color), 0.3);
+            border-color: var(--accent-color, #f89820);
+        }
+
+        .run-button:active {
+            background-color: var(--accent-color, #f89820);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #f89820) !important;
+            border-color: var(--accent-color, #f89820) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius: 0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        .highlight {
+            color: var(--accent-color, #f89820);
+            font-weight: 600;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .function { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .class { color: #4ec9b0; }
+
+        .info-box {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #f89820);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: var(--accent-color, #f89820);
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Java Operators</h1>
+    
+    <p>Operators are special symbols that perform operations on one, two, or three operands, and return a result.</p>
+
+    <h2>1. Arithmetic Operators</h2>
+    <p>These are used to perform common mathematical operations.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'arithmetic')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">ArithmeticOperators</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="keyword">int</span> a = <span class="number">10</span>;
+        <span class="keyword">int</span> b = <span class="number">5</span>;
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"a + b = "</span> + (a + b));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"a - b = "</span> + (a - b));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"a * b = "</span> + (a * b));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"a / b = "</span> + (a / b));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"a % b = "</span> + (a % b));
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-arithmetic">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-arithmetic">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>2. Relational Operators</h2>
+    <p>These operators are used to compare two values.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'relational')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">RelationalOperators</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="keyword">int</span> a = <span class="number">10</span>;
+        <span class="keyword">int</span> b = <span class="number">5</span>;
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"a == b: "</span> + (a == b));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"a != b: "</span> + (a != b));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"a > b: "</span> + (a > b));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"a < b: "</span> + (a < b));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"a >= b: "</span> + (a >= b));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"a <= b: "</span> + (a <= b));
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-relational">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-relational">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>3. Logical Operators</h2>
+    <p>These operators are used to combine multiple conditions.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'logical')">Run</button>
+                </div>
+                <code><span class="keyword">public</span> <span class="keyword">class</span> <span class="class">LogicalOperators</span> {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="function">main</span>(<span class="class">String</span>[] args) {
+        <span class="keyword">boolean</span> x = <span class="keyword">true</span>;
+        <span class="keyword">boolean</span> y = <span class="keyword">false</span>;
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"x && y: "</span> + (x && y));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"x || y: "</span> + (x || y));
+        <span class="class">System</span>.out.<span class="function">println</span>(<span class="string">"!x: "</span> + (!x));
+    }
+}</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-logical">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-logical">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <div style="height: 200px;"></div>
+
+    <script>
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateAccentColor') {
+                updateAccentColor(event.data.color);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'orange';
+            updateAccentColor(savedColor);
+        });
+
+        function updateAccentColor(color) {
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink', 'theme-orange');
+            document.body.classList.add(`theme-${color}`);
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('code');
+            navigator.clipboard.writeText(code.innerText).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            let output = '';
+            switch(codeType) {
+                case 'arithmetic':
+                    output = "a + b = 15\na - b = 5\na * b = 50\na / b = 2\na % b = 0";
+                    break;
+                case 'relational':
+                    output = "a == b: false\na != b: true\na > b: true\na < b: false\na >= b: true\na <= b: false";
+                    break;
+                case 'logical':
+                    output = "x && y: false\nx || y: true\n!x: false";
+                    break;
+            }
+            outputDiv.innerText = output;
+        }
+    </script>
+</body>
+</html>
