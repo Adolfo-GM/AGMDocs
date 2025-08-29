@@ -3,27 +3,384 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swift Functions</title>
+    <title>Functions in Swift</title>
     <style>
+        /* CSS Variables for accent colors */
         :root {
             --accent-color: #f05138;
         }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+        .theme-orange { --accent-color: #f05138; }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #1e1e1e;
             color: #d4d4d4;
             margin: 0;
             padding: 30px;
+            line-height: 1.6;
         }
+
         h1 {
-            color: var(--accent-color);
+            color: var(--accent-color, #f05138);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #f05138);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #cccccc;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #f05138);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #f05138);
+        }
+
+        .run-button {
+            background-color: rgba(var(--accent-color-rgb), 0.2);
+            border-color: var(--accent-color, #f05138);
+        }
+
+        .run-button:hover {
+            background-color: rgba(var(--accent-color-rgb), 0.3);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #f05138) !important;
+            border-color: var(--accent-color, #f05138) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius: 0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        .highlight {
+            color: var(--accent-color, #f05138);
+            font-weight: 600;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #d55fde; }
+        .string { color: #ff8170; }
+        .function { color: #7ee787; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .type { color: #4ec9b0; }
+        .param { color: #9cdcfe; }
+
+        .info-box {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #f05138);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: var(--accent-color, #f05138);
+            font-weight: bold;
+            margin-bottom: 8px;
         }
     </style>
 </head>
 <body>
     <h1>Functions in Swift</h1>
-    <p>This page explains how to define and call functions in Swift.</p>
     
+    <p>Functions are self-contained chunks of code that perform a specific task. You give a function a name that identifies what it does, and this name is used to “call” the function to perform its task when needed.</p>
+
+    <h2>1. Defining and Calling Functions</h2>
+    <p>Every function in Swift has a type, consisting of the function’s parameter types and return type. You use the <code class="keyword">func</code> keyword to declare a function.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'basic')">Run</button>
+                </div>
+                <code><span class="comment">// A simple function with no parameters or return value</span>
+<span class="keyword">func</span> <span class="function">greet</span>() {
+    <span class="function">print</span>(<span class="string">"Hello, Swift!"</span>)
+}
+
+<span class="comment">// Calling the function</span>
+<span class="function">greet</span>()
+<span class="function">greet</span>()</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-basic">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-basic">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>2. Function Parameters and Return Values</h2>
+    <p>Functions become more powerful when they can take inputs (parameters) and produce outputs (return values).</p>
+
+    <h3>Parameters</h3>
+    <p>You specify function parameters within the parentheses, written as a name followed by a colon and a type.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'params')">Run</button>
+                </div>
+                <code><span class="comment">// A function that takes one parameter</span>
+<span class="keyword">func</span> <span class="function">greet</span>(<span class="param">person</span>: <span class="type">String</span>) {
+    <span class="function">print</span>(<span class="string">"Hello, \(person)!"</span>)
+}
+
+<span class="function">greet</span>(<span class="param">person</span>: <span class="string">"Alice"</span>)
+<span class="function">greet</span>(<span class="param">person</span>: <span class="string">"Bob"</span>)</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-params">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-params">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h3>Return Values</h3>
+    <p>You indicate a function's return type with the return arrow <code class="operator">-></code> followed by the type name.</p>
+
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'return')">Run</button>
+                </div>
+                <code><span class="comment">// A function with parameters and a return value</span>
+<span class="keyword">func</span> <span class="function">add</span>(<span class="param">_ a</span>: <span class="type">Int</span>, <span class="param">_ b</span>: <span class="type">Int</span>) -> <span class="type">Int</span> {
+    <span class="keyword">return</span> a + b
+}
+
+<span class="keyword">let</span> sum = <span class="function">add</span>(<span class="number">5</span>, <span class="number">3</span>)
+<span class="function">print</span>(<span class="string">"The sum is \(sum)."</span>)
+
+<span class="comment">// A function that returns a tuple (multiple values)</span>
+<span class="keyword">func</span> <span class="function">getMinMax</span>(<span class="param">array</span>: [<span class="type">Int</span>]) -> (<span class="param">min</span>: <span class="type">Int</span>, <span class="param">max</span>: <span class="type">Int</span>) {
+    <span class="keyword">var</span> currentMin = array[<span class="number">0</span>]
+    <span class="keyword">var</span> currentMax = array[<span class="number">0</span>]
+    <span class="keyword">for</span> value <span class="keyword">in</span> array[<span class="number">1</span>..<array.count] {
+        <span class="keyword">if</span> value < currentMin {
+            currentMin = value
+        } <span class="keyword">else if</span> value > currentMax {
+            currentMax = value
+        }
+    }
+    <span class="keyword">return</span> (currentMin, currentMax)
+}
+
+<span class="keyword">let</span> bounds = <span class="function">getMinMax</span>(<span class="param">array</span>: [<span class="number">8</span>, -<span class="number">6</span>, <span class="number">2</span>, <span class="number">109</span>, <span class="number">3</span>, <span class="number">71</span>])
+<span class="function">print</span>(<span class="string">"Min is \(bounds.min) and max is \(bounds.max)"</span>)</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-return">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-return">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>3. Argument Labels and Parameter Names</h2>
+    <p>Swift provides flexibility in how you label parameters. Each function parameter has both an <span class="highlight">argument label</span> and a <span class="highlight">parameter name</span>. The argument label is used when calling the function; the parameter name is used in the implementation of the function.</p>
+
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'labels')">Run</button>
+                </div>
+                <code><span class="comment">// Specifying argument labels</span>
+<span class="keyword">func</span> <span class="function">greet</span>(<span class="param">person name</span>: <span class="type">String</span>, <span class="param">from hometown</span>: <span class="type">String</span>) {
+    <span class="function">print</span>(<span class="string">"Hello \(name)! Glad you could visit from \(hometown)."</span>)
+}
+
+<span class="function">greet</span>(<span class="param">person</span>: <span class="string">"Bill"</span>, <span class="param">from</span>: <span class="string">"Cupertino"</span>)
+
+<span class="comment">// Omitting argument labels with an underscore</span>
+<span class="keyword">func</span> <span class="function">subtract</span>(<span class="param">_ a</span>: <span class="type">Int</span>, <span class="param">from b</span>: <span class="type">Int</span>) -> <span class="type">Int</span> {
+    <span class="keyword">return</span> b - a
+}
+
+<span class="keyword">let</span> difference = <span class="function">subtract</span>(<span class="number">10</span>, <span class="param">from</span>: <span class="number">30</span>)
+<span class="function">print</span>(<span class="string">"Result: \(difference)"</span>)</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-labels">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-labels">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>4. Function Types</h2>
+    <p>Every function has a specific function type, made up of the parameter types and the return type of the function. This allows you to treat functions like any other type in Swift—you can pass them as arguments to other functions or return them from functions.</p>
+
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'types')">Run</button>
+                </div>
+                <code><span class="keyword">func</span> <span class="function">addTwoInts</span>(<span class="param">_ a</span>: <span class="type">Int</span>, <span class="param">_ b</span>: <span class="type">Int</span>) -> <span class="type">Int</span> {
+    <span class="keyword">return</span> a + b
+}
+
+<span class="keyword">func</span> <span class="function">multiplyTwoInts</span>(<span class="param">_ a</span>: <span class="type">Int</span>, <span class="param">_ b</span>: <span class="type">Int</span>) -> <span class="type">Int</span> {
+    <span class="keyword">return</span> a * b
+}
+
+<span class="comment">// This variable has the type `(Int, Int) -> Int`</span>
+<span class="keyword">var</span> mathFunction: (<span class="type">Int</span>, <span class="type">Int</span>) -> <span class="type">Int</span> = addTwoInts
+
+<span class="function">print</span>(<span class="string">"Result: \(mathFunction(2, 3))"</span>)
+
+<span class="comment">// You can change the function it holds</span>
+mathFunction = multiplyTwoInts
+<span class="function">print</span>(<span class="string">"Result: \(mathFunction(2, 3))"</span>)
+
+<span class="comment">// You can pass functions as parameters</span>
+<span class="keyword">func</span> <span class="function">printMathResult</span>(<span class="param">_ mathFunc</span>: (<span class="type">Int</span>, <span class="type">Int</span>) -> <span class="type">Int</span>, <span class="param">_ a</span>: <span class="type">Int</span>, <span class="param">_ b</span>: <span class="type">Int</span>) {
+    <span class="function">print</span>(<span class="string">"Final Result: \(mathFunc(a, b))"</span>)
+}
+
+<span class="function">printMathResult</span>(addTwoInts, <span class="number">10</span>, <span class="number">5</span>)</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-types">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-types">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <div class="info-title">Key Concepts</div>
+        <ul>
+            <li><strong>Function Signature:</strong> The function's name, parameter types, and return type.</li>
+            <li><strong>Argument Label:</strong> The name used when passing an argument to a function call.</li>
+            <li><strong>Parameter Name:</strong> The name used for the parameter within the function's body.</li>
+            <li><strong>First-Class Functions:</strong> Functions can be assigned to variables, passed as arguments, and returned from other functions.</li>
+        </ul>
+    </div>
+    
+    <div style="height: 200px;"></div>
+
     <script>
         window.addEventListener('message', function(event) {
             if (event.data.type === 'updateAccentColor') {
@@ -31,15 +388,97 @@
             }
         });
 
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'orange';
+            updateAccentColor(savedColor);
+        });
+
         function updateAccentColor(color) {
-            let accent = '#f05138';
-            if (color === 'blue') accent = '#569cd6';
-            if (color === 'red') accent = '#ff4444';
-            if (color === 'green') accent = '#4caf50';
-            if (color === 'yellow') accent = '#ffeb3b';
-            if (color === 'purple') accent = '#9c27b0';
-            if (color === 'pink') accent = '#e91e63';
-            document.documentElement.style.setProperty('--accent-color', accent);
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink', 'theme-orange');
+            document.body.classList.add(`theme-${color}`);
+            const accentColor = getComputedStyle(document.body).getPropertyValue('--accent-color').trim();
+            const rgb = accentColor.startsWith('#') ? hexToRgb(accentColor) : '240, 81, 56';
+            document.documentElement.style.setProperty('--accent-color-rgb', rgb);
+        }
+        
+        function hexToRgb(hex) {
+            let r = 0, g = 0, b = 0;
+            if (hex.length == 4) {
+                r = "0x" + hex[1] + hex[1];
+                g = "0x" + hex[2] + hex[2];
+                b = "0x" + hex[3] + hex[3];
+            } else if (hex.length == 7) {
+                r = "0x" + hex[1] + hex[2];
+                g = "0x" + hex[3] + hex[4];
+                b = "0x" + hex[5] + hex[6];
+            }
+            return `${+r}, ${+g}, ${+b}`;
+        }
+
+        function copyCode(button) {
+            const code = button.closest('.code-block').querySelector('code').textContent.trim();
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 600;
+            
+            switch(codeType) {
+                case 'basic':
+                    output = `Hello, Swift!\nHello, Swift!`;
+                    break;
+                case 'params':
+                    output = `Hello, Alice!\nHello, Bob!`;
+                    break;
+                case 'return':
+                    output = `The sum is 8.\nMin is -6 and max is 109`;
+                    break;
+                case 'labels':
+                    output = `Hello Bill! Glad you could visit from Cupertino.\nResult: 20`;
+                    break;
+                case 'types':
+                    output = `Result: 5\nResult: 6\nFinal Result: 15`;
+                    break;
+                default:
+                    output = 'Execution complete.';
+            }
+            
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 20;
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            typeChar();
         }
     </script>
 </body>

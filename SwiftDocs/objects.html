@@ -3,27 +3,341 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swift Structs and Classes</title>
+    <title>Classes & Structs - Swift</title>
     <style>
+        /* CSS Variables for accent colors */
         :root {
             --accent-color: #f05138;
         }
+
+        .theme-blue { --accent-color: #569cd6; }
+        .theme-red { --accent-color: #ff4444; }
+        .theme-green { --accent-color: #4caf50; }
+        .theme-yellow { --accent-color: #ffeb3b; }
+        .theme-purple { --accent-color: #9c27b0; }
+        .theme-pink { --accent-color: #e91e63; }
+        .theme-orange { --accent-color: #f05138; }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #1e1e1e;
             color: #d4d4d4;
             margin: 0;
             padding: 30px;
+            line-height: 1.6;
         }
+
         h1 {
-            color: var(--accent-color);
+            color: var(--accent-color, #f05138);
+            font-size: 32px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3e3e42;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--accent-color, #f05138);
+            font-size: 24px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: #cccccc;
+        }
+
+        .code-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .code-section {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .terminal-section {
+            width: 100%;
+            display: block;
+        }
+
+        .code-block {
+            background-color: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #d4d4d4;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            white-space: pre-wrap;
+            display: block;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .code-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .copy-button, .run-button {
+            background-color: #404040;
+            color: #d4d4d4;
+            border: 1px solid #6e6e6e;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .copy-button:hover, .run-button:hover {
+            background-color: #505050;
+            border-color: var(--accent-color, #f05138);
+        }
+
+        .copy-button:active, .run-button:active {
+            background-color: var(--accent-color, #f05138);
+        }
+
+        .run-button {
+            background-color: rgba(var(--accent-color-rgb), 0.2);
+            border-color: var(--accent-color, #f05138);
+        }
+
+        .run-button:hover {
+            background-color: rgba(var(--accent-color-rgb), 0.3);
+        }
+
+        .copy-success {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .run-success {
+            background-color: var(--accent-color, #f05138) !important;
+            border-color: var(--accent-color, #f05138) !important;
+        }
+
+        .terminal-output {
+            background-color: #0c0c0c;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #ffffff;
+            min-height: 80px;
+            white-space: pre-wrap;
+            border-radius: 0px 0px 6px 6px;
+        }
+
+        .terminal-header {
+            background-color: #2d2d30;
+            color: #cccccc;
+            padding: 8px 15px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #3e3e42;
+            border-bottom: none;
+        }
+
+        .highlight {
+            color: var(--accent-color, #f05138);
+            font-weight: 600;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #d55fde; }
+        .string { color: #ff8170; }
+        .function { color: #7ee787; }
+        .comment { color: #6a9955; font-style: italic; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+        .type { color: #4ec9b0; }
+        .param { color: #9cdcfe; }
+
+        .info-box {
+            background-color: #252526;
+            border-left: 4px solid var(--accent-color, #f05138);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .info-title {
+            color: var(--accent-color, #f05138);
+            font-weight: bold;
+            margin-bottom: 8px;
         }
     </style>
 </head>
 <body>
-    <h1>Structs and Classes in Swift</h1>
-    <p>This page covers the concepts of structs and classes in Swift.</p>
+    <h1>Classes and Structures</h1>
     
+    <p>Classes and structures are general-purpose, flexible constructs that become the building blocks of your program’s code. You use them to define properties and methods to add functionality to your types.</p>
+
+    <h2>1. Defining a Structure</h2>
+    <p>Structures are defined with the <code class="keyword">struct</code> keyword. They are <span class="highlight">value types</span>, meaning they are copied when they are assigned to a new variable or constant, or when they are passed to a function.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'struct')">Run</button>
+                </div>
+                <code><span class="keyword">struct</span> <span class="type">Resolution</span> {
+    <span class="keyword">var</span> <span class="param">width</span> = <span class="number">0</span>
+    <span class="keyword">var</span> <span class="param">height</span> = <span class="number">0</span>
+    
+    <span class="keyword">func</span> <span class="function">description</span>() -> <span class="type">String</span> {
+        <span class="keyword">return</span> <span class="string">"The resolution is \(width) x \(height)."</span>
+    }
+}
+
+<span class="comment">// Create an instance of the struct</span>
+<span class="keyword">var</span> someResolution = <span class="type">Resolution</span>()
+someResolution.width = <span class="number">1920</span>
+someResolution.height = <span class="number">1080</span>
+
+<span class="function">print</span>(someResolution.<span class="function">description</span>())
+
+<span class="comment">// Structs are value types (copied)</span>
+<span class="keyword">var</span> otherResolution = someResolution
+otherResolution.width = <span class="number">1280</span>
+
+<span class="function">print</span>(<span class="string">"Original: \(someResolution.width)"</span>)
+<span class="function">print</span>(<span class="string">"Copy: \(otherResolution.width)"</span>)</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-struct">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-struct">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>2. Defining a Class</h2>
+    <p>Classes are defined with the <code class="keyword">class</code> keyword. They are <span class="highlight">reference types</span>. When you assign a class instance to a new variable or pass it to a function, a reference to the existing instance is used, not a copy.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'class')">Run</button>
+                </div>
+                <code><span class="keyword">class</span> <span class="type">VideoMode</span> {
+    <span class="keyword">var</span> <span class="param">resolution</span> = <span class="type">Resolution</span>()
+    <span class="keyword">var</span> <span class="param">frameRate</span> = <span class="number">0.0</span>
+    <span class="keyword">var</span> <span class="param">name</span>: <span class="type">String</span>?
+    
+    <span class="keyword">func</span> <span class="function">description</span>() -> <span class="type">String</span> {
+        <span class="keyword">return</span> <span class="string">"Video mode at \(frameRate) fps."</span>
+    }
+}
+
+<span class="comment">// Create an instance of the class</span>
+<span class="keyword">let</span> someVideoMode = <span class="type">VideoMode</span>()
+someVideoMode.resolution.width = <span class="number">1920</span>
+someVideoMode.frameRate = <span class="number">30.0</span>
+
+<span class="function">print</span>(someVideoMode.<span class="function">description</span>())
+
+<span class="comment">// Classes are reference types</span>
+<span class="keyword">let</span> anotherVideoMode = someVideoMode
+anotherVideoMode.frameRate = <span class="number">60.0</span>
+
+<span class="function">print</span>(<span class="string">"Original: \(someVideoMode.frameRate)"</span>)
+<span class="function">print</span>(<span class="string">"Reference: \(anotherVideoMode.frameRate)"</span>)</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-class">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-class">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <h2>3. Initializers</h2>
+    <p>Initializers are like special methods that you can call to create a new instance of a particular type. Swift provides a default initializer for any structure or class that provides default values for all of its properties.</p>
+    
+    <div class="code-container">
+        <div class="code-section">
+            <div class="code-block">
+                <div class="code-actions">
+                    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    <button class="run-button" onclick="runCode(this, 'init')">Run</button>
+                </div>
+                <code><span class="keyword">struct</span> <span class="type">Fahrenheit</span> {
+    <span class="keyword">var</span> <span class="param">temperature</span>: <span class="type">Double</span>
+    
+    <span class="keyword">init</span>() {
+        temperature = <span class="number">32.0</span> <span class="comment">// Default freezing point</span>
+    }
+}
+
+<span class="keyword">var</span> f = <span class="type">Fahrenheit</span>()
+<span class="function">print</span>(<span class="string">"The default temperature is \(f.temperature)° Fahrenheit."</span>)
+
+<span class="keyword">class</span> <span class="type">SurveyQuestion</span> {
+    <span class="keyword">let</span> <span class="param">text</span>: <span class="type">String</span>
+    <span class="keyword">var</span> <span class="param">response</span>: <span class="type">String</span>?
+    
+    <span class="keyword">init</span>(<span class="param">text</span>: <span class="type">String</span>) {
+        <span class="keyword">self</span>.text = text
+    }
+    
+    <span class="keyword">func</span> <span class="function">ask</span>() {
+        <span class="function">print</span>(text)
+    }
+}
+
+<span class="keyword">let</span> cheeseQuestion = <span class="type">SurveyQuestion</span>(<span class="param">text</span>: <span class="string">"Do you like cheese?"</span>)
+cheeseQuestion.<span class="function">ask</span>()
+cheeseQuestion.response = <span class="string">"Yes, I do like cheese."</span>
+<span class="function">print</span>(cheeseQuestion.response!)</code>
+            </div>
+        </div>
+        <div class="terminal-section" id="terminal-init">
+            <div class="terminal-header">Terminal Output</div>
+            <div class="terminal-output" id="output-init">Click "Run" to see output...</div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <div class="info-title">Choosing Between Classes and Structures</div>
+        <p>Use structures by default. Use classes when you need Objective-C interoperability or you need to control the identity of the data you're modeling.</p>
+        <ul>
+            <li><strong>Use a structure when:</strong> The primary purpose is to encapsulate a few simple data values, the instances will be copied rather than referenced, and any properties stored by the structure are also value types.</li>
+            <li><strong>Use a class when:</strong> You need inheritance, type casting to check a type at runtime, deinitializers to free up resources, or when multiple references can refer to the same instance.</li>
+        </ul>
+    </div>
+    
+    <div style="height: 200px;"></div>
+
     <script>
         window.addEventListener('message', function(event) {
             if (event.data.type === 'updateAccentColor') {
@@ -31,15 +345,91 @@
             }
         });
 
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedColor = localStorage.getItem('accentColor') || 'orange';
+            updateAccentColor(savedColor);
+        });
+
         function updateAccentColor(color) {
-            let accent = '#f05138';
-            if (color === 'blue') accent = '#569cd6';
-            if (color === 'red') accent = '#ff4444';
-            if (color === 'green') accent = '#4caf50';
-            if (color === 'yellow') accent = '#ffeb3b';
-            if (color === 'purple') accent = '#9c27b0';
-            if (color === 'pink') accent = '#e91e63';
-            document.documentElement.style.setProperty('--accent-color', accent);
+            document.body.classList.remove('theme-blue', 'theme-red', 'theme-green', 'theme-yellow', 'theme-purple', 'theme-pink', 'theme-orange');
+            document.body.classList.add(`theme-${color}`);
+            const accentColor = getComputedStyle(document.body).getPropertyValue('--accent-color').trim();
+            const rgb = accentColor.startsWith('#') ? hexToRgb(accentColor) : '240, 81, 56';
+            document.documentElement.style.setProperty('--accent-color-rgb', rgb);
+        }
+        
+        function hexToRgb(hex) {
+            let r = 0, g = 0, b = 0;
+            if (hex.length == 4) {
+                r = "0x" + hex[1] + hex[1];
+                g = "0x" + hex[2] + hex[2];
+                b = "0x" + hex[3] + hex[3];
+            } else if (hex.length == 7) {
+                r = "0x" + hex[1] + hex[2];
+                g = "0x" + hex[3] + hex[4];
+                b = "0x" + hex[5] + hex[6];
+            }
+            return `${+r}, ${+g}, ${+b}`;
+        }
+
+        function copyCode(button) {
+            const code = button.closest('.code-block').querySelector('code').textContent.trim();
+            navigator.clipboard.writeText(code).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copy-success');
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copy-success');
+                }, 2000);
+            });
+        }
+
+        function runCode(button, codeType) {
+            const outputDiv = document.getElementById(`output-${codeType}`);
+            button.textContent = 'Running...';
+            button.disabled = true;
+            button.classList.add('run-success');
+            
+            let output = '';
+            let delay = 600;
+            
+            switch(codeType) {
+                case 'struct':
+                    output = `The resolution is 1920 x 1080.\nOriginal: 1920\nCopy: 1280`;
+                    break;
+                case 'class':
+                    output = `Video mode at 30.0 fps.\nOriginal: 60.0\nReference: 60.0`;
+                    break;
+                case 'init':
+                    output = `The default temperature is 32.0° Fahrenheit.\nDo you like cheese?\nYes, I do like cheese.`;
+                    break;
+                default:
+                    output = 'Execution complete.';
+            }
+            
+            setTimeout(() => {
+                typeText(outputDiv, output, () => {
+                    button.textContent = 'Run';
+                    button.disabled = false;
+                    button.classList.remove('run-success');
+                });
+            }, delay);
+        }
+        
+        function typeText(element, text, callback) {
+            element.textContent = '';
+            let i = 0;
+            const speed = 20;
+            function typeChar() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typeChar, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            typeChar();
         }
     </script>
 </body>
